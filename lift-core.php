@@ -32,23 +32,31 @@ class Lift_Search {
 	 */
 	const SETTINGS_OPTION = 'lift-settings';
 	const DOMAIN_EVENT_WATCH_INTERVAL = 60;
+  public static $aws;
+  public static $cloud_search_client;
 
 	public static function error_logging_enabled() {
 		return (!( defined( 'DISABLE_LIFT_ERROR_LOGGING' ) && DISABLE_LIFT_ERROR_LOGGING )) && ( class_exists( 'Voce_Error_Logging' ) || file_exists( __DIR__ . '/lib/voce-error-logging/voce-error-logging.php' ) );
 	}
 
-	public static function init() {
+	public static function init($aws) {
+    self::$aws = $aws;
+    self::$cloud_search_client = $aws->get_client()->get('cloudsearch');
+    if(($region = self::get_domain_region()))
+      self::$cloud_search_client->setRegion($region);
 		$autoload_path = implode(DIRECTORY_SEPARATOR, array(__DIR__, 'vendor', 'autoload.php'));
 		if ( file_exists( $autoload_path ) ) {
 			require_once $autoload_path;
 		}
 
 		if ( self::get_search_endpoint() && self::get_override_search() ) {
-			add_action( 'init', array( 'Lift_WP_Search', 'init' ) );
+			//add_action( 'init', array( 'Lift_WP_Search', 'init' ) );
+      Lift_WP_Search::init();
 		}
 
 		if ( self::get_document_endpoint() ) {
-			add_action( 'init', array( 'Lift_Batch_Handler', 'init' ), 9 );
+			//add_action( 'init', array( 'Lift_Batch_Handler', 'init' ), 9 );
+      Lift_Batch_Handler::init();
 			add_action( 'lift_post_changes_to_data', array( __CLASS__, '_default_extended_post_data' ), 10, 3 );
 		}
 
@@ -58,7 +66,8 @@ class Lift_Search {
 			$admin->init();
 		}
 
-		add_action( 'init', array( __CLASS__, '_upgrade_check' ) );
+		//add_action( 'init', array( __CLASS__, '_upgrade_check' ) );
+    self::_upgrade_check();
 
 		//need cron hooks to be set prior to init
 		add_action( Lift_Batch_Handler::BATCH_CRON_HOOK, array( 'Lift_Batch_Handler', 'send_next_batch' ) );
@@ -547,11 +556,6 @@ class Lift_Search {
 	}
 
 }
-
-add_action( 'after_setup_theme', array( 'Lift_Search', 'init' ) );
-
-
-register_deactivation_hook( __FILE__, '_lift_deactivate' );
 
 function _lift_deactivate() {
 	$domain_manager = Lift_Search::get_domain_manager();

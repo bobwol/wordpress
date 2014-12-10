@@ -241,18 +241,19 @@ class Lift_Admin {
 			'error' => false,
 			'nonce' => wp_create_nonce( 'lift_domain' )
 		);
-		if ( !Lift_Search::get_access_key_id() && !Lift_Search::get_secret_access_key() ) {
+		/*if ( !Lift_Search::get_access_key_id() && !Lift_Search::get_secret_access_key() ) {
 			$response['error'] = array( 'code' => 'emptyCredentials', 'message' => 'The Access Credential are not yet set.' );
-		} else {
+		} else {*/
 			$dm = Lift_Search::get_domain_manager();
 			$region = ( !empty($_REQUEST['region']) ) ? $_REQUEST['region'] : Lift_Search::get_domain_region();
 			$domains = $dm->get_domains( $region );
-			if ( $domains === false ) {
-				$response['error'] = $dm->get_last_error();
+      $error = $dm->get_last_error();
+			if ( $domains === false/* && $error['code'] != 'AccessDenied'*/) {
+				$response['error'] = $error;
 			} else {
 				$response['domains'] = $domains;
 			}
-		}
+		//}
 		header( 'Content-Type: application/json' );
 		die( json_encode( $response ) );
 	}

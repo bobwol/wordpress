@@ -64,8 +64,28 @@ class Cloud_Config_API {
 	 * @param array $payload
 	 * @return array [response string, Cloud_Config_Request object used for request]
 	 */
-	protected function _make_request( $method, $payload = array( ), $flatten_keys = true, $region = false ) {
+	protected function _make_request( $method, $options = array( ), $junk = false, $region = false ) {
 
+    try {
+      if($region)
+        Lift_Search::$cloud_search_client->setRegion($region);
+      try {
+        return Lift_Search::$cloud_search_client->{$method}($options);
+      } catch(Aws\CloudSearch\Exception\CloudSearchException $e) {
+		    $this->set_last_error(array(
+           'code' => $e->getExceptionCode(), 
+           'message' => $e->getMessage() ));
+        return false;
+      }
+    } catch(Exception $e) {
+      //var_dump($e->getCode(), $e->getMessage());
+      //debug_print_backtrace();
+		  $this->set_last_error(array(
+           'code' => $e->getCode().'', 
+           'message' => $e->getMessage() ));
+      return false;
+    }
+/*
 		if ( $payload && $flatten_keys ) {
 			$payload = $this->_flatten_keys( $payload );
 		}
@@ -100,6 +120,7 @@ class Cloud_Config_API {
 		}
 
 		return $r;
+*/
 	}
 
 	/**
@@ -107,16 +128,18 @@ class Cloud_Config_API {
 	 * @return boolean
 	 */
 	public function DescribeDomains( $domain_names = array( ), $region = false ) {
-		$payload = array( );
+		/*$payload = array( );
 
 		if ( !empty( $domain_names ) ) {
 
 			foreach ( array_values( $domain_names ) as $i => $domain_name ) {
 				$payload['DomainNames.member.' . ($i + 1)] = $domain_name;
 			}
-		}
-
-		return $this->_make_request( 'DescribeDomains', $payload, true, $region );
+		}*/
+    $opts = array(
+            'DomainNames' => $domain_names
+          );
+		return $this->_make_request( 'DescribeDomains', $opts, true, $region );
 	}
 
 	/**

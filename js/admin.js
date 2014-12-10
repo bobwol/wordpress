@@ -16,11 +16,14 @@
       this.settings.on('sync reset', function() {
         var credentials = this.settings.getValue('credentials');
         this.domains.settings = this.settings;
+          this.domains.enablePolling();
+/*
         if ('' === credentials.accessKey && '' === credentials.secretKey) {
           this.domains.disablePolling();
         } else {
           this.domains.enablePolling();
         }
+*/
         this.render();
       }, this)
           .fetch();
@@ -44,7 +47,7 @@
           credentials;
 
       credentials = this.settings.getValue('credentials');
-      if (!(credentials.accessKey && credentials.secretKey)) {
+      if (!(credentials.accessKey && credentials.secretKey) && 0) {
         state = 'set_credentials';
       } else {
         if (typeof this.domains.deferred === 'object' && 'then' in this.domains.deferred) {
