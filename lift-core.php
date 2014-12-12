@@ -19,6 +19,7 @@ require_once('wp/lift-update-queue.php');
 require_once('wp/update-watchers/post.php');
 require_once('lib/wp-asynch-events.php');
 
+
 class Lift_Search {
 	/**
 	 * Option name for the marker of whether the user finisehd the setup process
@@ -69,9 +70,9 @@ class Lift_Search {
 		//add_action( 'init', array( __CLASS__, '_upgrade_check' ) );
     self::_upgrade_check();
 
-		//need cron hooks to be set prior to init
-		add_action( Lift_Batch_Handler::BATCH_CRON_HOOK, array( 'Lift_Batch_Handler', 'send_next_batch' ) );
-		add_action( Lift_Batch_Handler::QUEUE_ALL_CRON_HOOK, array( 'Lift_Batch_Handler', 'process_queue_all' ) );
+    //need cron hooks to be set prior to init
+    add_action( Lift_Batch_Handler::BATCH_CRON_HOOK, array( 'Lift_Batch_Handler', 'send_next_batch' ) );
+    add_action( Lift_Batch_Handler::QUEUE_ALL_CRON_HOOK, array( 'Lift_Batch_Handler', 'process_queue_all' ) );
 
 
 		// @TODO only enqueue on search template or if someone calls the form
@@ -391,9 +392,9 @@ class Lift_Search {
 		return apply_filters( 'lift_indexed_post_fields', array(
 			'post_title',
 			'post_content',
-			'post_excerpt',
+			//'post_excerpt',
 			'post_date_gmt',
-			'post_excerpt',
+			//'post_excerpt',
 			'post_status',
 			'post_type',
 			'post_author'

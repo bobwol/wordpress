@@ -63,10 +63,12 @@
           } else if ( domain && ( domain.get('Processing') || domain.get('RequiresIndexDocuments') ) ) {
             state = 'processing_setup';
           } else {
+/*
             if (!domain) {
               errorModal = new liftAdmin.ModalMissingDomain({model: {settings: this.settings, domains: this.domains}});
               this.openModal(errorModal);
             }
+*/
             state = 'dashboard';
           }
         }
@@ -526,6 +528,7 @@
     parse: function(resp) {
       this.nonce = resp.nonce;
       this.error = resp.error;
+      this.domains_exists = !!resp.domains;
       return resp.domains;
     }
   });
@@ -711,12 +714,21 @@
       region = $('#region').val();
       domain = this.model.domains.get(domainname);
 
-      if (!domain) {
+      if (!domain && this.model.domains.domains_exists) { // no creation when there's no permission to list domains
         //if domain doesn't exist, create it
         this.createDomain(domainname, region);
       } else {
         //have user confirm to override the existing domain
         var model = this.model.domains.get(domainname);
+        
+        // if domain does not exists make fake one
+        if(!model)
+        {
+          model = new liftAdmin.DomainModel({
+            DomainName: domainname,
+            Region: region
+          });
+        }
         this.showConfirmModal(model);
       }
       return this;

@@ -19,7 +19,7 @@ class Lift_Posts_To_SDF {
 		'post_excerpt' => array( __CLASS__, '__strip_tags_shortcodes' ),
 		'post_author' => 'intval',
 		'post_category' => array( __CLASS__, '__format_post_categories' ),
-		'tags_input' => array( __CLASS__, '__format_post_tags' )
+		//'tags_input' => array( __CLASS__, '__format_post_tags' )
 	);
 
 	/**
@@ -157,11 +157,11 @@ class Lift_Posts_To_SDF {
 		$document = array(
 			'type' => $data['action'],
 			'id' => self::get_document_id_prefix() . $_post['ID'],
-			'version' => $data['time'],
+			//'version' => $data['time'],
 		);
 
 		if ( $data['action'] == 'add' ) {
-			$document['lang'] = 'en';
+			//$document['lang'] = 'en';
 			$document['fields'] = $fields;
 		}
 

@@ -64,11 +64,11 @@ class Lift_Batch {
 	 * @return boolean
 	 */
 	public function check_required_fields( $document ) {
-		if ( !isset( $document->lang ) || empty( $document->lang ) ) {
-			$document->lang = 'en';
-		}
+		//if ( !isset( $document->lang ) || empty( $document->lang ) ) {
+		//	$document->lang = 'en';
+		//}
 
-		foreach ( array( 'type', 'id', 'version' ) as $prop ) {
+		foreach ( array( 'type', 'id', /*'version'*/ ) as $prop ) {
 			if ( !property_exists( $document, $prop ) ) {
 				$this->errors[] = array(
 					'code' => 300,

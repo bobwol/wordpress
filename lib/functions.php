@@ -41,3 +41,33 @@ if ( !function_exists( 'array_diff_semi_assoc_recursive' ) ) {
 	}
 
 }
+
+function lift_cloud_array_is_assoc($array) {
+  return (bool)count(array_filter(array_keys($array), 'is_string'));
+}
+
+function lift_cloud_array_to_object_if_assoc($array, $rec = false)
+{
+  if(!is_array($array))
+    return $array;
+  if(lift_cloud_array_is_assoc($array))
+  {
+    $obj = (object)$array;
+    if($rec)
+    {
+      $vars = array_keys(get_object_vars($obj));
+      foreach($vars as $var)
+        $obj->{$var} = lift_cloud_array_to_object_if_assoc($obj->{$var}, $rec);
+    }
+    return $obj;
+  }
+  else 
+  {
+    if($rec)
+    {
+      foreach($array as $i=>$item)
+        $array[$i] = lift_cloud_array_to_object_if_assoc($item, $rec);
+    }
+  }
+  return $array;
+}

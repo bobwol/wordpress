@@ -106,6 +106,29 @@ class Cloud_Search_Query {
 		return http_build_query( $params );
 	}
 
+  public function as_aws_2013_args() {
+    $sort = array( );
+    $facets = array( );
+/*
+    foreach($this->facets as $field)
+    {
+      $facets[$field] = array();
+    }
+*/
+		foreach ( $this->ranks as $field => $order )
+      $sort[] = $field.' '.strtolower($order);
+
+		$args = array(
+      'queryParser' => 'structured',
+			'query' => $this->boolean_query,
+			'facet' => sizeof($facets) > 0 ? json_encode($facets) : null,
+			'return' => implode( ',', $this->return_fields ),
+			'size' => $this->size,
+			'start' => $this->start,
+			'sort' => implode( ',', $sort )
+			);
+    return $args;
+  }
 }
 
 class CloudSearchAPIException extends Exception {

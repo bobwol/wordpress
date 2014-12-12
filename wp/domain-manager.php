@@ -24,6 +24,8 @@ class Lift_Cloud_Config_API extends Cloud_Config_API {
 
 	public function _make_request( $method, $payload = array( ), $flatten_keys = true, $region = false ) {
 
+		return parent::_make_request( $method, $payload, $flatten_keys, $region );
+/*
 		if ( in_array( $method, $this->cached_methods ) ) {
 			if ( is_array( $cache = get_transient( 'lift_request_' . $method ) ) ) {
 				$key = substr( md5( serialize( $payload ) ), 0, 25 );
@@ -56,6 +58,7 @@ class Lift_Cloud_Config_API extends Cloud_Config_API {
 		}
 
 		return $result;
+*/
 	}
 
 }
@@ -113,9 +116,11 @@ class Lift_Domain_Manager {
 		}
 
 		$result = $this->config_api->DescribeIndexFields( $domain_name, $region );
+
 		if ( false === $result ) {
 			return new WP_Error( 'bad-response', 'Received an invalid repsonse when trying to describe the current schema' );
 		}
+
 
 		$current_schema = $result->IndexFields;
 		if ( count( $current_schema ) ) {
@@ -127,7 +132,7 @@ class Lift_Domain_Manager {
 
 		foreach ( $schema as $index ) {
 			$index = array_merge( array( 'options' => array( ) ), $index );
-			if ( !isset( $current_schema[$index['field_name']] ) || $current_schema[$index['field_name']]->Options->IndexFieldType != $index['field_type'] ) {
+			if ( !isset( $current_schema[$index['field_name']] ) || $current_schema[$index['field_name']]->Options->IndexFieldType != $index['field_type']) {
 				$response = $this->config_api->DefineIndexField( $domain_name, $index['field_name'], $index['field_type'], $index['options'] );
 
 				if ( false === $response ) {
@@ -144,6 +149,9 @@ class Lift_Domain_Manager {
 				->then( array( 'Lift_Batch_Handler', 'queue_all' ) )
 				->commit();
 		}
+    //if($this->needs_indexing($domain_name, $region))
+    //$this->index_documents($domain_name, $region);
+    //Lift_Batch_Handler::queue_all();
 
 		return true;
 	}
@@ -219,7 +227,8 @@ class Lift_Domain_Manager {
 	}
 
 	public function index_documents( $domain_name, $region = false ) {
-		return ( bool ) $this->config_api->IndexDocuments( $domain_name, $region );
+		$ret = $this->config_api->IndexDocuments( $domain_name, $region );
+    return ( bool ) $ret;
 	}
 
 	/**

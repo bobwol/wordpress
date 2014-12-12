@@ -248,7 +248,7 @@ class Lift_Admin {
 			$region = ( !empty($_REQUEST['region']) ) ? $_REQUEST['region'] : Lift_Search::get_domain_region();
 			$domains = $dm->get_domains( $region );
       $error = $dm->get_last_error();
-			if ( $domains === false/* && $error['code'] != 'AccessDenied'*/) {
+			if ( $domains === false && $error['code'] != 'AccessDenied') {
 				$response['error'] = $error;
 			} else {
 				$response['domains'] = $domains;

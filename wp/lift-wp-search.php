@@ -57,8 +57,8 @@ class Lift_WP_Query {
 			// include response post ids in query
 			$hits = array( );
 			array_map( function($hit) use (&$hits) {
-					if ( property_exists( $hit, 'data' ) && property_exists( $hit->data, 'id' ) ) {
-						$hits[] = (is_array( $hit->data->id )) ? array_shift( $hit->data->id ) : $hit->data->id;
+					if ( property_exists( $hit, 'fields' ) && property_exists( $hit->fields, 'id' ) ) {
+						$hits[] = (is_array( $hit->fields->id )) ? array_shift( $hit->fields->id ) : $hit->fields->id;
 					}
 				}, $this->results->hits->hit
 			);
@@ -82,7 +82,7 @@ class Lift_WP_Query {
 
 		$cs_query->add_facet( apply_filters( 'lift_search_facets', array( ) ) );
 
-		$parameters = apply_filters( 'list_search_bq_parameters', array( sprintf( "(label '%s')", $this->wp_query->get( 's' ) ) ), $this );
+		$parameters = apply_filters( 'list_search_bq_parameters', array( sprintf( "(term '%s')", $this->wp_query->get( 's' ) ) ), $this );
 
 		//filter to the current blog/site
 		$parameters[] = new Lift_Expression_Set( 'and', array(
@@ -112,7 +112,7 @@ class Lift_WP_Query {
 
 		$orderby_values = array(
 			'date' => 'post_date_gmt',
-			'relevancy' => 'text_relevance',
+			'relevancy' => '_score',
 		);
 
 		$orderby_values = apply_filters( 'lift_cs_query_orderby_values', $orderby_values, $this );
@@ -242,6 +242,7 @@ class Lift_WP_Search {
 	 */
 	public static function _filter_posts_results( $posts, $wp_query ) {
 		$lift_query = Lift_WP_Query::GetInstance( $wp_query );
+
 		if ( $lift_query->has_valid_result() )
 			return $lift_query->get_posts();
 

@@ -351,6 +351,7 @@ if ( !class_exists( 'Lift_Batch_Handler' ) ) {
 
 			$blog_id = get_current_blog_id();
 			$site_id = lift_get_current_site_id();
+
 			foreach ( $update_query->meta_rows as $meta_row ) {
 
 				$update_data = get_post_meta( $meta_row->post_id, $meta_row->meta_key, true );
@@ -367,6 +368,7 @@ if ( !class_exists( 'Lift_Batch_Handler' ) ) {
 						}
 
 						$sdf_field_data = apply_filters( 'lift_post_changes_to_data', $post_data, $update_data['fields'], $update_data['document_id'] );
+
 					} else {
 						$sdf_field_data = array( 'ID' => intval( $update_data['document_id'] ) );
 					}
@@ -376,6 +378,7 @@ if ( !class_exists( 'Lift_Batch_Handler' ) ) {
 							'action' => $action,
 							'time' => time()
 						) );
+
 					try {
 						$batch->add_document( ( object ) $sdf_doc );
 
@@ -400,7 +403,6 @@ if ( !class_exists( 'Lift_Batch_Handler' ) ) {
 				if ( $r->status === "success" ) {
 					$log_title = "Post Queue Sent ";
 					$tag = 'success';
-
 					foreach ( $batched_meta_keys as $meta_key ) {
 						delete_post_meta( $closed_queue_id, $meta_key );
 					}

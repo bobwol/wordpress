@@ -5,6 +5,7 @@ class CloudSearch_API {
 	private $error_messages;
 	private $submission_uri;
 	private $search_uri;
+  private $client;
 
 	const API_VERSION = '2011-02-01';
 
@@ -25,6 +26,12 @@ class CloudSearch_API {
 
 		$this->submission_uri = sprintf( 'http://%s/%s/documents/batch', $document_endpoint, $version );
 		$this->search_uri = sprintf( 'http://%s/%s/search?', $search_endpoint, $version );
+
+    $this->client = Lift_Search::$cloud_search_client
+                                ->getDomainClient(Lift_Search::get_search_domain_name(),
+                                                  array(
+        'credentials' => Lift_Search::$cloud_search_client->getCredentials(),
+    ));
 	}
 
 	private function send( $method = 'POST', $data = null ) {
@@ -63,6 +70,15 @@ class CloudSearch_API {
 	 * @param Cloud_Search_Query $query
 	 */
 	public function sendSearch( $query ) {
+    try {
+        $res = $this->client->search($query->as_aws_2013_args());
+        return lift_cloud_array_to_object_if_assoc($res->getAll(), true);
+    } catch(Exception $e) {
+      $this->error_messages = $e->getMessage();
+      var_dump($this->error_messages);
+      return false;
+    }
+/*
 		$response = $this->send( 'GET', $query->get_query_string() );
 
 		if ( $response && property_exists( $response, 'error' ) ) {
@@ -75,6 +91,7 @@ class CloudSearch_API {
 		}
 
 		return false;
+*/
 	}
 
 	/**
@@ -82,7 +99,17 @@ class CloudSearch_API {
 	 * @param LiftBatch $batch
 	 */
 	public function sendBatch( $batch ) {
-
+    try {
+        $res = $this->client->uploadDocuments(array(
+                              'documents' => $batch->convert_to_JSON(),
+                              'contentType' => 'application/json'
+                          ));
+        return lift_cloud_array_to_object_if_assoc($res->getAll(), true);
+    } catch(Exception $e) {
+      $this->error_messages = $e->getMessage();
+      return false;
+    }
+/*
 		$response = $this->send( 'POST', $batch->convert_to_JSON() );
 
 		if ( $response && ( 'error' === $response->status ) ) {
@@ -95,6 +122,7 @@ class CloudSearch_API {
 		}
 
 		return false;
+*/
 	}
 
 	public function getErrorMessages() {
