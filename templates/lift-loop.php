@@ -38,7 +38,7 @@
 		</div> <!-- end .pagination -->
 	<?php else: ?>
 		<div class="search-result">
-			<p>No Search Results</p>
+			<p><?php echo self::_('No Search Results'); ?></p>
 		</div>
 	<?php endif; ?>
 </div> <!-- end search-results -->

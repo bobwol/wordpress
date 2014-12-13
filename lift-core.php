@@ -21,6 +21,9 @@ require_once('lib/wp-asynch-events.php');
 
 
 class Lift_Search {
+
+  private static function _($s) { return lift_cloud_localize($s); }
+
 	/**
 	 * Option name for the marker of whether the user finisehd the setup process
 	 */
@@ -146,17 +149,17 @@ class Lift_Search {
 
 		try {
 			if ( Cloud_Config_API::TestConnection( $credentials ) ) {
-				$status_message = 'Success';
+				$status_message = self::_('Success');
 				self::__set_setting( 'access-key-id', $id );
 				self::__set_setting( 'secret-access-key', $secret );
 			} else {
-				$status_message = 'There was an error authenticating. Please check your Access Key ID and Secret Access Key and try again.';
+				$status_message = self::_('There was an error authenticating. Please check your Access Key ID and Secret Access Key and try again.');
 
 				$error = true;
 			}
 		} catch ( Exception $e ) {
 			// @todo add exception logging?
-			$status_message = 'There was an error authenticating your access keys. Please try again.';
+			$status_message = self::_('There was an error authenticating your access keys. Please try again.');
 
 			$error = true;
 		}
@@ -416,7 +419,7 @@ class Lift_Search {
 
 	public static function RecentErrorsTable() {
 		if ( !self::error_logging_enabled() ) {
-			return '<div class="notice">Error Logging is Disabled</div>';
+			return '<div class="notice">'.self::_('Error Logging is Disabled').'</div>';
 		}
 
 		$args = array(
@@ -436,9 +439,9 @@ class Lift_Search {
 		$html = '<table id="lift-recent-logs-table" class="wp-list-table widefat fixed posts">
 			<thead>
 			<tr>
-				<th class="column-date">Log ID</th>
-				<th class="column-title">Log Title</th>
-				<th class="column-categories">Time Logged</th>
+				<th class="column-date">'.self::_('Log ID').'</th>
+				<th class="column-title">'.self::_('Log Title').'</th>
+				<th class="column-categories">'.self::_('Time Logged').'</th>
 			</tr>
 			</thead><tbody>';
 		$pages = '';
@@ -451,7 +454,7 @@ class Lift_Search {
 				$html .= '</tr>';
 			endwhile;
 		} else {
-			$html .= '<tr><td colspan="2">No Recent Errors</td></tr>';
+			$html .= '<tr><td colspan="2">'.self::_('No Recent Errors').'</td></tr>';
 		}
 		$html .= '</tbody></table>';
 		$html .= $pages;

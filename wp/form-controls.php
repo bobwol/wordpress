@@ -2,6 +2,8 @@
 
 class LiftLinkControl {
 
+  private static function _($s) { return lift_cloud_localize($s); }
+
 	/**
 	 *
 	 * @var Lift_Search_Form
@@ -44,14 +46,14 @@ class LiftLinkControl {
 					$classes[] = 'selected';
 				}
 				if ( $i > 0 && ($i - 1 == $this->options['show']) ) {
-					$html .= '<li class="lift-filter-expand hide-no-js hide-expanded">More options &hellip;</li>';
+					$html .= '<li class="lift-filter-expand hide-no-js hide-expanded">'.self::_('More options &hellip;').'</li>';
 				}
 				if ( $i > 0 && ($i > $this->options['show']) ) {
 					$classes[] = 'hide-collapsed';
 				}
 				$html .= $this->itemHTML($this->items[$i], $classes);
 			}
-			$html .= '<li class="lift-filter-collapse hide-collapsed">Less options</li>';
+			$html .= '<li class="lift-filter-collapse hide-collapsed">'.self::_('Less options').'</li>';
 			$html .= '</ul>';
 		}
 

@@ -71,3 +71,15 @@ function lift_cloud_array_to_object_if_assoc($array, $rec = false)
   }
   return $array;
 }
+
+function lift_cloud_localize_func()
+{
+  return function($s)
+  {
+    return __($s, 'lift-search');
+  };
+}
+function lift_cloud_localize($s)
+{
+  return __($s, 'lift-search');
+}

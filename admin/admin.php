@@ -4,6 +4,8 @@ class Lift_Admin {
 
 	const OPTIONS_SLUG = 'lift-search';
 
+  private static function _($s) { return lift_cloud_localize($s); }
+
 	public function init() {
 
 		add_action( 'admin_menu', array( $this, 'action__admin_menu' ) );
@@ -57,9 +59,9 @@ class Lift_Admin {
 		$error = false;
 
 		if ( $domain_manager->credentials_are_valid() ) {
-			$status_message = 'Success';
+			$status_message = self::_('Success');
 		} else {
-			$status_message = 'There was an error authenticating. Please check your Access Key ID and Secret Access Key and try again.';
+			$status_message = self::_('There was an error authenticating. Please check your Access Key ID and Secret Access Key and try again.');
 			$error = true;
 		}
 
@@ -74,7 +76,7 @@ class Lift_Admin {
 	 * Sets up menu pages
 	 */
 	public function action__admin_menu() {
-		$hook = add_options_page( 'Lift: Search for WordPress', 'Lift Search', $this->get_manage_capability(), self::OPTIONS_SLUG, array( $this, 'callback__render_options_page' ) );
+		$hook = add_options_page( self::_('Lift: Search for WordPress'), self::_('Lift Search'), $this->get_manage_capability(), self::OPTIONS_SLUG, array( $this, 'callback__render_options_page' ) );
 		add_action( $hook, array( $this, 'action__options_page_enqueue' ) );
 	}
 
@@ -166,10 +168,10 @@ class Lift_Admin {
 								Lift_Search::set_search_domain_name( $setting_value );
 								Lift_Search::set_domain_region( $region );
 							} else {
-								$error->add( 'schema_error', 'There was an error while applying the schema to the domain.' );
+								$error->add( 'schema_error', self::_('There was an error while applying the schema to the domain.') );
 							}
 						} else {
-							$error->add( 'invalid_domain', 'The given domain does not exist.' );
+							$error->add( 'invalid_domain', self::_('The given domain does not exist.') );
 						}
 						$response['model']['value'] = Lift_Search::get_search_domain_name();
 						break;
@@ -186,11 +188,11 @@ class Lift_Admin {
 						$response['model']['value'] = Lift_Search::get_override_search();
 						break;
 					default:
-						$error->add( 'invalid_setting', 'The name of the setting you are trying to set is invalid.' );
+						$error->add( 'invalid_setting', self::_('The name of the setting you are trying to set is invalid.') );
 						break;
 				}
 			} else {
-				$error->add( 'invalid_nonce', 'The request was missing required authentication data.' );
+				$error->add( 'invalid_nonce', self::_('The request was missing required authentication data.') );
 			}
 
 			if ( count( $error->get_error_codes() ) ) {
@@ -279,7 +281,7 @@ class Lift_Admin {
 					$response['data'] = $dm->get_domain( $model->DomainName );
 				}
 			} else {
-				$error->add( 'invalid_nonce', 'The request was missing required authentication data.' );
+				$error->add( 'invalid_nonce', self::_('The request was missing required authentication data.') );
 			}
 
 			if ( count( $error->get_error_codes() ) ) {
@@ -335,7 +337,7 @@ class Lift_Admin {
 						$response->updates[] = array(
 							'id' => $post_id,
 							'action' => 'delete',
-							'title' => sprintf( 'Post Deletion (%d)', $post_id ),
+							'title' => sprintf( self::_('Post Deletion (%d)'), $post_id ),
 							'edit_url' => '#',
 							'author_name' => '',
 							'queue_date' => mysql2date( 'D. M d Y g:ia', $meta_value['update_date'] )
@@ -394,12 +396,12 @@ class Lift_Admin {
 		} else {
 			status_header( 400 );
 			$response->view_all_url = '';
-			$response->error = array( 'code' => 'logging_disabled', 'Error Logging is Disabled' );
+			$response->error = array( 'code' => 'logging_disabled', self::_('Error Logging is Disabled') );
 		}
 
 
 
-		header( 'Content-Type: application/json' );
+		Header( 'Content-Type: application/json' );
 		die( json_encode( $response ) );
 	}
 
@@ -411,7 +413,7 @@ class Lift_Admin {
 	 */
 	public function filter__plugin_row_meta( $links, $page ) {
 		if ( $page == self::OPTIONS_SLUG ) {
-			$links[] = '<a href="' . admin_url( 'options-general.php?page=' . self::OPTIONS_SLUG ) . '">Settings</a>';
+			$links[] = '<a href="' . admin_url( 'options-general.php?page=' . self::OPTIONS_SLUG ) . '">'.self::_('Settings').'</a>';
 		}
 		return $links;
 	}
@@ -439,10 +441,10 @@ class Lift_Admin {
 		?>
 		<div id="banneralert" class="lift-colorized">
 			<div class="lift-balloon">
-				<img src="<?php echo plugin_dir_url( __DIR__ ) ?>img/logo.png" alt="Lift Logo">
+				<img src="<?php echo plugin_dir_url( __DIR__ ) ?>img/logo.png" alt="<?php echo self::_('Lift Logo'); ?>">
 			</div>
-			<div class="lift-message"><p><strong>Welcome to Lift</strong>: 	Now that you've activated the Lift plugin it's time to set it up. Click below to get started. </p></div>
-			<div><a class="lift-btn" href="<?php echo admin_url( 'options-general.php?page=' . self::OPTIONS_SLUG ) ?>">Configure Lift</a></div>
+			<div class="lift-message"><p><?php echo self::_('<strong>Welcome to Lift</strong>: 	Now that you\'ve activated the Lift plugin it\'s time to set it up. Click below to get started.'); ?></p></div>
+			<div><a class="lift-btn" href="<?php echo admin_url( 'options-general.php?page=' . self::OPTIONS_SLUG ) ?>"><?php echo self::_('Configure Lift'); ?></a></div>
 			<div class="clr"></div>
 		</div>
 		<script>

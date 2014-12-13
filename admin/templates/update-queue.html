@@ -1,17 +1,17 @@
 <div class="grid">
 	<div class="col-1-2">
-		<h2>Documents to be Synced</h2>
+		<h2><?php echo self::_('Documents to be Synced'); ?></h2>
 	</div>
 	<div class="col-1-2 textright">
-		<span>Documents in Queue: <%- meta.found_rows %></span>
+		<span><?php echo self::_('Documents in Queue'); ?>: <%- meta.found_rows %></span>
 	</div>
 </div>
 <table class="wp-list-table widefat">
 	<thead>
 		<tr>
-			<th class="column-title">Title</th>
-			<th class="column-author">Author</th>
-			<th class="column-categories">Date Queued</th>
+			<th class="column-title"><?php echo self::_('Title'); ?></th>
+			<th class="column-author"><?php echo self::_('Author'); ?></th>
+			<th class="column-categories"><?php echo self::_('Date Queued'); ?></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -25,7 +25,7 @@
 		<% }); %>
 		<% } else { %>
 		<tr>
-			<td colspan="3">No documents are currently queued for updates.</td>
+			<td colspan="3"><?php echo self::_('No documents are currently queued for updates.'); ?></td>
 		</tr>
 		<% } %>
 	</tbody>

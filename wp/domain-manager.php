@@ -65,6 +65,8 @@ class Lift_Cloud_Config_API extends Cloud_Config_API {
 
 class Lift_Domain_Manager {
 
+  private static function _($s) { return lift_cloud_localize($s); }
+
 	/**
 	 *
 	 * @var Lift_Cloud_Config_API
@@ -90,7 +92,7 @@ class Lift_Domain_Manager {
 
 	public function initialize_new_domain( $domain_name, $region = false ) {
 		if ( $this->domain_exists( $domain_name, $region ) ) {
-			return new WP_Error( 'domain_exists', 'There was an error creating the domain.  The domain already exists.' );
+			return new WP_Error( 'domain_exists', self::_('There was an error creating the domain. The domain already exists.') );
 		}
 
 		if ( is_wp_error( $error = $this->config_api->CreateDomain( $domain_name, $region ) ) )
@@ -118,7 +120,7 @@ class Lift_Domain_Manager {
 		$result = $this->config_api->DescribeIndexFields( $domain_name, $region );
 
 		if ( false === $result ) {
-			return new WP_Error( 'bad-response', 'Received an invalid repsonse when trying to describe the current schema' );
+			return new WP_Error( 'bad-response', self::_('Received an invalid repsonse when trying to describe the current schema') );
 		}
 
 
@@ -206,7 +208,7 @@ class Lift_Domain_Manager {
 
 		if ( !$this->config_api->UpdateServiceAccessPolicies( $domain_name, $policies, $region ) ) {
 			Lift_Search::event_log( 'There was an error while applying the default access policy to the domain.', $this->config_api->get_last_error(), array( 'access policy', 'error' ) );
-			return new WP_Error('There was an error while applying the default access policy to the domain.');
+			return new WP_Error(self::_('There was an error while applying the default access policy to the domain.'));
 		}
 
 		return true;

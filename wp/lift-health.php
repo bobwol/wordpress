@@ -4,6 +4,8 @@ if ( !class_exists( 'Lift_Health' ) ) {
 
 	class Lift_Health {
 
+    private static function _($s) { return lift_cloud_localize($s); }
+
 		/**
 		 * Combine the remote and local health into one
 		 *
@@ -82,7 +84,7 @@ if ( !class_exists( 'Lift_Health' ) ) {
 				if ( $post_count >= $data['threshold'] ) {
 					$errors = true;
 					$severity = $data['severity'];
-					$reason = sprintf( '%d or more errors in the last %s', $data['threshold'], human_time_diff( time() - $interval ) );
+					$reason = sprintf( self::_('%d or more errors in the last %s'), $data['threshold'], human_time_diff( time() - $interval ) );
 				}
 
 				$error_counts[] = array(
@@ -130,11 +132,11 @@ if ( !class_exists( 'Lift_Health' ) ) {
 			if ( !$domain ) {
 				return array(
 					'errors' => true,
-					'reason' => 'Domain has been deleted or the CloudSearch API request failed.',
+					'reason' => self::_('Domain has been deleted or the CloudSearch API request failed.'),
 					'severity' => 2,
 					'status' => array(
 						'fatal' => true,
-						'text' => 'Domain has been deleted or the CloudSearch API request failed',
+						'text' => self::_('Domain has been deleted or the CloudSearch API request failed'),
 					),
 				);
 			}
@@ -143,7 +145,7 @@ if ( !class_exists( 'Lift_Health' ) ) {
 			$severity = 0;
 			$reason = '';
 
-			$text = 'active';
+			$text = self::_('active');
 
 			$pending = (!$domain->Created && !$domain->Deleted );
 			$deleting = $domain->Deleted;
@@ -156,26 +158,26 @@ if ( !class_exists( 'Lift_Health' ) ) {
 
 			if ( $deleting ) {
 				$severity = 2;
-				$reason = 'CloudSearch domain being deleted';
-				$text = 'being deleted';
+				$reason = self::_('CloudSearch domain being deleted');
+				$text = self::_('being deleted');
 			} else if ( $needs_indexing || $processing ) {
 				if ( 0 == $search_instance_count ) {
 					$severity = 1;
-					$reason = 'CloudSearch domain loading';
-					$text = 'loading';
+					$reason = self::_('CloudSearch domain loading');
+					$text = self::_('loading');
 				} else if ( $needs_indexing ) {
 					$severity = 1;
-					$reason = 'CloudSearch domain needs indexing';
-					$text = 'needs indexing';
+					$reason = self::_('CloudSearch domain needs indexing');
+					$text = self::_('needs indexing');
 				} else {
 					$severity = 1;
-					$reason = 'CloudSearch domain processing';
-					$text = 'processing';
+					$reason = self::_('CloudSearch domain processing');
+					$text = self::_('processing');
 				}
 			} else if ( $pending ) {
 				$severity = 1;
-				$reason = 'CloudSearch domain pending';
-				$text = 'pending';
+				$reason = self::_('CloudSearch domain pending');
+				$text = self::_('pending');
 			}
 
 			if ( 0 != $severity ) {

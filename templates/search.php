@@ -16,7 +16,7 @@ if ( $wp_query->current_post > -1 ) {
 <div class="lift-search">
 	<?php lift_search_form(); ?>
 	<div class="lift-filter-list">
-		<h2>Results <?php echo esc_html( $to_from ); ?> of <?php echo esc_html( $wp_query->found_posts ); ?></h2>
+		<h2><?php echo self::_('Results').' '.esc_html( $to_from ); ?> of <?php echo esc_html( $wp_query->found_posts ); ?></h2>
 	</div>
 	<?php lift_loop(); ?>
 </div> <!-- end lift search -->

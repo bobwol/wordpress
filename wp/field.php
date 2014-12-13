@@ -295,6 +295,8 @@ abstract class aLiftField implements iLiftField {
  */
 class LiftTaxonomyField extends aLiftField {
 
+  private static function _($s) { return lift_cloud_localize($s); }
+
 	protected $taxonomy;
 
 	/**
@@ -304,7 +306,7 @@ class LiftTaxonomyField extends aLiftField {
 	 */
 	public function __construct( $taxonomy, $options = array( ) ) {
 		$this->taxonomy = $taxonomy;
-		parent::__construct( "taxonomy_{$taxonomy}_id", 'literal', $options );
+		parent::__construct( "taxonomy_{$taxonomy}_id", self::_('literal'), $options );
 		$this->addTypeOption( 'facet', 'true' );
 
 		$this->addPublicRequestVars( $this->name );
@@ -434,7 +436,7 @@ class LiftTaxonomyField extends aLiftField {
 				return implode( ', ', $term_names );
 			}
 		}
-		return 'Any';
+		return self::_('Any');
 	}
 
 	public function bqToRequest( $bq ) {
@@ -702,6 +704,7 @@ function liftDelegatedField( $name, $type, $options = array( ) ) {
 
 //setup default fields
 add_action( 'init', function() {
+    $_ = lift_cloud_localize_func();
 		$eodTime = strtotime( date( 'Y-m-d 23:59:59' ) );
 
 		$date_facets = array(
@@ -757,17 +760,17 @@ add_action( 'init', function() {
 
 					return $value;
 				} )
-			->delegate( 'wpToLabel', function($query_vars) {
+			->delegate( 'wpToLabel', function($query_vars) use($_) {
 					$min = isset( $query_vars['date_start'] ) ? intval( $query_vars['date_start'] ) : '';
 					$max = isset( $query_vars['date_end'] ) ? intval( $query_vars['date_end'] ) : '';
 					if ( $min && $max ) {
-						return sprintf( __( 'Between %1$s and %2$s ago', 'lift-search' ), human_time_diff( $min ), human_time_diff( $max ) );
+						return sprintf( $_( 'Between %1$s and %2$s ago' ), human_time_diff( $min ), human_time_diff( $max ) );
 					} elseif ( $min ) {
-						return sprintf( __( 'Less than %s ago', 'lift-search' ), human_time_diff( $min ) );
+						return sprintf( $_( 'Less than %s ago' ), human_time_diff( $min ) );
 					} elseif ( $max ) {
-						return sprintf( __( 'More than %s ago', 'lift-search' ), human_time_diff( $max ) );
+						return sprintf( $_( 'More than %s ago' ), human_time_diff( $max ) );
 					} else {
-						return "Any Time";
+						return $_("Any Time");
 					}
 				} )
 			->delegate( 'bqToRequest', function($bq, $field, $args) {
@@ -783,7 +786,7 @@ add_action( 'init', function() {
 				return $query_vars;
 			} );
 
-		new LiftSingleSelectFilter( $post_date_field, 'Published', $date_facets );
+		new LiftSingleSelectFilter( $post_date_field, $_('Published'), $date_facets );
 
 		$post_type_field = liftDelegatedField( 'post_type', 'literal', array( '_built_in' => true ) )
 			->delegate( 'wpToBooleanQuery', function($query_vars) {
@@ -807,8 +810,8 @@ add_action( 'init', function() {
 					}
 					return ( string ) $post_type_expression;
 				} )
-			->delegate( 'wpToLabel', function($query_vars) {
-					$label = 'Any';
+			->delegate( 'wpToLabel', function($query_vars) use($_) {
+					$label = $_('Any');
 					if ( !empty( $query_vars['post_type'] ) ) {
 						if ( is_array( $query_vars['post_type'] ) ) {
 							$labels = array( );
@@ -854,13 +857,13 @@ add_action( 'init', function() {
 				return array( 'post_type' => $post_type );
 			}, get_post_types( array( 'publicly_queryable' => true ) ) );
 
-		new LiftSingleSelectFilter( $post_type_field, 'Type', $items );
+		new LiftSingleSelectFilter( $post_type_field, $_('Type'), $items );
 
 
 		$post_categories_field = new LiftTaxonomyField( 'category', array( '_built_in' => true ) );
-		new LiftIntersectFilter( $post_categories_field, 'In Categories', array( ) );
+		new LiftIntersectFilter( $post_categories_field, $_('In Categories'), array( ) );
 
 		$post_tags_field = new LiftTaxonomyField( 'post_tag', array( '_built_in' => true ) );
-		new LiftIntersectFilter( $post_tags_field, 'Tags', array( ) );
+		new LiftIntersectFilter( $post_tags_field, $_('Tags'), array( ) );
 	} );
 

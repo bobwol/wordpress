@@ -16,6 +16,8 @@
 
 class Cloud_Search_Query {
 
+  private static function _($s) { return lift_cloud_localize($s); }
+
 	protected $facets = array( );
 	protected $facet_constraints = array( );
 	protected $facet_top_n = array( );
@@ -51,7 +53,7 @@ class Cloud_Search_Query {
 
 	private function __validate_size( $size ) {
 		if ( ( int ) $size != $size || ( int ) $size < 0 ) {
-			throw new CloudSearchAPIException( 'Size must be a positive integer.', 2 );
+			throw new CloudSearchAPIException( self::_('Size must be a positive integer.'), 2 );
 		}
 	}
 
@@ -62,7 +64,7 @@ class Cloud_Search_Query {
 
 	private function __validate_start( $start ) {
 		if ( ( int ) $start != $start || ( int ) $start < 0 ) {
-			throw new CloudSearchAPIException( 'Start must be a positive integer', 1 );
+			throw new CloudSearchAPIException( self::_('Start must be a positive integer'), 1 );
 		}
 	}
 

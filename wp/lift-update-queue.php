@@ -10,6 +10,8 @@ function lift_queue_deletion( $document_id, $document_type = 'post' ) {
 
 class Lift_Document_Update_Queue {
 
+  private static function _($s) { return lift_cloud_localize($s); }
+
 	private static $document_update_docs = array( );
 
 	const STORAGE_POST_TYPE = 'lift_queued_document';
@@ -77,7 +79,7 @@ class Lift_Document_Update_Queue {
 			$queue_id = wp_insert_post( array(
 				'post_type' => self::STORAGE_POST_TYPE,
 				'post_status' => 'publish',
-				'post_title' => 'lift queue post'
+				'post_title' => self::_('lift queue post')
 				) );
 
 			$queue_ids[$type] = $queue_id;
@@ -142,8 +144,8 @@ class Lift_Document_Update_Queue {
 	public static function init() {
 		register_post_type( self::STORAGE_POST_TYPE, array(
 			'labels' => array(
-				'name' => 'Lift Queue',
-				'singular_name' => 'Queued Docs'
+				'name' => self::_('Lift Queue'),
+				'singular_name' => self::_('Queued Docs')
 			),
 			'publicly_queryable' => false,
 			'public' => false,

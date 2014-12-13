@@ -8,7 +8,12 @@ Author: Voce Platforms
 Author URI: http://voceconnect.com/
  */
 
+require_once('lib/functions.php');
+
 if ( !class_exists( 'Lift_Search' ) ) {
+
+	load_plugin_textdomain('lift-search', false, basename( dirname( __FILE__ ) ) . '/languages' );
+
   if ( version_compare( phpversion(), '5.3.0', '>=') ) {
     require_once('lift-core.php');
 
@@ -16,8 +21,9 @@ if ( !class_exists( 'Lift_Search' ) ) {
   }
 
   function _lift_php_version_check() {
+    $_ = lift_cloud_localize_func();
     if ( !class_exists( 'Lift_Search' ) ) {
-	    die( '<p style="font: 12px/1.4em sans-serif;"><strong>Lift Search requires PHP version 5.3 or higher. Installed version is: ' . phpversion() . '</strong></p>' );
+	    die( '<p style="font: 12px/1.4em sans-serif;"><strong>'.sprintf($_('Lift Search requires PHP version 5.3 or higher. Installed version is: %s'), phpversion()).'</strong></p>' );
 	  } elseif ( function_exists('_lift_activation') ) {
 	    _lift_activation();
 	  }

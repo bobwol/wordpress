@@ -1,4 +1,4 @@
-<h2>Error! There was an error contacting Amazon Web Services.</h2>
+<h2><?php echo self::_('Error! There was an error contacting Amazon Web Services.'); ?></h2>
 <p>
-	Error: <%- error.message %> (<%- error.code %>)
+	<?php echo self::_('Error'); ?>: <%- error.message %> (<%- error.code %>)
 </p>

@@ -1,0 +1,572 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: WPLiftCloudSearch\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-12-13 20:57+0330\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: admin/admin.php:62 lift-core.php:152
+msgid "Success"
+msgstr ""
+
+#: admin/admin.php:64 lift-core.php:156
+msgid ""
+"There was an error authenticating. Please check your Access Key ID and "
+"Secret Access Key and try again."
+msgstr ""
+
+#: admin/admin.php:79
+msgid "Lift: Search for WordPress"
+msgstr ""
+
+#: admin/admin.php:79
+msgid "Lift Search"
+msgstr ""
+
+#: admin/admin.php:171
+msgid "There was an error while applying the schema to the domain."
+msgstr ""
+
+#: admin/admin.php:174
+msgid "The given domain does not exist."
+msgstr ""
+
+#: admin/admin.php:191
+msgid "The name of the setting you are trying to set is invalid."
+msgstr ""
+
+#: admin/admin.php:195 admin/admin.php:284
+msgid "The request was missing required authentication data."
+msgstr ""
+
+#: admin/admin.php:340
+msgid "Post Deletion (%d)"
+msgstr ""
+
+#: admin/admin.php:399 lift-core.php:422
+msgid "Error Logging is Disabled"
+msgstr ""
+
+#: admin/admin.php:416
+msgid "Settings"
+msgstr ""
+
+#: admin/admin.php:444
+msgid "Lift Logo"
+msgstr ""
+
+#: admin/admin.php:446
+msgid ""
+"<strong>Welcome to Lift</strong>: \tNow that you've activated the Lift "
+"plugin it's time to set it up. Click below to get started."
+msgstr ""
+
+#: admin/admin.php:447
+msgid "Configure Lift"
+msgstr ""
+
+#: api/cloud-search-query.php:56
+msgid "Size must be a positive integer."
+msgstr ""
+
+#: api/cloud-search-query.php:67
+msgid "Start must be a positive integer"
+msgstr ""
+
+#: lift-core.php:162
+msgid "There was an error authenticating your access keys. Please try again."
+msgstr ""
+
+#: lift-core.php:442
+msgid "Log ID"
+msgstr ""
+
+#: lift-core.php:443
+msgid "Log Title"
+msgstr ""
+
+#: lift-core.php:444
+msgid "Time Logged"
+msgstr ""
+
+#: lift-core.php:457
+msgid "No Recent Errors"
+msgstr ""
+
+#: lift-search.php:26
+msgid ""
+"Lift Search requires PHP version 5.3 or higher. Installed version is: %s'), "
+"phpversion()).'</strong></p>"
+msgstr ""
+
+#: templates/lift-loop.php:41
+msgid "No Search Results"
+msgstr ""
+
+#: templates/search.php:19
+msgid "Results"
+msgstr ""
+
+#: vendor/voceconnect/voce-error-logging/voce-error-logging.php:40
+#: vendor/voceconnect/voce-error-logging/voce-error-logging.php:65
+msgid "Logged Errors"
+msgstr ""
+
+#: vendor/voceconnect/voce-error-logging/voce-error-logging.php:41
+msgid "Logged Error"
+msgstr ""
+
+#: vendor/voceconnect/voce-error-logging/voce-error-logging.php:42
+msgid "View"
+msgstr ""
+
+#: vendor/voceconnect/voce-error-logging/voce-error-logging.php:43
+msgid "Search Errors"
+msgstr ""
+
+#: vendor/voceconnect/voce-error-logging/voce-error-logging.php:44
+msgid "No logged errors found."
+msgstr ""
+
+#: vendor/voceconnect/voce-error-logging/voce-error-logging.php:45
+msgid "No logged errors in trash."
+msgstr ""
+
+#: vendor/voceconnect/voce-error-logging/voce-error-logging.php:65
+msgid "Error Log"
+msgstr ""
+
+#: vendor/voceconnect/voce-error-logging/voce-error-logging.php:135
+msgid "View all log types"
+msgstr ""
+
+#: wp/domain-manager.php:95
+msgid "There was an error creating the domain. The domain already exists."
+msgstr ""
+
+#: wp/domain-manager.php:123
+msgid "Received an invalid repsonse when trying to describe the current schema"
+msgstr ""
+
+#: wp/domain-manager.php:211
+msgid ""
+"There was an error while applying the default access policy to the domain."
+msgstr ""
+
+#: wp/field.php:309
+msgid "literal"
+msgstr ""
+
+#: wp/field.php:767
+msgid "Between %1$s and %2$s ago"
+msgstr ""
+
+#: wp/field.php:769
+msgid "Less than %s ago"
+msgstr ""
+
+#: wp/field.php:771
+msgid "More than %s ago"
+msgstr ""
+
+#: wp/field.php:773
+msgid "Any Time"
+msgstr ""
+
+#: wp/field.php:789
+msgid "Published"
+msgstr ""
+
+#: wp/field.php:860
+msgid "Type"
+msgstr ""
+
+#: wp/field.php:864
+msgid "In Categories"
+msgstr ""
+
+#: wp/field.php:867
+msgid "Tags"
+msgstr ""
+
+#: wp/field.php:439 wp/field.php:814
+msgid "Any"
+msgstr ""
+
+#: wp/form-controls.php:49
+msgid "More options &hellip;"
+msgstr ""
+
+#: wp/form-controls.php:56
+msgid "Less options"
+msgstr ""
+
+#: wp/lift-batch-handler.php:152 admin/templates/update-queue.html:6
+msgid "Documents in Queue"
+msgstr ""
+
+#: wp/lift-batch-handler.php:152 admin/templates/update-queue.html:3
+msgid "Documents to be Synced"
+msgstr ""
+
+#: wp/lift-batch-handler.php:156
+msgid "Queue ID"
+msgstr ""
+
+#: wp/lift-batch-handler.php:157
+msgid "Post"
+msgstr ""
+
+#: wp/lift-batch-handler.php:158
+msgid "Last Author"
+msgstr ""
+
+#: wp/lift-batch-handler.php:159
+msgid "Time Queued"
+msgstr ""
+
+#: wp/lift-batch-handler.php:186
+msgid "Deleted Post"
+msgstr ""
+
+#: wp/lift-batch-handler.php:205
+msgid "No Posts In Queue"
+msgstr ""
+
+#: wp/lift-health.php:87
+msgid "%d or more errors in the last %s"
+msgstr ""
+
+#: wp/lift-health.php:135
+msgid "Domain has been deleted or the CloudSearch API request failed."
+msgstr ""
+
+#: wp/lift-health.php:139
+msgid "Domain has been deleted or the CloudSearch API request failed"
+msgstr ""
+
+#: wp/lift-health.php:148
+msgid "active"
+msgstr ""
+
+#: wp/lift-health.php:161
+msgid "CloudSearch domain being deleted"
+msgstr ""
+
+#: wp/lift-health.php:162
+msgid "being deleted"
+msgstr ""
+
+#: wp/lift-health.php:166
+msgid "CloudSearch domain loading"
+msgstr ""
+
+#: wp/lift-health.php:167
+msgid "loading"
+msgstr ""
+
+#: wp/lift-health.php:170
+msgid "CloudSearch domain needs indexing"
+msgstr ""
+
+#: wp/lift-health.php:171
+msgid "needs indexing"
+msgstr ""
+
+#: wp/lift-health.php:174
+msgid "CloudSearch domain processing"
+msgstr ""
+
+#: wp/lift-health.php:175
+msgid "processing"
+msgstr ""
+
+#: wp/lift-health.php:179
+msgid "CloudSearch domain pending"
+msgstr ""
+
+#: wp/lift-health.php:180
+msgid "pending"
+msgstr ""
+
+#: wp/lift-search-form.php:119
+msgid "Search"
+msgstr ""
+
+#: wp/lift-search-form.php:122
+msgid "Reset"
+msgstr ""
+
+#: wp/lift-search-form.php:195
+msgid "Add a Lift search form"
+msgstr ""
+
+#: wp/lift-update-queue.php:82
+msgid "lift queue post"
+msgstr ""
+
+#: wp/lift-update-queue.php:147
+msgid "Lift Queue"
+msgstr ""
+
+#: wp/lift-update-queue.php:148
+msgid "Queued Docs"
+msgstr ""
+
+#: admin/templates/dashboard.html:2 admin/templates/set-domain.html:2
+#: admin/templates/setup-processing.html:2
+msgid "Lift:Search for Wordpress"
+msgstr ""
+
+#: admin/templates/dashboard.html:7
+msgid "normal"
+msgstr ""
+
+#: admin/templates/dashboard.html:10
+msgid "CloudSearch Document Sync"
+msgstr ""
+
+#: admin/templates/dashboard.html:15
+msgid "Next"
+msgstr ""
+
+#: admin/templates/dashboard.html:21
+msgid "Minutes"
+msgstr ""
+
+#: admin/templates/dashboard.html:22
+msgid "Hours"
+msgstr ""
+
+#: admin/templates/dashboard.html:23
+msgid "Days"
+msgstr ""
+
+#: admin/templates/dashboard.html:25
+msgid "Save"
+msgstr ""
+
+#: admin/templates/dashboard.html:26
+msgid "Sync Queue Now"
+msgstr ""
+
+#: admin/templates/dashboard.html:34
+msgid "Override Search"
+msgstr ""
+
+#: admin/templates/dashboard.html:41
+msgid "Change AWS Keys"
+msgstr ""
+
+#: admin/templates/dashboard.html:42
+msgid "Reset Lift"
+msgstr ""
+
+#: admin/templates/error-logs.html:4
+msgid "Recent Errors"
+msgstr ""
+
+#: admin/templates/error-logs.html:7
+msgid "View All Logs"
+msgstr ""
+
+#: admin/templates/error-logs.html:8
+msgid "Clear Errors"
+msgstr ""
+
+#: admin/templates/error-logs.html:14 admin/templates/modal-error.html:3
+msgid "Error"
+msgstr ""
+
+#: admin/templates/error-logs.html:15
+msgid "Date/Time"
+msgstr ""
+
+#: admin/templates/modal-confirm-domain.html:1
+msgid "Search Domain Already Exists"
+msgstr ""
+
+#: admin/templates/modal-confirm-domain.html:3
+msgid ""
+"The domain name you selected already exists on this AWS account.  If you "
+"continue, Lift will apply its index schema on top of any existing schema. "
+"Are you sure this is the domain you want to use?"
+msgstr ""
+
+#: admin/templates/modal-confirm-domain.html:7
+#: admin/templates/set-domain.html:36
+msgid "Cancel"
+msgstr ""
+
+#: admin/templates/modal-confirm-domain.html:8
+msgid "Use this Domain"
+msgstr ""
+
+#: admin/templates/modal-error-missing-domain.html:1
+msgid "Error! The Domain No Longer Exists."
+msgstr ""
+
+#: admin/templates/modal-error-missing-domain.html:3
+msgid ""
+"The domain you previously set is no longer reachable on Amazon Cloud Search. "
+"It may have been deleted."
+msgstr ""
+
+#: admin/templates/modal-error-missing-domain.html:6
+msgid ""
+"You can either setup a new domain, or connect to a different account by "
+"updating your Access Keys."
+msgstr ""
+
+#: admin/templates/modal-error-missing-domain.html:10
+msgid "Change Access Keys"
+msgstr ""
+
+#: admin/templates/modal-error-missing-domain.html:11
+msgid "Update Domain"
+msgstr ""
+
+#: admin/templates/modal-error.html:1
+msgid "Error! There was an error contacting Amazon Web Services."
+msgstr ""
+
+#: admin/templates/set-domain.html:8
+msgid "Enter a Search Domain Name"
+msgstr ""
+
+#: admin/templates/set-domain.html:17
+msgid ""
+"This must be a unique string to your AWS account. Lift will create the "
+"domain on AWS for you.  If the domain already exists, Lift will need to "
+"apply its default schema on top of the existing instance."
+msgstr ""
+
+#: admin/templates/set-domain.html:21
+msgid "Search Domain Name"
+msgstr ""
+
+#: admin/templates/set-domain.html:25
+msgid "Endpoint Region"
+msgstr ""
+
+#: admin/templates/set-domain.html:27
+msgid "US East (Northern Virginia) Region"
+msgstr ""
+
+#: admin/templates/set-domain.html:28
+msgid "US West (Northern California) Region"
+msgstr ""
+
+#: admin/templates/set-domain.html:29
+msgid "US West (Oregon) Region"
+msgstr ""
+
+#: admin/templates/set-domain.html:30
+msgid "EU (Ireland) Region"
+msgstr ""
+
+#: admin/templates/set-domain.html:31
+msgid "Asia Pacific (Singapore) Region"
+msgstr ""
+
+#: admin/templates/set-domain.html:37
+msgid "Save Domain Name"
+msgstr ""
+
+#: admin/templates/set-domain.html:43
+msgid "About Search Domain Names"
+msgstr ""
+
+#: admin/templates/set-domain.html:44
+msgid "The domain name string can only contain the following characters:"
+msgstr ""
+
+#: admin/templates/set-domain.html:46
+msgid "Lowercase a-z"
+msgstr ""
+
+#: admin/templates/set-domain.html:47
+msgid "Numerals 0-9"
+msgstr ""
+
+#: admin/templates/set-domain.html:48
+msgid "The hyphen character"
+msgstr ""
+
+#: admin/templates/set-domain.html:50
+msgid "The string has a maximum length of <strong>28 characters</strong>."
+msgstr ""
+
+#: admin/templates/setup-processing.html:6
+msgid "Your domain is being set up!"
+msgstr ""
+
+#: admin/templates/setup-processing.html:14
+msgid ""
+"If this is a new search domain, it will take approximately 30-40 minutes for "
+"it to become active and ready to index your documents."
+msgstr ""
+
+#: admin/templates/setup-processing.html:18
+msgid "Creating Document Domain"
+msgstr ""
+
+#: admin/templates/setup-processing.html:19
+msgid "Apply Schema And Default Access Policies"
+msgstr ""
+
+#: admin/templates/setup-processing.html:20
+#: admin/templates/setup-processing.html:25
+msgid "Process Domain"
+msgstr ""
+
+#: admin/templates/setup-processing.html:21
+#: admin/templates/setup-processing.html:26
+#: admin/templates/setup-processing.html:31
+msgid "Done"
+msgstr ""
+
+#: admin/templates/setup-processing.html:23
+#: admin/templates/setup-processing.html:28
+msgid "Document Domain Created"
+msgstr ""
+
+#: admin/templates/setup-processing.html:24
+msgid "Applying Schema And Default Access Policies"
+msgstr ""
+
+#: admin/templates/setup-processing.html:29
+msgid "Applied Schema And Default Access Policies"
+msgstr ""
+
+#: admin/templates/setup-processing.html:30
+msgid "Processing Domain"
+msgstr ""
+
+#: admin/templates/update-queue.html:12
+msgid "Title"
+msgstr ""
+
+#: admin/templates/update-queue.html:13
+msgid "Author"
+msgstr ""
+
+#: admin/templates/update-queue.html:14
+msgid "Date Queued"
+msgstr ""
+
+#: admin/templates/update-queue.html:28
+msgid "No documents are currently queued for updates."
+msgstr ""

@@ -9,6 +9,8 @@ if ( !class_exists( 'Lift_Batch_Handler' ) ) {
 
 	class Lift_Batch_Handler {
 
+    private static function _($s) { return lift_cloud_localize($s); }
+
 		/**
 		 * Private var to track whether this class was previously initialized
 		 *
@@ -147,14 +149,14 @@ if ( !class_exists( 'Lift_Batch_Handler' ) ) {
 
 			$meta_rows = $update_query->meta_rows;
 			$num_pages = $update_query->num_pages;
-			$html = '<h3><span class="alignright">Documents in Queue: <strong>' . $update_query->found_rows . '</strong></span>Documents to be Synced</h3>';
+			$html = '<h3><span class="alignright">'.self::_('Documents in Queue').': <strong>' . $update_query->found_rows . '</strong></span>'.self::_('Documents to be Synced').'</h3>';
 			$html .= '<table class="wp-list-table widefat fixed posts">
 				<thead>
 				<tr>
-					<th class="column-date">Queue ID</th>
-					<th class="column-title">Post</th>
-					<th class="column-author">Last Author</th>
-					<th class="column-categories">Time Queued</th>
+					<th class="column-date">'.self::_('Queue ID').'</th>
+					<th class="column-title">'.self::_('Post').'</th>
+					<th class="column-author">'.self::_('Last Author').'</th>
+					<th class="column-categories">'.self::_('Time Queued').'</th>
 				</tr>
 				</thead>';
 			$pages = '';
@@ -181,7 +183,7 @@ if ( !class_exists( 'Lift_Batch_Handler' ) ) {
 							} else {
 								$html .= '<tr>';
 								$html .= '<td class="column-date">' . $post_id . '</td>';
-								$html .= '<td class="column-title">Deleted Post</td>';
+								$html .= '<td class="column-title">'.self::_('Deleted Post').'</td>';
 								$html .= '<td class="column-author">&nbsp;</td>';
 								$html .= '<td class="column-categories">' . mysql2date( 'D. M d Y g:ia', $meta_value['update_date'] ) . '</td>';
 								$html .= '</tr>';
@@ -200,7 +202,7 @@ if ( !class_exists( 'Lift_Batch_Handler' ) ) {
 					) );
 				$pages .= '</span></div></div>';
 			} else {
-				$html .= '<tr><td colspan="4">No Posts In Queue</td></tr>';
+				$html .= '<tr><td colspan="4">'.self::_('No Posts In Queue').'</td></tr>';
 			}
 			$html .= '</table>';
 			$html .= $pages;

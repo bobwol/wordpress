@@ -18,6 +18,8 @@ if ( !class_exists( 'Lift_Search_Form' ) ) {
 	 */
 	class Lift_Search_Form {
 
+    private static function _($s) { return lift_cloud_localize($s); }
+
 		private static $instances;
 
 		/**
@@ -114,10 +116,10 @@ if ( !class_exists( 'Lift_Search_Form' ) ) {
 			$search_term = (is_search()) ? get_search_query( false ) : "";
 			$html = '<form role="search" class="lift-search no-js" id="searchform" action="' . esc_url( $this->getSearchBaseURL() ) . '"><div>';
 			$html .= sprintf( "<input type='text' name='s' id='s' value='%s' />", esc_attr( $search_term ) );
-			$html .= ' <input type="submit" id="searchsubmit" value="' . esc_attr__( 'Search' ) . '" />';
+			$html .= ' <input type="submit" id="searchsubmit" value="' . esc_attr__( self::_('Search') ) . '" />';
 			$html .= '<fieldset class="lift-search-form-filters"><ul>';
 			if ( count( $this->getStateVars() ) > 1 ) {
-				$html .= sprintf( '<li class="reset"><a href="%s">Reset</a></li>', esc_url( add_query_arg( array( 's' => $search_term ), $this->getSearchBaseURL() ) ) );
+				$html .= sprintf( '<li class="reset"><a href="%s">'.self::_('Reset').'</a></li>', esc_url( add_query_arg( array( 's' => $search_term ), $this->getSearchBaseURL() ) ) );
 			}
 
 			$html .= $this->form_filters();
@@ -183,12 +185,14 @@ if ( !function_exists( 'lift_loop' ) ) {
  */
 class Lift_Form_Widget extends WP_Widget {
 
+  private static function _($s) { return lift_cloud_localize($s); }
+
 	/**
 	 * @constructor
 	 */
 	public function __construct() {
 		parent::__construct(
-			'lift_form_widget', "Lift Search Form", array( 'description' => "Add a Lift search form" )
+			'lift_form_widget', self::_("Lift Search Form"), array( 'description' => self::_("Add a Lift search form") )
 		);
 	}
 

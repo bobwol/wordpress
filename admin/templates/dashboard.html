@@ -1,29 +1,29 @@
 <div class="liftBanner">
-	<h1>Lift:Search for Wordpress</h1>
+	<h1><?php echo self::_('Lift:Search for Wordpress'); ?></h1>
 </div>
 <div class="dashboard-box">
 	<div class="grid">
 		<div class="col-1-8 textcenter">
-			<div class="lift-status good">normal</div>
+			<div class="lift-status good"><?php echo self::_('normal'); ?></div>
 		</div>
 		<div class="col-3-8">
-			<h2>CloudSearch Document Sync</h2>
+			<h2><?php echo self::_('CloudSearch Document Sync'); ?></h2>
 			<div class="col-1-2">
 				Last: <%- settings.last_sync %>
 			</div>
 			<div class="col-1-2">
-			Next: <%- settings.next_sync %>
+			<?php echo self::_('Next'); ?>: <%- settings.next_sync %>
 			</div>
 		</div>
 		<div class="col-1-2">
 			<input id="batch_interval" value="<%- settings.batch_interval.value %>" class="small-text" type="text" />
 			<select id="batch_interval_unit">
-				<option value="m">Minutes</option>
-				<option value="h">Hours</option>
-				<option value="d">Days</option>
+				<option value="m"><?php echo self::_('Minutes'); ?></option>
+				<option value="h"><?php echo self::_('Hours'); ?></option>
+				<option value="d"><?php echo self::_('Days'); ?></option>
 			</select>
-			<input type="button" id="batch_interval_update" class="button-primary" value="Save"/>
-			<input type="button" id="batch_sync_now" class="button-primary right" value="Sync Queue Now"/>
+			<input type="button" id="batch_interval_update" class="button-primary" value="<?php echo self::_('Save'); ?>"/>
+			<input type="button" id="batch_sync_now" class="button-primary right" value="<?php echo self::_('Sync Queue Now'); ?>"/>
 		</div>
 	</div>
 </div>
@@ -31,15 +31,15 @@
 <div class="dashboard-box">
 	<div class="grid">
 		<div class="col-1-2">
-			Override Search
+			<?php echo self::_('Override Search'); ?>
 			<div class="toggle">
 				<input id="override_search" name="searchOverride" type="checkbox"<%= settings.override_search ? 'checked="checked"' : '' %> />
 				<label for="searchOverride" class="switch"></label>
 			</div>
 		</div>
 		<div class="col-1-2 textright">
-			<input type="button" id="lift_update_keys" class="button-primary" value="Change AWS Keys"/>
-			<input type="button" id="lift_reset" class="button-primary" value="Reset Lift"/>
+			<input type="button" id="lift_update_keys" class="button-primary" value="<?php echo self::_('Change AWS Keys'); ?>"/>
+			<input type="button" id="lift_reset" class="button-primary" value="<?php echo self::_('Reset Lift'); ?>"/>
 		</div>
 	</div>
 </div>
