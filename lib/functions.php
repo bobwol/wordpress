@@ -76,10 +76,10 @@ function lift_cloud_localize_func()
 {
   return function($s)
   {
-    return __($s, 'lift-search');
+    return __($s, 'librelio');
   };
 }
 function lift_cloud_localize($s)
 {
-  return __($s, 'lift-search');
+  return __($s, 'librelio');
 }

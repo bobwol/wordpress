@@ -64,7 +64,18 @@ class Lift_WP_Query {
 			);
 
 			_prime_post_caches( $hits );
-			$posts = array_values( array_map( 'get_post', $hits ) );
+			//$posts = array_values( array_map( 'get_post', $hits ) );
+      $posts = array();
+      foreach($hits as $post_id)
+      {
+        $post = get_post($post_id);
+        if($post != NULL && $post->post_type != 'lift_queued_document' &&
+           $post->post_type != 'voce-error-log')
+        {
+          $posts[] = $post;
+        }
+      }
+      
 			$this->wp_query->post_count = count( $posts );
 			$this->wp_query->found_posts = $this->results->hits->found;
 			$this->wp_query->max_num_pages = ceil( $this->wp_query->found_posts / $this->wp_query->get( 'posts_per_page' ) );
