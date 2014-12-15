@@ -1,5 +1,5 @@
 {
-    "name": "voceconnect/lift-search",
+    "name": "librelio",
     "description": "Lift leverages the search index power of Amazon CloudSearch to improve your WordPress-powered site’s search experience. Learn more at: http://getliftsearch.com",
     "keywords": ["wordpress", "cloudsearch", "search"],
     "homepage": "http://getliftsearch.com",
@@ -53,12 +53,17 @@
         {
             "name": "John Ciacia",
             "email": "john@voceconnect.com"
+        },
+        {
+            "name": "Librelio",
+            "email": "dev@librelio.com"
         }
+
     ],
     "require": {
         "voceconnect/voce-error-logging": "~0.3"
     },
     "autoload": {
-        "files": ["lift-search.php"]
+        "files": ["librelio.php"]
     }
 }

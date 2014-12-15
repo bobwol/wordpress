@@ -1,7 +1,7 @@
 {
-	"name": "lift-search",
-	"description": "Lift Search for WordPress",
-	"repository": "git@github.com:voceconnect/lift-search.git",
+	"name": "librelio",
+	"description": "Librelio for WordPress",
+	"repository": "git@github.com:libreliodev/wordpress",
 	"devDependencies": {
 		"grunt-voce-plugins": "latest"
 	}

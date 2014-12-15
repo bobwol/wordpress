@@ -1,11 +1,11 @@
 <?php
 /*
-Plugin Name: Lift Search
-Version: 1.9.9
-Plugin URI: http://getliftsearch.com/
+Plugin Name: Librelio
+Version: 0.0.1
+Plugin URI: http://www.librelio.com/
 Description: Improves WordPress search using Amazon CloudSearch
-Author: Voce Platforms
-Author URI: http://voceconnect.com/
+Author: Librelio
+Author URI: http://www.librelio.com/
  */
 
 require_once('lib/functions.php');

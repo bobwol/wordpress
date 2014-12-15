@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ee62c27ba59f56de0fd3098f2dcb79b5",
+    "hash": "4bd4053273b73a6d22174ea1a18cba2b",
     "packages": [
         {
             "name": "voceconnect/voce-error-logging",
@@ -44,20 +44,11 @@
             "time": "2014-07-02 19:38:16"
         }
     ],
-    "packages-dev": [
-
-    ],
-    "aliases": [
-
-    ],
+    "packages-dev": [],
+    "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [
-
-    ],
-    "platform": [
-
-    ],
-    "platform-dev": [
-
-    ]
+    "stability-flags": [],
+    "prefer-stable": false,
+    "platform": [],
+    "platform-dev": []
 }
