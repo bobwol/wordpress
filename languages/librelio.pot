@@ -6,7 +6,7 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: WPLiftCloudSearch\n"
+"Project-Id-Version: WPLibrelio\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-12-13 20:57+0330\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -28,11 +28,11 @@ msgid ""
 msgstr ""
 
 #: admin/admin.php:79
-msgid "Lift: Search for WordPress"
+msgid "Librelio: Search for WordPress"
 msgstr ""
 
 #: admin/admin.php:79
-msgid "Lift Search"
+msgid "Lbrelio"
 msgstr ""
 
 #: admin/admin.php:171

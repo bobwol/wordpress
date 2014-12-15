@@ -12,7 +12,7 @@ require_once('lib/functions.php');
 
 if ( !class_exists( 'Lift_Search' ) ) {
 
-	load_plugin_textdomain('lift-search', false, basename( dirname( __FILE__ ) ) . '/languages' );
+	load_plugin_textdomain('librelio', false, basename( dirname( __FILE__ ) ) . '/languages' );
 
   if ( version_compare( phpversion(), '5.3.0', '>=') ) {
     require_once('lift-core.php');

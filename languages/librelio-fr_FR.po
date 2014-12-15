@@ -1,0 +1,352 @@
+# English translations for WPLibrelio package.
+# Copyright (C) 2014 THE WPLibrelio'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the WPLibrelio package.
+# Librelio <info@librelio.com>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: WPLibrelio\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-12-13 20:57+0330\n"
+"PO-Revision-Date: 2014-12-15 14:31+0100\n"
+"Last-Translator: Emmanuel <info@librelio.com>\n"
+"Language-Team: English\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid " There was an error authenticating. Please check your Access Key ID and Secret Access Key and try again."
+msgstr "Une erreur d'authentification s'est produite. Veuillez vérifier vos identifiants AWS."
+
+msgid "Librelio: Search for WordPress"
+msgstr "Librelio: Recherche WordPress"
+
+msgid "Librelio"
+msgstr "Librelio"
+
+msgid "There was an error while applying the schema to the domain."
+msgstr "Une erreur s'est produite lors de l'application du schema au domaine"
+
+msgid "The given domain does not exist."
+msgstr "Le domaine n'existe pas"
+
+msgid "The name of the setting you are trying to set is invalid."
+msgstr "Le nom du paramétrage que vous essayez d'appliquer n'existe pas"
+
+msgid "The request was missing required authentication data."
+msgstr "Les données d'authentification n'étaient pas présentes dans la requête"
+
+msgid "Post Deletion (%d)"
+msgstr "Effacement de pst (%d)"
+
+msgid "Error Logging is Disabled"
+msgstr "Le logging des erreurs est désactivé"
+
+msgid "Settings"
+msgstr "Paramétrage"
+
+msgid "Lift Logo"
+msgstr "Lift Logo"
+
+msgid "<strong>Welcome to Lift</strong>: \tNow that you've activated the Lift "
+msgstr "Bienvenue"
+
+msgid "Configure Librelio"
+msgstr "Configurer Librelio"
+
+msgid "Size must be a positive integer."
+msgstr "La taille doit être un entier positif"
+
+msgid "Start must be a positive integer"
+msgstr "Le démarrage doit être un entier"
+
+msgid "There was an error authenticating your access keys. Please try again."
+msgstr "Une erreur d'authentification s'est produite. Veuillez vérifier vos identifiants AWS."
+
+msgid "Log ID"
+msgstr "ID Log"
+
+msgid "Log Title"
+msgstr "Titre Log"
+
+msgid "Time Logged"
+msgstr "Heure enregistrée"
+
+msgid "No Recent Errors"
+msgstr "Pas d'erreur récente"
+
+msgid "No Search Results"
+msgstr "Pas de résultats de recherche"
+
+msgid "Results"
+msgstr "Résultats"
+
+msgid " Logged Errors"
+msgstr " Erreurs enregistrées"
+
+msgid "Logged Error"
+msgstr "Erreur enregistrée"
+
+msgid "View"
+msgstr "Voir"
+
+msgid "Search Errors"
+msgstr "Erreurs de recherche"
+
+msgid "No logged errors found."
+msgstr "Pas d'erreurs trouvées"
+
+msgid "No logged errors in trash."
+msgstr "Pas d'erreurs dans la corbeille"
+
+msgid "Error Log"
+msgstr "Log d'erreurs"
+
+msgid "View all log types"
+msgstr "Voir tous les logs"
+
+msgid "There was an error creating the domain. The domain already exists."
+msgstr "Une erreur s'est produite lors de la création du domaine. Le domaine existe déjà"
+
+msgid "literal"
+msgstr "littéral"
+
+msgid "Between %1$s and %2$s ago"
+msgstr "Il y a entre %1$s et %2$s"
+
+msgid "Less than %s ago"
+msgstr "Il y a moins de %s "
+
+msgid "More than %s ago"
+msgstr "Il y a plus de %s "
+
+msgid "Any Time"
+msgstr "N'importe quelle heure"
+
+msgid "Published"
+msgstr "Publié"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "In Categories"
+msgstr "Dans les catégories"
+
+msgid "Tags"
+msgstr "Tags"
+
+msgid "Any"
+msgstr "N'importe quel"
+
+msgid "More options &hellip;"
+msgstr "Plus d'options ..."
+
+msgid "Less options"
+msgstr "Moins d'options"
+
+msgid "Documents in Queue"
+msgstr "Documents en attente"
+
+msgid "Documents to be Synced"
+msgstr "Document à syncroniser"
+
+msgid "Queue ID"
+msgstr "ID de file d'attente"
+
+msgid "Post"
+msgstr "Post"
+
+msgid "Last Author"
+msgstr "Dernier auteur"
+
+msgid "Time Queued"
+msgstr "Heure de mise en file d'attente"
+
+msgid "Deleted Post"
+msgstr "Post effacé"
+
+msgid "No Posts In Queue"
+msgstr "Pas de post en file d'attente"
+
+msgid "%d or more errors in the last %s"
+msgstr "%d ou plus erreurs lors des dernières %s"
+
+msgid "Domain has been deleted or the CloudSearch API request failed."
+msgstr "Le domaine a été effacé ou la requête CloudSearch a échoué"
+
+msgid "Domain has been deleted or the CloudSearch API request failed"
+msgstr "Le domaine a été effacé ou la requête CloudSearch a échoué"
+
+msgid "active"
+msgstr "active"
+
+msgid "CloudSearch domain being deleted"
+msgstr "Le domaine CloudSearch a été effacé."
+
+msgid "being deleted"
+msgstr "effacement en cours"
+
+msgid "CloudSearch domain loading"
+msgstr "Chargement du domaine CloludSearch"
+
+msgid "loading"
+msgstr "chargement"
+
+msgid "CloudSearch domain needs indexing"
+msgstr "Le domaine CloudSearch doit être indexé"
+
+msgid "needs indexing"
+msgstr "doit être indexé"
+
+msgid "CloudSearch domain processing"
+msgstr "Traitement du domaine CloudSearch en cours"
+
+msgid "processing"
+msgstr "traitement en cours"
+
+msgid "CloudSearch domain pending"
+msgstr "Domaine CloudSearch restant"
+
+msgid "pending"
+msgstr "restant"
+
+msgid "Search"
+msgstr "Rechercher"
+
+msgid "Reset"
+msgstr "Recharger"
+
+msgid "Queued Docs"
+msgstr "Documents en attente"
+
+msgid "normal"
+msgstr "normal"
+
+msgid "CloudSearch Document Sync"
+msgstr "Syncronisation CloudSearch"
+
+msgid "Next"
+msgstr "Suivant"
+
+msgid "Minutes"
+msgstr "Minutes"
+
+msgid "Hours"
+msgstr "Heures"
+
+msgid "Days"
+msgstr "Jours"
+
+msgid "Save"
+msgstr "Enregistrer"
+
+msgid "Sync Queue Now"
+msgstr "Syncroniser la file maintenant"
+
+msgid "Override Search"
+msgstr "Overrrider la recherche"
+
+msgid "Change AWS Keys"
+msgstr "Changer les clés AWS"
+
+msgid "Recent Errors"
+msgstr "Erreurs récentes"
+
+msgid "View All Logs"
+msgstr "Voir tous les logs"
+
+msgid "Clear Errors"
+msgstr "Effacer les erreurs"
+
+msgid "Error"
+msgstr "Erreur"
+
+msgid "Date/Time"
+msgstr "Date/Heure"
+
+msgid "Search Domain Already Exists"
+msgstr "Le Domaine de Recherche existe déjà"
+
+msgid " Cancel"
+msgstr " Annuler"
+
+msgid "Use this Domain"
+msgstr "Utiliser ce domaine"
+
+msgid "Error! The Domain No Longer Exists."
+msgstr "Erreur! Ce domaine n'existe plus."
+
+msgid "Change Access Keys"
+msgstr "Changer les clés d'accès"
+
+msgid "Update Domain"
+msgstr "Mettre à jour le domaine"
+
+msgid "Error! There was an error contacting Amazon Web Services."
+msgstr "Une erreur de communication avec AWS s'est porduite"
+
+msgid "Search Domain Name"
+msgstr "Rechercher le nom de domaine"
+
+msgid "Endpoint Region"
+msgstr "Région d'endpoint"
+
+msgid "US East (Northern Virginia) Region"
+msgstr "US East (Northern Virginia) "
+
+msgid "US West (Northern California) Region"
+msgstr "US West (Northern California)"
+
+msgid "US West (Oregon) Region"
+msgstr "US West (Oregon)"
+
+msgid "EU (Ireland) Region"
+msgstr "EU (Ireland)"
+
+msgid "Asia Pacific (Singapore) Region"
+msgstr "Asia Pacific (Singapore)"
+
+msgid "Save Domain Name"
+msgstr "Enregistrer le nom de domaine"
+
+msgid "About Search Domain Names"
+msgstr "A propos de la recherche de noms de domaine"
+
+msgid "The domain name string can only contain the following characters:"
+msgstr "Le nom de domaine peut seulement contenir les caracères suivants"
+
+msgid "Lowercase a-z"
+msgstr "Minuscules de a à z"
+
+msgid "Numerals 0-9"
+msgstr "Chiffres de 0 à 9"
+
+msgid "The hyphen character"
+msgstr "Caractère _"
+
+msgid "The string has a maximum length of <strong>28 characters</strong>."
+msgstr "La chaîne de caractères doit avoir une longueur maximale de 28"
+
+msgid "Your domain is being set up!"
+msgstr "Votre domaine est en cours de mis en place"
+
+msgid "Creating Document Domain"
+msgstr "Création du domaine de documents"
+
+msgid " Process Domain"
+msgstr " Traitement du domaine"
+
+msgid " Document Domain Created"
+msgstr " Domaine de documents créé."
+
+msgid "Title"
+msgstr "Titre"
+
+msgid "Author"
+msgstr "Auteur"
+
+msgid "Date Queued"
+msgstr "Date de mise en attente"
+
