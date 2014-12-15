@@ -227,6 +227,9 @@ msgstr "normal"
 msgid "CloudSearch Document Sync"
 msgstr "Syncronisation CloudSearch"
 
+msgid "Last"
+msgstr "Dernier"
+
 msgid "Next"
 msgstr "Suivant"
 
