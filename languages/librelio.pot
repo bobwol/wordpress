@@ -338,6 +338,10 @@ msgstr ""
 msgid "CloudSearch Document Sync"
 msgstr ""
 
+#: admin/templates/dashboard.html:12
+msgid "Last"
+msgstr ""
+
 #: admin/templates/dashboard.html:15
 msgid "Next"
 msgstr ""

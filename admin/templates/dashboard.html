@@ -9,7 +9,7 @@
 		<div class="col-3-8">
 			<h2><?php echo self::_('CloudSearch Document Sync'); ?></h2>
 			<div class="col-1-2">
-				Last: <%- settings.last_sync %>
+				<?php echo self::_('Last'); ?>: <%- settings.last_sync %>
 			</div>
 			<div class="col-1-2">
 			<?php echo self::_('Next'); ?>: <%- settings.next_sync %>
