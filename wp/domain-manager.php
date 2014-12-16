@@ -8,8 +8,8 @@ class Lift_Cloud_Config_API extends Cloud_Config_API {
 	private $cached_methods;
 	private $clear_cache_methods;
 
-	public function __construct( $access_key, $secret_key, $http_api ) {
-		parent::__construct( $access_key, $secret_key, $http_api );
+	public function __construct( $client ) {
+		parent::__construct( $client );
 
 		$this->cached_methods = array(
 			'DescribeDomains', 'DescribeServiceAccessPolicies', 'DescribeIndexFields'
@@ -22,10 +22,7 @@ class Lift_Cloud_Config_API extends Cloud_Config_API {
 		);
 	}
 
-	public function _make_request( $method, $payload = array( ), $flatten_keys = true, $region = false ) {
-
-		return parent::_make_request( $method, $payload, $flatten_keys, $region );
-/*
+	public function _make_request( $method, $payload = array( ), $region = false ) {
 		if ( in_array( $method, $this->cached_methods ) ) {
 			if ( is_array( $cache = get_transient( 'lift_request_' . $method ) ) ) {
 				$key = substr( md5( serialize( $payload ) ), 0, 25 );
@@ -37,7 +34,7 @@ class Lift_Cloud_Config_API extends Cloud_Config_API {
 			}
 		}
 
-		$result = parent::_make_request( $method, $payload, $flatten_keys, $region );
+		$result = parent::_make_request( $method, $payload, $region );
 
 		if ( in_array( $method, $this->cached_methods ) ) {
 			$cache = get_transient( 'lift_request_' . $method );
@@ -58,7 +55,6 @@ class Lift_Cloud_Config_API extends Cloud_Config_API {
 		}
 
 		return $result;
-*/
 	}
 
 }
@@ -73,8 +69,8 @@ class Lift_Domain_Manager {
 	 */
 	private $config_api;
 
-	public function __construct( $access_key, $secret_key, $http_api ) {
-		$this->config_api = new Lift_Cloud_Config_API( $access_key, $secret_key, $http_api );
+	public function __construct( $client ) {
+		$this->config_api = new Lift_Cloud_Config_API( $client );
 	}
 
 	public function get_last_error() {
@@ -91,6 +87,7 @@ class Lift_Domain_Manager {
 	}
 
 	public function initialize_new_domain( $domain_name, $region = false ) {
+    //This method is not used now (maybe later) !NOTTESTED
 		if ( $this->domain_exists( $domain_name, $region ) ) {
 			return new WP_Error( 'domain_exists', self::_('There was an error creating the domain. The domain already exists.') );
 		}
@@ -151,9 +148,6 @@ class Lift_Domain_Manager {
 				->then( array( 'Lift_Batch_Handler', 'queue_all' ) )
 				->commit();
 		}
-    //if($this->needs_indexing($domain_name, $region))
-    //$this->index_documents($domain_name, $region);
-    //Lift_Batch_Handler::queue_all();
 
 		return true;
 	}

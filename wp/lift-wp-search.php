@@ -64,7 +64,6 @@ class Lift_WP_Query {
 			);
 
 			_prime_post_caches( $hits );
-			//$posts = array_values( array_map( 'get_post', $hits ) );
       $posts = array();
       foreach($hits as $post_id)
       {

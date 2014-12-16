@@ -111,12 +111,7 @@ class Cloud_Search_Query {
   public function as_aws_2013_args() {
     $sort = array( );
     $facets = array( );
-/*
-    foreach($this->facets as $field)
-    {
-      $facets[$field] = array();
-    }
-*/
+    // TODO::facets arguments are not implemented (Change API or Add it) 
 		foreach ( $this->ranks as $field => $order )
       $sort[] = $field.' '.strtolower($order);
 

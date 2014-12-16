@@ -54,12 +54,10 @@ class Lift_Search {
 		}
 
 		if ( self::get_search_endpoint() && self::get_override_search() ) {
-			//add_action( 'init', array( 'Lift_WP_Search', 'init' ) );
       Lift_WP_Search::init();
 		}
 
 		if ( self::get_document_endpoint() ) {
-			//add_action( 'init', array( 'Lift_Batch_Handler', 'init' ), 9 );
       Lift_Batch_Handler::init();
 			add_action( 'lift_post_changes_to_data', array( __CLASS__, '_default_extended_post_data' ), 10, 3 );
 		}
@@ -70,7 +68,6 @@ class Lift_Search {
 			$admin->init();
 		}
 
-		//add_action( 'init', array( __CLASS__, '_upgrade_check' ) );
     self::_upgrade_check();
 
     //need cron hooks to be set prior to init
@@ -134,12 +131,7 @@ class Lift_Search {
 	 * @return Lift_Domain_Manager
 	 */
 	public static function get_domain_manager( $access_key = null, $secret_key = null ) {
-		if ( is_null( $access_key ) )
-			$access_key = self::get_access_key_id();
-		if ( is_null( $secret_key ) )
-			$secret_key = self::get_secret_access_key();
-
-		return new Lift_Domain_Manager( $access_key, $secret_key, self::get_http_api() );
+		return new Lift_Domain_Manager( self::$cloud_search_client );
 	}
 
 	public function test_access( $id = '', $secret = '' ) {
@@ -383,8 +375,7 @@ class Lift_Search {
 	 * semi-factory method for simplify getting an api instance
 	 */
 	public static function get_search_api() {
-		$lift_http = self::get_http_api();
-		return new CloudSearch_API( $lift_http, Lift_Search::get_document_endpoint(), Lift_Search::get_search_endpoint(), '2011-02-01' );
+		return new CloudSearch_API(Lift_Search::get_search_domain_name());
 	}
 
 	public static function get_indexed_post_types() {
@@ -395,9 +386,7 @@ class Lift_Search {
 		return apply_filters( 'lift_indexed_post_fields', array(
 			'post_title',
 			'post_content',
-			//'post_excerpt',
 			'post_date_gmt',
-			//'post_excerpt',
 			'post_status',
 			'post_type',
 			'post_author'
