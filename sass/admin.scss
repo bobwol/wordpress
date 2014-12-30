@@ -81,39 +81,10 @@
 		background: $buttonBlue;
 	}
 	.liftBanner {
-		height: 140px;
 		width: 100%;
 		position: relative;
 		margin-bottom: $pad;
-		@include filter-gradient(#0075a8, #00a5e5);
-		background-color: #00a5e5;
-		@include background-image(linear-gradient(#0075a8, #00a5e5));
 		h1 {
-			@include hide-text;
-			position: absolute;
-			top: 16px;
-			left: 16px;
-			width: 102px;
-			height: 56px;
-			background: transparent url($imgLoc+'logo-102x56.png') no-repeat;
-		}
-		&:before,&:after {
-			content: '';
-			display: block;
-			position: absolute;
-			bottom: 0;
-		}
-		&:before {
-			background: transparent url($imgLoc+'cloud1.png') no-repeat bottom left;
-			width: 591px;
-			height: 119px;
-			left: -1px;
-		}
-		&:after {
-			background: transparent url($imgLoc+'cloud2.png') no-repeat bottom right;
-			width: 514px;
-			height: 117px;
-			right: -1px;
 		}
 	}
 	.progressCircle {
