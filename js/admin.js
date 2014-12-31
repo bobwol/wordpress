@@ -617,23 +617,9 @@
               EndPoint: ''
             }
           });
-          this.model.domains.add(model);
-          this.model.settings.on('sync', function setdomain_sync_handler() {
-            this.model.settings.off('sync', setdomain_sync_handler, this);
-            var dn = this.model.settings.getValue('domainname');
-            
-            if(dn && domainname == dn)
-            {
-              var domains = this.model.domains;
-              domains.fetch().success(function()
-                {
-                  adminApp.render();
-                });
-            }
-          }, this);
         }
-        //this.showConfirmModal(model);
-        this.useDomain(model);
+        model.fake = true;
+        this.showConfirmModal(model);
       }
       return this;
     },
@@ -650,6 +636,25 @@
     },
     modalConfirmed: function(view, domain) {
       adminApp.closeModal(view);
+
+      if(domain.fake)
+      {
+        this.model.domains.add(domain);
+        this.model.settings.on('sync', function setdomain_sync_handler() {
+          this.model.settings.off('sync', setdomain_sync_handler, this);
+          var dn = this.model.settings.getValue('domainname');
+          
+          if(dn && domain.get('DomainName') == dn)
+          {
+            var domains = this.model.domains;
+            domains.fetch().success(function()
+              {
+                adminApp.render();
+              });
+          }
+        }, this);
+      }
+      
       this.useDomain(domain);
       return this;
     },

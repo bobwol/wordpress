@@ -2,7 +2,6 @@
 
 require_once('lib/functions.php');
 require_once('api/lift-batch.php');
-require_once('api/lift-http.php');
 require_once('api/cloud-search-api.php');
 require_once('api/cloud-search-query.php');
 require_once('api/cloud-config-api.php');

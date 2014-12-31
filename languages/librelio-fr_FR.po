@@ -21,15 +21,6 @@ msgstr ""
 msgid "Success"
 msgstr ""
 
-#: admin/admin.php:64 lift-core.php:156
-#, fuzzy
-msgid ""
-"There was an error authenticating. Please check your Access Key ID and "
-"Secret Access Key and try again."
-msgstr ""
-"Une erreur d'authentification s'est produite. Veuillez vérifier vos "
-"identifiants AWS."
-
 #: admin/admin.php:79 admin/templates/dashboard.html:2
 #: admin/templates/set-domain.html:2 admin/templates/setup-processing.html:2
 msgid "Librelio: Search for WordPress"
@@ -86,12 +77,6 @@ msgstr "La taille doit être un entier positif"
 #: api/cloud-search-query.php:67
 msgid "Start must be a positive integer"
 msgstr "Le démarrage doit être un entier"
-
-#: lift-core.php:162
-msgid "There was an error authenticating your access keys. Please try again."
-msgstr ""
-"Une erreur d'authentification s'est produite. Veuillez vérifier vos "
-"identifiants AWS."
 
 #: lift-core.php:442
 msgid "Log ID"
@@ -441,14 +426,8 @@ msgid ""
 msgstr ""
 
 #: admin/templates/modal-error-missing-domain.html:6
-msgid ""
-"You can either setup a new domain, or connect to a different account by "
-"updating your Access Keys."
+msgid "You can setup another domain."
 msgstr ""
-
-#: admin/templates/modal-error-missing-domain.html:10
-msgid "Change Access Keys"
-msgstr "Changer les clés d'accès"
 
 #: admin/templates/modal-error-missing-domain.html:11
 msgid "Update Domain"

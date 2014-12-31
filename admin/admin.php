@@ -44,30 +44,6 @@ class Lift_Admin {
 		return $cap;
 	}
 
-	/**
-	 * Tests authentication using the access key id and secret key
-	 *
-	 * @todo move to a separate class specifically responsible for safely using the API
-	 * and formatting friendly results
-	 *
-	 * @param string $id
-	 * @param string $secret
-	 * @return array
-	 */
-	private function test_credentials( $id = '', $secret = '' ) {
-		$domain_manager = Lift_Search::get_domain_manager( $id, $secret );
-		$error = false;
-
-		if ( $domain_manager->credentials_are_valid() ) {
-			$status_message = self::_('Success');
-		} else {
-			$status_message = self::_('There was an error authenticating. Please check your Access Key ID and Secret Access Key and try again.');
-			$error = true;
-		}
-
-		return array( 'error' => $error, 'message' => $status_message );
-	}
-
 	/*	 * ************************   */
 	/*             Callbacks          */
 	/*	 * ************************   */
