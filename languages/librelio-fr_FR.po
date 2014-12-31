@@ -17,339 +17,576 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-msgid " There was an error authenticating. Please check your Access Key ID and Secret Access Key and try again."
-msgstr "Une erreur d'authentification s'est produite. Veuillez vérifier vos identifiants AWS."
+#: admin/admin.php:62 lift-core.php:152
+msgid "Success"
+msgstr ""
 
+#: admin/admin.php:64 lift-core.php:156
+#, fuzzy
+msgid ""
+"There was an error authenticating. Please check your Access Key ID and "
+"Secret Access Key and try again."
+msgstr ""
+"Une erreur d'authentification s'est produite. Veuillez vérifier vos "
+"identifiants AWS."
+
+#: admin/admin.php:79 admin/templates/dashboard.html:2
+#: admin/templates/set-domain.html:2 admin/templates/setup-processing.html:2
 msgid "Librelio: Search for WordPress"
 msgstr "Librelio: Recherche WordPress"
 
-msgid "Librelio"
+#: admin/admin.php:79
+#, fuzzy
+msgid "Lbrelio"
 msgstr "Librelio"
 
+#: admin/admin.php:171
 msgid "There was an error while applying the schema to the domain."
 msgstr "Une erreur s'est produite lors de l'application du schema au domaine"
 
+#: admin/admin.php:174
 msgid "The given domain does not exist."
 msgstr "Le domaine n'existe pas"
 
+#: admin/admin.php:191
 msgid "The name of the setting you are trying to set is invalid."
 msgstr "Le nom du paramétrage que vous essayez d'appliquer n'existe pas"
 
+#: admin/admin.php:195 admin/admin.php:284
 msgid "The request was missing required authentication data."
 msgstr "Les données d'authentification n'étaient pas présentes dans la requête"
 
+#: admin/admin.php:340
 msgid "Post Deletion (%d)"
 msgstr "Effacement de pst (%d)"
 
+#: admin/admin.php:399 lift-core.php:422
 msgid "Error Logging is Disabled"
 msgstr "Le logging des erreurs est désactivé"
 
+#: admin/admin.php:416
 msgid "Settings"
 msgstr "Paramétrage"
 
-msgid "Lift Logo"
-msgstr "Lift Logo"
-
-msgid "<strong>Welcome to Lift</strong>: \tNow that you've activated the Lift "
+#: admin/admin.php:446
+#, fuzzy
+msgid ""
+"<strong>Welcome to Librelio</strong>: \tNow that you've activated the "
+"Librelio plugin it's time to set it up. Click below to get started."
 msgstr "Bienvenue"
 
+#: admin/admin.php:447
 msgid "Configure Librelio"
 msgstr "Configurer Librelio"
 
+#: api/cloud-search-query.php:56
 msgid "Size must be a positive integer."
 msgstr "La taille doit être un entier positif"
 
+#: api/cloud-search-query.php:67
 msgid "Start must be a positive integer"
 msgstr "Le démarrage doit être un entier"
 
+#: lift-core.php:162
 msgid "There was an error authenticating your access keys. Please try again."
-msgstr "Une erreur d'authentification s'est produite. Veuillez vérifier vos identifiants AWS."
+msgstr ""
+"Une erreur d'authentification s'est produite. Veuillez vérifier vos "
+"identifiants AWS."
 
+#: lift-core.php:442
 msgid "Log ID"
 msgstr "ID Log"
 
+#: lift-core.php:443
 msgid "Log Title"
 msgstr "Titre Log"
 
+#: lift-core.php:444
 msgid "Time Logged"
 msgstr "Heure enregistrée"
 
+#: lift-core.php:457
 msgid "No Recent Errors"
 msgstr "Pas d'erreur récente"
 
+#: lift-search.php:26
+msgid ""
+"Librelio Search requires PHP version 5.3 or higher. Installed version is: "
+"%s'), phpversion()).'</strong></p>"
+msgstr ""
+
+#: templates/lift-loop.php:41
 msgid "No Search Results"
 msgstr "Pas de résultats de recherche"
 
+#: templates/search.php:19
 msgid "Results"
 msgstr "Résultats"
 
-msgid " Logged Errors"
+#: vendor/voceconnect/voce-error-logging/voce-error-logging.php:40
+#: vendor/voceconnect/voce-error-logging/voce-error-logging.php:65
+#, fuzzy
+msgid "Logged Errors"
 msgstr " Erreurs enregistrées"
 
+#: vendor/voceconnect/voce-error-logging/voce-error-logging.php:41
 msgid "Logged Error"
 msgstr "Erreur enregistrée"
 
+#: vendor/voceconnect/voce-error-logging/voce-error-logging.php:42
 msgid "View"
 msgstr "Voir"
 
+#: vendor/voceconnect/voce-error-logging/voce-error-logging.php:43
 msgid "Search Errors"
 msgstr "Erreurs de recherche"
 
+#: vendor/voceconnect/voce-error-logging/voce-error-logging.php:44
 msgid "No logged errors found."
 msgstr "Pas d'erreurs trouvées"
 
+#: vendor/voceconnect/voce-error-logging/voce-error-logging.php:45
 msgid "No logged errors in trash."
 msgstr "Pas d'erreurs dans la corbeille"
 
+#: vendor/voceconnect/voce-error-logging/voce-error-logging.php:65
 msgid "Error Log"
 msgstr "Log d'erreurs"
 
+#: vendor/voceconnect/voce-error-logging/voce-error-logging.php:135
 msgid "View all log types"
 msgstr "Voir tous les logs"
 
+#: wp/domain-manager.php:95
 msgid "There was an error creating the domain. The domain already exists."
-msgstr "Une erreur s'est produite lors de la création du domaine. Le domaine existe déjà"
+msgstr ""
+"Une erreur s'est produite lors de la création du domaine. Le domaine existe "
+"déjà"
 
+#: wp/domain-manager.php:123
+msgid "Received an invalid repsonse when trying to describe the current schema"
+msgstr ""
+
+#: wp/domain-manager.php:211
+#, fuzzy
+msgid ""
+"There was an error while applying the default access policy to the domain."
+msgstr "Une erreur s'est produite lors de l'application du schema au domaine"
+
+#: wp/field.php:309
 msgid "literal"
 msgstr "littéral"
 
+#: wp/field.php:767
 msgid "Between %1$s and %2$s ago"
 msgstr "Il y a entre %1$s et %2$s"
 
+#: wp/field.php:769
 msgid "Less than %s ago"
 msgstr "Il y a moins de %s "
 
+#: wp/field.php:771
 msgid "More than %s ago"
 msgstr "Il y a plus de %s "
 
+#: wp/field.php:773
 msgid "Any Time"
 msgstr "N'importe quelle heure"
 
+#: wp/field.php:789
 msgid "Published"
 msgstr "Publié"
 
+#: wp/field.php:860
 msgid "Type"
 msgstr "Type"
 
+#: wp/field.php:864
 msgid "In Categories"
 msgstr "Dans les catégories"
 
+#: wp/field.php:867
 msgid "Tags"
 msgstr "Tags"
 
+#: wp/field.php:439 wp/field.php:814
 msgid "Any"
 msgstr "N'importe quel"
 
+#: wp/form-controls.php:49
 msgid "More options &hellip;"
 msgstr "Plus d'options ..."
 
+#: wp/form-controls.php:56
 msgid "Less options"
 msgstr "Moins d'options"
 
+#: wp/lift-batch-handler.php:152 admin/templates/update-queue.html:6
 msgid "Documents in Queue"
 msgstr "Documents en attente"
 
+#: wp/lift-batch-handler.php:152 admin/templates/update-queue.html:3
 msgid "Documents to be Synced"
 msgstr "Document à syncroniser"
 
+#: wp/lift-batch-handler.php:156
 msgid "Queue ID"
 msgstr "ID de file d'attente"
 
+#: wp/lift-batch-handler.php:157
 msgid "Post"
 msgstr "Post"
 
+#: wp/lift-batch-handler.php:158
 msgid "Last Author"
 msgstr "Dernier auteur"
 
+#: wp/lift-batch-handler.php:159
 msgid "Time Queued"
 msgstr "Heure de mise en file d'attente"
 
+#: wp/lift-batch-handler.php:186
 msgid "Deleted Post"
 msgstr "Post effacé"
 
+#: wp/lift-batch-handler.php:205
 msgid "No Posts In Queue"
 msgstr "Pas de post en file d'attente"
 
+#: wp/lift-health.php:87
 msgid "%d or more errors in the last %s"
 msgstr "%d ou plus erreurs lors des dernières %s"
 
+#: wp/lift-health.php:135
 msgid "Domain has been deleted or the CloudSearch API request failed."
 msgstr "Le domaine a été effacé ou la requête CloudSearch a échoué"
 
+#: wp/lift-health.php:139
 msgid "Domain has been deleted or the CloudSearch API request failed"
 msgstr "Le domaine a été effacé ou la requête CloudSearch a échoué"
 
+#: wp/lift-health.php:148
 msgid "active"
 msgstr "active"
 
+#: wp/lift-health.php:161
 msgid "CloudSearch domain being deleted"
 msgstr "Le domaine CloudSearch a été effacé."
 
+#: wp/lift-health.php:162
 msgid "being deleted"
 msgstr "effacement en cours"
 
+#: wp/lift-health.php:166
 msgid "CloudSearch domain loading"
 msgstr "Chargement du domaine CloludSearch"
 
+#: wp/lift-health.php:167
 msgid "loading"
 msgstr "chargement"
 
+#: wp/lift-health.php:170
 msgid "CloudSearch domain needs indexing"
 msgstr "Le domaine CloudSearch doit être indexé"
 
+#: wp/lift-health.php:171
 msgid "needs indexing"
 msgstr "doit être indexé"
 
+#: wp/lift-health.php:174
 msgid "CloudSearch domain processing"
 msgstr "Traitement du domaine CloudSearch en cours"
 
+#: wp/lift-health.php:175
 msgid "processing"
 msgstr "traitement en cours"
 
+#: wp/lift-health.php:179
 msgid "CloudSearch domain pending"
 msgstr "Domaine CloudSearch restant"
 
+#: wp/lift-health.php:180
 msgid "pending"
 msgstr "restant"
 
+#: wp/lift-search-form.php:119
 msgid "Search"
 msgstr "Rechercher"
 
+#: wp/lift-search-form.php:122
 msgid "Reset"
 msgstr "Recharger"
 
+#: wp/lift-search-form.php:195
+#, fuzzy
+msgid "Librelio Search Form"
+msgstr "Librelio: Recherche WordPress"
+
+#: wp/lift-search-form.php:195
+#, fuzzy
+msgid "Add a Librelio search form"
+msgstr "Librelio: Recherche WordPress"
+
+#: wp/lift-update-queue.php:82
+msgid "Librelio queue post"
+msgstr ""
+
+#: wp/lift-update-queue.php:147
+#, fuzzy
+msgid "Librelio Queue"
+msgstr "Librelio"
+
+#: wp/lift-update-queue.php:148
 msgid "Queued Docs"
 msgstr "Documents en attente"
 
+#: admin/templates/dashboard.html:7
 msgid "normal"
 msgstr "normal"
 
+#: admin/templates/dashboard.html:10
 msgid "CloudSearch Document Sync"
 msgstr "Syncronisation CloudSearch"
 
+#: admin/templates/dashboard.html:12
 msgid "Last"
 msgstr "Dernier"
 
+#: admin/templates/dashboard.html:15
 msgid "Next"
 msgstr "Suivant"
 
+#: admin/templates/dashboard.html:21
 msgid "Minutes"
 msgstr "Minutes"
 
+#: admin/templates/dashboard.html:22
 msgid "Hours"
 msgstr "Heures"
 
+#: admin/templates/dashboard.html:23
 msgid "Days"
 msgstr "Jours"
 
+#: admin/templates/dashboard.html:25
 msgid "Save"
 msgstr "Enregistrer"
 
+#: admin/templates/dashboard.html:26
 msgid "Sync Queue Now"
 msgstr "Syncroniser la file maintenant"
 
+#: admin/templates/dashboard.html:34
 msgid "Override Search"
 msgstr "Overrrider la recherche"
 
+#: admin/templates/dashboard.html:41
 msgid "Change AWS Keys"
 msgstr "Changer les clés AWS"
 
+#: admin/templates/dashboard.html:42
+#, fuzzy
+msgid "Reset Librelio"
+msgstr "Librelio"
+
+#: admin/templates/error-logs.html:4
 msgid "Recent Errors"
 msgstr "Erreurs récentes"
 
+#: admin/templates/error-logs.html:7
 msgid "View All Logs"
 msgstr "Voir tous les logs"
 
+#: admin/templates/error-logs.html:8
 msgid "Clear Errors"
 msgstr "Effacer les erreurs"
 
+#: admin/templates/error-logs.html:14 admin/templates/modal-error.html:3
 msgid "Error"
 msgstr "Erreur"
 
+#: admin/templates/error-logs.html:15
 msgid "Date/Time"
 msgstr "Date/Heure"
 
+#: admin/templates/modal-confirm-domain.html:1
 msgid "Search Domain Already Exists"
 msgstr "Le Domaine de Recherche existe déjà"
 
-msgid " Cancel"
+#: admin/templates/modal-confirm-domain.html:3
+msgid ""
+"The domain name you selected already exists on this AWS account.  If you "
+"continue, Librelio will apply its index schema on top of any existing "
+"schema. Are you sure this is the domain you want to use?"
+msgstr ""
+
+#: admin/templates/modal-confirm-domain.html:7
+#: admin/templates/set-domain.html:36
+#, fuzzy
+msgid "Cancel"
 msgstr " Annuler"
 
+#: admin/templates/modal-confirm-domain.html:8
 msgid "Use this Domain"
 msgstr "Utiliser ce domaine"
 
+#: admin/templates/modal-error-missing-domain.html:1
 msgid "Error! The Domain No Longer Exists."
 msgstr "Erreur! Ce domaine n'existe plus."
 
+#: admin/templates/modal-error-missing-domain.html:3
+msgid ""
+"The domain you previously set is no longer reachable on Amazon Cloud Search. "
+"It may have been deleted."
+msgstr ""
+
+#: admin/templates/modal-error-missing-domain.html:6
+msgid ""
+"You can either setup a new domain, or connect to a different account by "
+"updating your Access Keys."
+msgstr ""
+
+#: admin/templates/modal-error-missing-domain.html:10
 msgid "Change Access Keys"
 msgstr "Changer les clés d'accès"
 
+#: admin/templates/modal-error-missing-domain.html:11
 msgid "Update Domain"
 msgstr "Mettre à jour le domaine"
 
+#: admin/templates/modal-error.html:1
 msgid "Error! There was an error contacting Amazon Web Services."
 msgstr "Une erreur de communication avec AWS s'est porduite"
 
+#: admin/templates/set-domain.html:8
+#, fuzzy
+msgid "Enter a Search Domain Name"
+msgstr "Rechercher le nom de domaine"
+
+#: admin/templates/set-domain.html:17
+msgid ""
+"This must be a unique string to your AWS account. If the domain already "
+"exists, Librelio will need to apply its default schema on top of the "
+"existing instance."
+msgstr ""
+
+#: admin/templates/set-domain.html:21
 msgid "Search Domain Name"
 msgstr "Rechercher le nom de domaine"
 
+#: admin/templates/set-domain.html:25
 msgid "Endpoint Region"
 msgstr "Région d'endpoint"
 
+#: admin/templates/set-domain.html:27
 msgid "US East (Northern Virginia) Region"
 msgstr "US East (Northern Virginia) "
 
+#: admin/templates/set-domain.html:28
 msgid "US West (Northern California) Region"
 msgstr "US West (Northern California)"
 
+#: admin/templates/set-domain.html:29
 msgid "US West (Oregon) Region"
 msgstr "US West (Oregon)"
 
+#: admin/templates/set-domain.html:30
 msgid "EU (Ireland) Region"
 msgstr "EU (Ireland)"
 
+#: admin/templates/set-domain.html:31
 msgid "Asia Pacific (Singapore) Region"
 msgstr "Asia Pacific (Singapore)"
 
+#: admin/templates/set-domain.html:37
 msgid "Save Domain Name"
 msgstr "Enregistrer le nom de domaine"
 
+#: admin/templates/set-domain.html:43
 msgid "About Search Domain Names"
 msgstr "A propos de la recherche de noms de domaine"
 
+#: admin/templates/set-domain.html:44
 msgid "The domain name string can only contain the following characters:"
 msgstr "Le nom de domaine peut seulement contenir les caracères suivants"
 
+#: admin/templates/set-domain.html:46
 msgid "Lowercase a-z"
 msgstr "Minuscules de a à z"
 
+#: admin/templates/set-domain.html:47
 msgid "Numerals 0-9"
 msgstr "Chiffres de 0 à 9"
 
+#: admin/templates/set-domain.html:48
 msgid "The hyphen character"
 msgstr "Caractère _"
 
+#: admin/templates/set-domain.html:50
 msgid "The string has a maximum length of <strong>28 characters</strong>."
 msgstr "La chaîne de caractères doit avoir une longueur maximale de 28"
 
+#: admin/templates/setup-processing.html:6
 msgid "Your domain is being set up!"
 msgstr "Votre domaine est en cours de mis en place"
 
+#: admin/templates/setup-processing.html:14
+msgid ""
+"If this is a new search domain, it will take approximately 30-40 minutes for "
+"it to become active and ready to index your documents."
+msgstr ""
+
+#: admin/templates/setup-processing.html:18
 msgid "Creating Document Domain"
 msgstr "Création du domaine de documents"
 
-msgid " Process Domain"
+#: admin/templates/setup-processing.html:19
+msgid "Apply Schema And Default Access Policies"
+msgstr ""
+
+#: admin/templates/setup-processing.html:20
+#: admin/templates/setup-processing.html:25
+#, fuzzy
+msgid "Process Domain"
 msgstr " Traitement du domaine"
 
-msgid " Document Domain Created"
+#: admin/templates/setup-processing.html:21
+#: admin/templates/setup-processing.html:26
+#: admin/templates/setup-processing.html:31
+msgid "Done"
+msgstr ""
+
+#: admin/templates/setup-processing.html:23
+#: admin/templates/setup-processing.html:28
+#, fuzzy
+msgid "Document Domain Created"
 msgstr " Domaine de documents créé."
 
+#: admin/templates/setup-processing.html:24
+msgid "Applying Schema And Default Access Policies"
+msgstr ""
+
+#: admin/templates/setup-processing.html:29
+msgid "Applied Schema And Default Access Policies"
+msgstr ""
+
+#: admin/templates/setup-processing.html:30
+#, fuzzy
+msgid "Processing Domain"
+msgstr " Traitement du domaine"
+
+#: admin/templates/update-queue.html:12
 msgid "Title"
 msgstr "Titre"
 
+#: admin/templates/update-queue.html:13
 msgid "Author"
 msgstr "Auteur"
 
+#: admin/templates/update-queue.html:14
 msgid "Date Queued"
 msgstr "Date de mise en attente"
 
+#: admin/templates/update-queue.html:28
+msgid "No documents are currently queued for updates."
+msgstr ""

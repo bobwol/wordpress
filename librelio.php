@@ -23,7 +23,7 @@ if ( !class_exists( 'Lift_Search' ) ) {
   function _lift_php_version_check() {
     $_ = lift_cloud_localize_func();
     if ( !class_exists( 'Lift_Search' ) ) {
-	    die( '<p style="font: 12px/1.4em sans-serif;"><strong>'.sprintf($_('Lift Search requires PHP version 5.3 or higher. Installed version is: %s'), phpversion()).'</strong></p>' );
+	    die( '<p style="font: 12px/1.4em sans-serif;"><strong>'.sprintf($_('Librelio Search requires PHP version 5.3 or higher. Installed version is: %s'), phpversion()).'</strong></p>' );
 	  } elseif ( function_exists('_lift_activation') ) {
 	    _lift_activation();
 	  }

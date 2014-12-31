@@ -14,16 +14,8 @@
       this.on('resetLift', this.render, this)
           .on('unsetDomainName', this.render, this);
       this.settings.on('sync reset', function() {
-        var credentials = this.settings.getValue('credentials');
         this.domains.settings = this.settings;
-          this.domains.enablePolling();
-/*
-        if ('' === credentials.accessKey && '' === credentials.secretKey) {
-          this.domains.disablePolling();
-        } else {
-          this.domains.enablePolling();
-        }
-*/
+        this.domains.enablePolling();
         this.render();
       }, this)
           .fetch();
@@ -43,34 +35,27 @@
           errorModal,
           state,
           domainname,
-          domain,
-          credentials;
+          domain;
 
-      credentials = this.settings.getValue('credentials');
-      if (!(credentials.accessKey && credentials.secretKey) && 0) {
-        state = 'set_credentials';
+      if (typeof this.domains.deferred === 'object' && 'then' in this.domains.deferred) {
+        //rerender after domains have completely loaded
+        $.when(this.domains.deferred).then(function() {
+          _this.render();
+        });
       } else {
-        if (typeof this.domains.deferred === 'object' && 'then' in this.domains.deferred) {
-          //rerender after domains have completely loaded
-          $.when(this.domains.deferred).then(function() {
-            _this.render();
-          });
+        domainname = this.settings.getValue('domainname');
+        domain = domainname && this.domains.get(domainname);
+
+        if (!domainname) {
+          state = 'set_domainname';
+        } else if ( domain && ( domain.get('Processing') || domain.get('RequiresIndexDocuments') ) ) {
+          state = 'processing_setup';
         } else {
-          domainname = this.settings.getValue('domainname');
-          domain = domainname && this.domains.get(domainname);
-          if (!domainname) {
-            state = 'set_domainname';
-          } else if ( domain && ( domain.get('Processing') || domain.get('RequiresIndexDocuments') ) ) {
-            state = 'processing_setup';
-          } else {
-/*
             if (!domain) {
               errorModal = new liftAdmin.ModalMissingDomain({model: {settings: this.settings, domains: this.domains}});
               this.openModal(errorModal);
             }
-*/
-            state = 'dashboard';
-          }
+          state = 'dashboard';
         }
       }
 
@@ -81,7 +66,6 @@
           state_views;
 
       state_views = {
-        set_credentials: {view: liftAdmin.SetCredentialsView, args: {model: {settings: this.settings}}},
         set_domainname: {view: liftAdmin.SetDomainView, args: {model: {settings: this.settings, domains: this.domains}}},
         processing_setup: {view: liftAdmin.SetupProcessingView, args: {model: {settings: this.settings, domains: this.domains}}},
         dashboard: {view: liftAdmin.DashboardView, args: {model: {settings: this.settings, domains: this.domains}}}
@@ -105,12 +89,7 @@
       return this;
     },
     handleDomainSyncError: function(unused, error) {
-      var modal;
-      if (error.code === 'invalidCredentials') {
-        modal = new liftAdmin.ModalErrorSetCredentialsView({model: {settings: this.settings}});
-      } else {
-        modal = new liftAdmin.ModalError({model: {settings: this.settings, domains: this.domains, error: error}});
-      }
+      var modal = new liftAdmin.ModalError({model: {settings: this.settings, domains: this.domains, error: error}});
 
       if (modal) {
         this.openModal(modal);
@@ -156,8 +135,6 @@
             _this.trigger('resetLift', _this, options);
           }
         };
-        _this.settings.get('credentials').save({value: {accessKey: '', secretKey: ''}}, options);
-        _this.domains.disablePolling();
         return this;
       };
       this.unsetDomainName(options);
@@ -408,7 +385,6 @@
       'click #batch_sync_now': 'setSyncNow',
       'click #lift_reset': 'resetLift',
       'click #override_search': 'setOverrideSearch',
-      'click #lift_update_keys': 'updateKeys'
     },
     render: function() {
       this.el.innerHTML = this.template({settings: this.model.settings.toJSONObject(), domain: this.model.domains.toJSON()});
@@ -452,11 +428,6 @@
       }).always(function() {
         _this.afterSave();
       });
-      return this;
-    },
-    updateKeys: function() {
-      var modal = new liftAdmin.ModalSetCredentialsView({model: {settings: this.model.settings}});
-      adminApp.openModal(modal);
       return this;
     },
     beforeSave: function() {
@@ -542,87 +513,6 @@
     }
   };
 
-  liftAdmin.SetCredentialsView = Backbone.View.extend({
-    _template: 'set-credentials',
-    loadText: $('<p id="lift-load-text">'),
-    loader: $('<p id="lift-ajax-loader">'),
-    initialize: function() {
-      this.template = _.template(liftAdmin.templateLoader.getTemplate(this._template));
-      this.model.settings.get('credentials').on('error', this.onSaveError, this);
-      this.model.settings.get('credentials').on('sync', this.onSaveSuccess, this);
-    },
-    onClose: function() {
-      this.model.settings.get('credentials').off('error', this.onSaveError, this);
-      this.model.settings.get('credentials').off('sync', this.onSaveSuccess, this);
-    },
-    events: {
-      'click #save_credentials': 'updateCredentials'
-    },
-    render: function() {
-      this.el.innerHTML = this.template(this.model.settings.toJSONObject());
-      $('#save_credentials').after(this.loader);
-      return this;
-    },
-    ajaxLoader: function( text ) {
-      this.loadText.text(text);
-      this.loader.html(this.loadText);
-      this.loader.show();
-    },
-    beforeSave: function() {
-      $('#errors').hide();
-      $('#save_credentials').attr('disabled', 'disabled');
-      this.ajaxLoader('Authenticating with Amazon');
-    },
-    updateCredentials: function() {
-      var _this = this,
-          credentials = {
-        accessKey: $('#accessKey').val(),
-        secretKey: $('#secretKey').val()
-      };
-      this.beforeSave();
-      this.model.settings.get('credentials').save({value: credentials}, {
-      });
-    },
-    onSaveError: function(model, resp) {
-      var errors = $.parseJSON(resp.responseText).errors;
-      this.renderErrors(errors);
-      $('#save_credentials').removeAttr('disabled');
-      this.loader.hide();
-      return this;
-    },
-    onSaveSuccess: function() {
-      this.ajaxLoader('Saving');
-    },
-    renderErrors: function(errors) {
-      var template = liftAdmin.templateLoader.getTemplate('errors');
-      $('#errors').html(_.template(template, {errors: errors})).show();
-      return this;
-    }
-
-  });
-
-  liftAdmin.ModalSetCredentialsView = liftAdmin.SetCredentialsView.extend({
-    _template: 'modal-set-credentials',
-    initialize: function() {
-      this.template = _.template(liftAdmin.templateLoader.getTemplate(this._template));
-      this.model.settings.get('credentials').on('sync', this.closeModal, this);
-    },
-    events: {
-      'click #cancel': 'closeModal',
-      'click #save_credentials': 'updateCredentials'
-    },
-    onClose: function() {
-      this.model.settings.get('credentials').off('sync', this.closeModal, this);
-    },
-    closeModal: function() {
-      adminApp.closeModal(this);
-    }
-  });
-
-  liftAdmin.ModalErrorSetCredentialsView = liftAdmin.SetCredentialsView.extend({
-    _template: 'modal-error-set-credentials'
-  });
-
   liftAdmin.ModalError = Backbone.View.extend({
     _template: 'modal-error',
     initialize: function() {
@@ -647,16 +537,10 @@
       this.template = _.template(liftAdmin.templateLoader.getTemplate(this._template));
     },
     events: {
-      'click #reset_lift': 'resetLift',
       'click #unset_domainname': 'unsetDomainName'
     },
     render: function() {
       this.el.innerHTML = this.template({settings: this.model.settings.toJSONObject(), error: this.model.error});
-      return this;
-    },
-    resetLift: function() {
-      adminApp.on('resetLift', this.closeModal, this)
-          .resetLift();
       return this;
     },
     unsetDomainName: function() {
@@ -677,7 +561,6 @@
     },
     events: {
       'click #save_domainname': 'setDomainname',
-      'click #cancel': 'goBack',
       'keypress #domainname' : 'submitOnEnter'
     },
     ajaxLoader: function( text ) {
@@ -726,10 +609,31 @@
         {
           model = new liftAdmin.DomainModel({
             DomainName: domainname,
-            Region: region
+            Region: region,
+            Created: false,
+            Processing: true,
+            RequiresIndexDocuments: false,
+            DocService: {
+              EndPoint: ''
+            }
           });
+          this.model.domains.add(model);
+          this.model.settings.on('sync', function setdomain_sync_handler() {
+            this.model.settings.off('sync', setdomain_sync_handler, this);
+            var dn = this.model.settings.getValue('domainname');
+            
+            if(dn && domainname == dn)
+            {
+              var domains = this.model.domains;
+              domains.fetch().success(function()
+                {
+                  adminApp.render();
+                });
+            }
+          }, this);
         }
-        this.showConfirmModal(model);
+        //this.showConfirmModal(model);
+        this.useDomain(model);
       }
       return this;
     },
@@ -797,12 +701,21 @@
       $('#errors').html(_.template(template, {errors: errors})).show();
       return this;
     },
-    goBack: function() {
-      adminApp.renderState('set_credentials');
-      return this;
-    },
     useDomain: function(domain) {
-      adminApp.settings.get('domainname').save({value: domain.get('DomainName'), region: $('#region').val()});
+      adminApp.settings.get('domainname').save({value: domain.get('DomainName'), region: $('#region').val()})
+        .error(function(xhr)
+          {
+            try {
+              var obj = JSON.parse(xhr.responseText),
+              errmsgs = obj.errors.map(function(e) { return '- ' + e.message; }),
+              errmsg = errmsgs.join('\n');
+              alert(errmsg);
+              location.reload();
+            } catch(err) {
+              alert('Unkown error!');
+              console.error(err);
+            }
+          });
       return this;
     }
   });
@@ -846,7 +759,7 @@
         adminApp.render();
         return this;
       }
-
+      
       this.el.innerHTML = this.template(domain.toJSON());
       return this;
     },

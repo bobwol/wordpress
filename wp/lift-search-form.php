@@ -192,7 +192,7 @@ class Lift_Form_Widget extends WP_Widget {
 	 */
 	public function __construct() {
 		parent::__construct(
-			'lift_form_widget', self::_("Lift Search Form"), array( 'description' => self::_("Add a Lift search form") )
+			'lift_form_widget', self::_("Librelio Search Form"), array( 'description' => self::_("Add a Librelio search form") )
 		);
 	}
 

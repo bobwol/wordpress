@@ -27,7 +27,8 @@ msgid ""
 "Secret Access Key and try again."
 msgstr ""
 
-#: admin/admin.php:79
+#: admin/admin.php:79 admin/templates/dashboard.html:2
+#: admin/templates/set-domain.html:2 admin/templates/setup-processing.html:2
 msgid "Librelio: Search for WordPress"
 msgstr ""
 
@@ -63,18 +64,14 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-#: admin/admin.php:444
-msgid "Lift Logo"
-msgstr ""
-
 #: admin/admin.php:446
 msgid ""
-"<strong>Welcome to Lift</strong>: \tNow that you've activated the Lift "
-"plugin it's time to set it up. Click below to get started."
+"<strong>Welcome to Librelio</strong>: \tNow that you've activated the "
+"Librelio plugin it's time to set it up. Click below to get started."
 msgstr ""
 
 #: admin/admin.php:447
-msgid "Configure Lift"
+msgid "Configure Librelio"
 msgstr ""
 
 #: api/cloud-search-query.php:56
@@ -107,8 +104,8 @@ msgstr ""
 
 #: lift-search.php:26
 msgid ""
-"Lift Search requires PHP version 5.3 or higher. Installed version is: %s'), "
-"phpversion()).'</strong></p>"
+"Librelio Search requires PHP version 5.3 or higher. Installed version is: "
+"%s'), phpversion()).'</strong></p>"
 msgstr ""
 
 #: templates/lift-loop.php:41
@@ -310,24 +307,23 @@ msgid "Reset"
 msgstr ""
 
 #: wp/lift-search-form.php:195
-msgid "Add a Lift search form"
+msgid "Librelio Search Form"
+msgstr ""
+
+#: wp/lift-search-form.php:195
+msgid "Add a Librelio search form"
 msgstr ""
 
 #: wp/lift-update-queue.php:82
-msgid "lift queue post"
+msgid "Librelio queue post"
 msgstr ""
 
 #: wp/lift-update-queue.php:147
-msgid "Lift Queue"
+msgid "Librelio Queue"
 msgstr ""
 
 #: wp/lift-update-queue.php:148
 msgid "Queued Docs"
-msgstr ""
-
-#: admin/templates/dashboard.html:2 admin/templates/set-domain.html:2
-#: admin/templates/setup-processing.html:2
-msgid "Lift:Search for Wordpress"
 msgstr ""
 
 #: admin/templates/dashboard.html:7
@@ -375,7 +371,7 @@ msgid "Change AWS Keys"
 msgstr ""
 
 #: admin/templates/dashboard.html:42
-msgid "Reset Lift"
+msgid "Reset Librelio"
 msgstr ""
 
 #: admin/templates/error-logs.html:4
@@ -405,8 +401,8 @@ msgstr ""
 #: admin/templates/modal-confirm-domain.html:3
 msgid ""
 "The domain name you selected already exists on this AWS account.  If you "
-"continue, Lift will apply its index schema on top of any existing schema. "
-"Are you sure this is the domain you want to use?"
+"continue, Librelio will apply its index schema on top of any existing "
+"schema. Are you sure this is the domain you want to use?"
 msgstr ""
 
 #: admin/templates/modal-confirm-domain.html:7
@@ -452,9 +448,9 @@ msgstr ""
 
 #: admin/templates/set-domain.html:17
 msgid ""
-"This must be a unique string to your AWS account. Lift will create the "
-"domain on AWS for you.  If the domain already exists, Lift will need to "
-"apply its default schema on top of the existing instance."
+"This must be a unique string to your AWS account. If the domain already "
+"exists, Librelio will need to apply its default schema on top of the "
+"existing instance."
 msgstr ""
 
 #: admin/templates/set-domain.html:21

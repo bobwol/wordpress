@@ -79,7 +79,7 @@ class Lift_Document_Update_Queue {
 			$queue_id = wp_insert_post( array(
 				'post_type' => self::STORAGE_POST_TYPE,
 				'post_status' => 'publish',
-				'post_title' => self::_('lift queue post')
+				'post_title' => self::_('Librelio queue post')
 				) );
 
 			$queue_ids[$type] = $queue_id;
@@ -144,7 +144,7 @@ class Lift_Document_Update_Queue {
 	public static function init() {
 		register_post_type( self::STORAGE_POST_TYPE, array(
 			'labels' => array(
-				'name' => self::_('Lift Queue'),
+				'name' => self::_('Librelio Queue'),
 				'singular_name' => self::_('Queued Docs')
 			),
 			'publicly_queryable' => false,

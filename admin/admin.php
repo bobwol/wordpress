@@ -124,25 +124,6 @@ class Lift_Admin {
 			if ( isset( $_GET['nonce'] ) && wp_verify_nonce( $_GET['nonce'], 'lift_setting' ) ) {
 
 				switch ( $setting_key ) {
-					case 'credentials':
-						if ( '' === $setting_value->accessKey && '' === $setting_value->secretKey ) {
-							//empty values are used to reset
-							Lift_Search::set_access_key_id( '' );
-							Lift_Search::set_secret_access_key( '' );
-						} else {
-							$result = $this->test_credentials( $setting_value->accessKey, $setting_value->secretKey );
-							if ( $result['error'] ) {
-								$error->add( 'invalid_credentials', $result['message'] );
-							} else {
-								Lift_Search::set_access_key_id( $setting_value->accessKey );
-								Lift_Search::set_secret_access_key( $setting_value->secretKey );
-							}
-						}
-						$response['model']['value'] = array(
-							'accessKey' => Lift_Search::get_access_key_id(),
-							'secretKey' => Lift_Search::get_secret_access_key()
-						);
-						break;
 					case 'batch_interval':
 						$value = max( array( 1, intval( $setting_value->value ) ) );
 						$unit = $setting_value->unit;
@@ -153,6 +134,7 @@ class Lift_Admin {
 						$domain_manager = Lift_Search::get_domain_manager();
 						$replacing_domain = ( Lift_Search::get_search_domain_name() != $setting_value );
 						$region = ( !empty($settings_data->region) ) ? $settings_data->region : false;
+
 						if ( $setting_value === '' ) {
 							//assume that empty domain name means that we're clearing the set domain
 							Lift_Search::set_search_domain_name( '' );
@@ -211,10 +193,6 @@ class Lift_Admin {
 	public function action__wp_ajax_lift_settings() {
 
 		$current_state = array(
-			'credentials' => array(
-				'accessKey' => Lift_Search::get_access_key_id(),
-				'secretKey' => Lift_Search::get_secret_access_key(),
-			),
 			'domainname' => Lift_Search::get_search_domain_name(),
 			'region' => Lift_Search::get_domain_region(),
 			'last_sync' => Lift_Batch_Handler::get_last_cron_time(),
@@ -243,19 +221,29 @@ class Lift_Admin {
 			'error' => false,
 			'nonce' => wp_create_nonce( 'lift_domain' )
 		);
-		/*if ( !Lift_Search::get_access_key_id() && !Lift_Search::get_secret_access_key() ) {
-			$response['error'] = array( 'code' => 'emptyCredentials', 'message' => 'The Access Credential are not yet set.' );
-		} else {*/
-			$dm = Lift_Search::get_domain_manager();
-			$region = ( !empty($_REQUEST['region']) ) ? $_REQUEST['region'] : Lift_Search::get_domain_region();
-			$domains = $dm->get_domains( $region );
-      $error = $dm->get_last_error();
-			if ( $domains === false && $error['code'] != 'AccessDenied') {
-				$response['error'] = $error;
-			} else {
-				$response['domains'] = $domains;
-			}
-		//}
+	  $dm = Lift_Search::get_domain_manager();
+		$region = ( !empty($_REQUEST['region']) ) ? $_REQUEST['region'] : Lift_Search::get_domain_region();
+		$domains = $dm->get_domains( $region );
+    $error = $dm->get_last_error();
+
+    $search_domain_name = Lift_Search::get_search_domain_name();
+    $search_domain_region = Lift_Search::get_domain_region();
+    
+    if(!$domains && $error && $error['code'] == 'AccessDenied' && 
+       $search_domain_name && $search_domain_region)
+    {
+      $domain = $dm->get_domain( $search_domain_name, 
+                                 $search_domain_region );
+
+      if($domain)
+        $domains = array($domain);
+    }
+		if ( $domains === false && $error && $error['code'] != 'AccessDenied' ) {
+			$response['error'] = $error;
+		} else {
+			$response['domains'] = $domains;
+		}
+		
 		header( 'Content-Type: application/json' );
 		die( json_encode( $response ) );
 	}
@@ -440,11 +428,8 @@ class Lift_Admin {
 	public static function _print_configuration_nag() {
 		?>
 		<div id="banneralert" class="lift-colorized">
-			<div class="lift-balloon">
-				<img src="<?php echo plugin_dir_url( __DIR__ ) ?>img/logo.png" alt="<?php echo self::_('Lift Logo'); ?>">
-			</div>
-			<div class="lift-message"><p><?php echo self::_('<strong>Welcome to Lift</strong>: 	Now that you\'ve activated the Lift plugin it\'s time to set it up. Click below to get started.'); ?></p></div>
-			<div><a class="lift-btn" href="<?php echo admin_url( 'options-general.php?page=' . self::OPTIONS_SLUG ) ?>"><?php echo self::_('Configure Lift'); ?></a></div>
+			<div class="lift-message"><p><?php echo self::_('<strong>Welcome to Librelio</strong>: 	Now that you\'ve activated the Librelio plugin it\'s time to set it up. Click below to get started.'); ?></p></div>
+			<div><a class="lift-btn" href="<?php echo admin_url( 'options-general.php?page=' . self::OPTIONS_SLUG ) ?>"><?php echo self::_('Configure Librelio'); ?></a></div>
 			<div class="clr"></div>
 		</div>
 		<script>

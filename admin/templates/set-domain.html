@@ -1,5 +1,5 @@
 <div class="liftBanner">
-	<h1><?php echo self::_('Lift:Search for Wordpress'); ?></h1>
+	<h1><?php echo self::_('Librelio: Search for WordPress'); ?></h1>
 </div>
 <div class="grid">
 	<div class="col-5-8">
@@ -8,13 +8,12 @@
 				<h1><?php echo self::_('Enter a Search Domain Name'); ?></h1>
 			</div>
 			<div class="col-1-2 textright">
-				<span class="progressCircle">1</span>
-				<span class="progressCircle active">2</span>
-				<span class="progressCircle">3</span>
+				<span class="progressCircle active">1</span>
+				<span class="progressCircle">2</span>
 			</div>
 		</div>
 		<p>
-			<?php echo self::_('This must be a unique string to your AWS account. Lift will create the domain on AWS for you.  If the domain already exists, Lift will need to apply its default schema on top of the existing instance.'); ?>
+			<?php echo self::_('This must be a unique string to your AWS account. If the domain already exists, Librelio will need to apply its default schema on top of the existing instance.'); ?>
 		</p>
 		<form class="form-block">
 			<div class="form-row">
@@ -33,7 +32,6 @@
 			</div>
 			<div id="errors" class="error" style="display:none;"></div>
 			<div class="button-row">
-				<input type="button" class="button" id="cancel" value="<?php echo self::_('Cancel'); ?>" />
 				<input type="button" class="button-primary" id="save_domainname" value="<?php echo self::_('Save Domain Name'); ?>" />
 			</div>
 		</form>

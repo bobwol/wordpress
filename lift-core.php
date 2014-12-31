@@ -126,37 +126,10 @@ class Lift_Search {
 
 	/**
 	 * Returns an instance of the Lift_Domain_Manager
-	 * @param string $access_key
-	 * @param string $secret_key
 	 * @return Lift_Domain_Manager
 	 */
-	public static function get_domain_manager( $access_key = null, $secret_key = null ) {
+	public static function get_domain_manager() {
 		return new Lift_Domain_Manager( self::$cloud_search_client );
-	}
-
-	public function test_access( $id = '', $secret = '' ) {
-
-		$credentials = array( 'access-key-id' => $id, 'secret-access-key' => $secret );
-		$error = false;
-
-		try {
-			if ( Cloud_Config_API::TestConnection( $credentials ) ) {
-				$status_message = self::_('Success');
-				self::__set_setting( 'access-key-id', $id );
-				self::__set_setting( 'secret-access-key', $secret );
-			} else {
-				$status_message = self::_('There was an error authenticating. Please check your Access Key ID and Secret Access Key and try again.');
-
-				$error = true;
-			}
-		} catch ( Exception $e ) {
-			// @todo add exception logging?
-			$status_message = self::_('There was an error authenticating your access keys. Please try again.');
-
-			$error = true;
-		}
-
-		return array( 'error' => $error, 'message' => $status_message );
 	}
 
 	/**
@@ -184,38 +157,6 @@ class Lift_Search {
 		$settings = array( $setting => $value ) + get_option( self::SETTINGS_OPTION, array( ) );
 
 		update_option( self::SETTINGS_OPTION, $settings );
-	}
-
-	/**
-	 * Get access key id
-	 * @return string
-	 */
-	public static function get_access_key_id() {
-		return ( string ) apply_filters( 'lift_access_key_id', self::__get_setting( 'access-key-id' ) );
-	}
-
-	/**
-	 * Sets the access key id
-	 * @param type $value
-	 */
-	public static function set_access_key_id( $value ) {
-		self::__set_setting( 'access-key-id', $value );
-	}
-
-	/**
-	 * Get secret access key
-	 * @return string
-	 */
-	public static function get_secret_access_key() {
-		return ( string ) apply_filters( 'lift_secret_access_key', self::__get_setting( 'secret-access-key' ) );
-	}
-
-	/**
-	 * Sets the secret key id
-	 * @param type $value
-	 */
-	public static function set_secret_access_key( $value ) {
-		self::__set_setting( 'secret-access-key', $value );
 	}
 
 	/**

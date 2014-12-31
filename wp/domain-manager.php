@@ -239,6 +239,7 @@ class Lift_Domain_Manager {
 		}
 
 		$response = $this->config_api->DescribeDomains( array( $domain_name ), $region );
+
 		if ( $response ) {
 			$domain_list = $response->DomainStatusList;
 			if ( is_array( $domain_list ) && count( $domain_list ) ) {
