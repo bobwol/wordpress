@@ -55,26 +55,36 @@ class Lift_WP_Query {
 		$posts = array( );
 		if ( $this->has_valid_result() ) {
 			// include response post ids in query
-			$hits = array( );
-			array_map( function($hit) use (&$hits) {
-					if ( property_exists( $hit, 'fields' ) && property_exists( $hit->fields, 'id' ) ) {
-						$hits[] = (is_array( $hit->fields->id )) ? array_shift( $hit->fields->id ) : $hit->fields->id;
-					}
-				}, $this->results->hits->hit
-			);
-
-			_prime_post_caches( $hits );
-      $posts = array();
-      foreach($hits as $post_id)
-      {
-        $post = get_post($post_id);
-        if($post != NULL && $post->post_type != 'lift_queued_document' &&
-           $post->post_type != 'voce-error-log')
-        {
-          $posts[] = $post;
-        }
-      }
+      $posts_in = $this->results->hits->hit;
+      $default_tz = date_default_timezone_get();
+      $tz = get_option('timezone_string');
       
+      foreach($posts_in as $post_in)
+      {
+        $fields = $post_in->fields;
+        $timestamp = intval($this->get_field_value($fields->post_date_gmt));
+        date_default_timezone_set("GMT");
+        $date_gmt = date('Y-m-d H:i:s', $timestamp);
+        date_default_timezone_set($tz);
+        $date = date('Y-m-d H:i:s', $timestamp);
+        $search_query = $this->wp_query->get('s');
+        
+        $post_out = array(
+          "ID"=> intval($this->get_field_value($fields->id)),
+          "post_title" => Lift_Search::highlight_content_matching($this->get_field_value($fields->post_title), $search_query),
+          "post_content" => Lift_Search::highlight_content_matching($this->get_field_value($fields->post_content), $search_query),
+          "search_query" => $search_query,
+          "post_date_gmt" => $date_gmt,
+          "post_date" => $date,
+          "post_name" => $this->get_field_value($fields->post_name),
+          "post_type" => $this->get_field_value($fields->post_type),
+          "resourcename" => $this->get_field_value($fields->resourcename)
+        );
+        $posts[] = (object)$post_out;
+      }
+
+      date_default_timezone_set($default_tz);
+
 			$this->wp_query->post_count = count( $posts );
 			$this->wp_query->found_posts = $this->results->hits->found;
 			$this->wp_query->max_num_pages = ceil( $this->wp_query->found_posts / $this->wp_query->get( 'posts_per_page' ) );
@@ -83,6 +93,10 @@ class Lift_WP_Query {
 		return $posts;
 	}
 
+  private function get_field_value($field)
+  {
+    return (is_array($field) ? array_shift($field) : $field);
+  }
 	/**
 	 * Converts the WP_Query to a Cloud_Search_Query
 	 * @return Cloud_Search_Query
@@ -135,7 +149,9 @@ class Lift_WP_Query {
 			$cs_query->add_rank( $orderby, $order );
 
 		// return fields
-		$cs_query->add_return_field( 'id' );
+		$cs_query->add_return_field( 
+                array('id', 'post_title', 'post_name', 'post_date_gmt', 
+                      'post_content', 'resourcename', 'post_type') );
 
 		do_action_ref_array( 'get_cs_query', array( $cs_query, $this ) );
 
@@ -213,9 +229,29 @@ class Lift_WP_Search {
 
 		add_filter( 'list_search_bq_parameters', array( __CLASS__, '_bq_filter_post_status' ), 10, 2 );
 
+    add_filter( 'post_link', array(__CLASS__, '_custom_post_link'), 1000,  3 );
+    
 		do_action( 'lift_wp_search_init' );
 	}
 
+  /**
+   * Changes post_link if it's not a post in site database
+   * @param string $permalink
+   * @param object $post
+   * @return string
+   **/
+  public static function _custom_post_link($permalink, $post, $leavename)
+  {
+    if($post->resourcename)
+      return site_url().'/cloudsearchdetail.php?waurl='.urlencode($post->resourcename);
+    return $permalink;
+  }
+
+  public static function _filter_content($content)
+  {
+    global $post;
+    return Lift_Search::highlight_content_matching($content, $post->search_query);
+  }
 	/**
 	 * Filters the sql for a WP_Query before it's sent to the DB.
 	 * @param string $request
@@ -254,7 +290,11 @@ class Lift_WP_Search {
 		$lift_query = Lift_WP_Query::GetInstance( $wp_query );
 
 		if ( $lift_query->has_valid_result() )
+    {
+      add_filter('get_the_excerpt', array(__CLASS__, '_filter_content'), 50, 1);
+      wp_enqueue_style('cloudsearchcss', plugins_url( 'css/cloudsearch.css', dirname(dirname(__FILE__)).'/lift-core.php' ) );
 			return $lift_query->get_posts();
+    }
 
 		return $posts;
 	}

@@ -54,6 +54,10 @@ class Cloud_Schemas {
 				),
 			),
 			array(
+				'field_name' => 'post_name',
+				'field_type' => 'text',
+			),
+			array(
 				'field_name' => 'post_title',
 				'field_type' => 'text',
 				'options' => array(
@@ -77,6 +81,10 @@ class Cloud_Schemas {
 			),
 			array(
 				'field_name' => 'taxonomy_post_tag_label',
+				'field_type' => 'text',
+			),
+			array(
+				'field_name' => 'resourcename',
 				'field_type' => 'text',
 			),
 		);

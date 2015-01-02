@@ -121,7 +121,87 @@ class Lift_Search {
 
 				return $schedules;
 			} );
+
+      add_filter('template_include',array(__CLASS__, 'view_project_template'));
 	}
+
+  public static function view_project_template($template)
+  {
+    global $wp_query;
+    $request_uri = $_SERVER['REQUEST_URI'];
+    $site_url_obj = parse_url(site_url());
+    $site_url_path = $site_url_obj['path'];
+    if(strpos($request_uri, $site_url_path.'/') === 0)
+    {
+      $request_page = substr($request_uri, strlen($site_url_path) + 1);
+      $request_page_parts = explode('?', $request_page);
+      $request_page = $request_page_parts[0];
+      $request_page_query = array();
+      if(sizeof($request_page_parts) > 1)
+        parse_str($request_page_parts[1], $request_page_query);
+
+      // remove page extension if is .php
+      $request_page = strpos($request_page, '.php') == strlen($request_page) - 4 ? substr($request_page, 0, strlen($request_page) - 4) : $request_page;
+
+      if($request_page == 'cloudsearchdetail')
+      {
+        $waurl = $request_page_query['waurl'];
+        $waurl_obj = parse_url($waurl);
+        $found = 0;
+        
+        switch($waurl_obj['scheme'])
+        {
+        case 's3':
+          $s3Bucket = $waurl_obj['host'];
+          $s3Key = $waurl_obj['path'];
+          
+          if($s3Bucket && $s3Key)
+          {
+            $s3Client = self::$aws->get_client()->get('s3');
+            try {
+              $res = $s3Client->getObject(array(
+                'Bucket' => $s3Bucket,
+                'Key' => $s3Key
+              ));
+              
+
+              $wp_query = new WP_Query();
+        
+              $wp_query->post_count = 1;
+              $wp_query->posts = array(
+                (object)array(
+                  "ID" => 9999,
+                  "post_type" => "custom",
+                  "post_name" => "",
+                  "post_title" => "",
+                  "post_content" => (string)$res['Body']
+                )
+              );
+              $found = 1;
+            } catch(Aws\Common\Exception\ServiceResponseException $exception) {
+              
+            }
+          }
+          break;
+        }
+        if($found)
+        {
+          add_filter('get_previous_post_where', array(__CLASS__, '_return_zero'));
+          add_filter('get_next_post_where', array(__CLASS__, '_return_zero'));
+          add_filter('comments_open', array(__CLASS__, '_return_zero'));
+          
+          return get_single_template();
+        }
+      }
+    }
+
+    return $template;
+  }
+  
+  public static function _return_zero($a)
+  {
+    return 0;
+  }
 
 	/**
 	 * Returns an instance of the Lift_Domain_Manager
@@ -329,7 +409,8 @@ class Lift_Search {
 			'post_date_gmt',
 			'post_status',
 			'post_type',
-			'post_author'
+			'post_author',
+      'post_name'
 			), $post_type );
 	}
 
@@ -487,7 +568,12 @@ class Lift_Search {
 		}
 
 	}
-
+  
+  public static function highlight_content_matching($content, $needle)
+  {
+    return librelio_wrap_matching($content, $needle, 'term', 
+              '<span class="librelio-search-highlight">', '</span>');
+  }
 }
 
 function _lift_deactivate() {
