@@ -57,12 +57,12 @@ class Lift_WP_Query {
 			// include response post ids in query
       $posts_in = $this->results->hits->hit;
       $default_tz = date_default_timezone_get();
-      $tz = get_option('timezone_string');
+      $tz = get_option('timezone_string') ?: 'GMT';
       
       foreach($posts_in as $post_in)
       {
         $fields = $post_in->fields;
-        $timestamp = intval($this->get_field_value($fields->post_date_gmt));
+        $timestamp = intval($this->get_field_value(@$fields->post_date_gmt));
         date_default_timezone_set("GMT");
         $date_gmt = date('Y-m-d H:i:s', $timestamp);
         date_default_timezone_set($tz);
@@ -70,15 +70,15 @@ class Lift_WP_Query {
         $search_query = $this->wp_query->get('s');
         
         $post_out = array(
-          "ID"=> intval($this->get_field_value($fields->id)),
-          "post_title" => Lift_Search::highlight_content_matching($this->get_field_value($fields->post_title), $search_query),
-          "post_content" => Lift_Search::highlight_content_matching($this->get_field_value($fields->post_content), $search_query),
+          "ID"=> intval($this->get_field_value(@$fields->id)),
+          "post_title" => Lift_Search::highlight_content_matching($this->get_field_value(@$fields->post_title), $search_query),
+          "post_content" => Lift_Search::highlight_content_matching($this->get_field_value(@$fields->post_content), $search_query),
           "search_query" => $search_query,
           "post_date_gmt" => $date_gmt,
           "post_date" => $date,
-          "post_name" => $this->get_field_value($fields->post_name),
-          "post_type" => $this->get_field_value($fields->post_type),
-          "resourcename" => $this->get_field_value($fields->resourcename)
+          "post_name" => $this->get_field_value(@$fields->post_name),
+          "post_type" => $this->get_field_value(@$fields->post_type),
+          "resourcename" => $this->get_field_value(@$fields->resourcename)
         );
         $posts[] = (object)$post_out;
       }

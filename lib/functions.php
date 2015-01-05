@@ -106,7 +106,7 @@ function librelio_wrap_matching_term($content, $needle, $wrap_before, $wrap_afte
     {
       $rep = $wrap_before.substr($content, $pos, strlen($word)).$wrap_after;
       $content = substr($content, 0, $pos).$rep.
-                 substr($content, $pos + strlen(word));
+                 substr($content, $pos + strlen($word));
       $offset = $pos + strlen($rep);
     }
   }

@@ -145,15 +145,15 @@ class Lift_Search {
 
       if($request_page == 'cloudsearchdetail')
       {
-        $waurl = $request_page_query['waurl'];
+        $waurl = @$request_page_query['waurl'];
         $waurl_obj = parse_url($waurl);
         $found = 0;
         
-        switch($waurl_obj['scheme'])
+        switch(@$waurl_obj['scheme'])
         {
         case 's3':
-          $s3Bucket = $waurl_obj['host'];
-          $s3Key = $waurl_obj['path'];
+          $s3Bucket = @$waurl_obj['host'];
+          $s3Key = @$waurl_obj['path'];
           
           if($s3Bucket && $s3Key)
           {
@@ -164,7 +164,7 @@ class Lift_Search {
                 'Key' => $s3Key
               ));
               
-
+              $time = date('Y-m-d');
               $wp_query = new WP_Query();
         
               $wp_query->post_count = 1;
@@ -174,7 +174,10 @@ class Lift_Search {
                   "post_type" => "custom",
                   "post_name" => "",
                   "post_title" => "",
-                  "post_content" => (string)$res['Body']
+                  "post_content" => (string)$res['Body'],
+                  "post_author" => false,
+                  "post_date" => $time,
+                  "post_date_gmt" => $time
                 )
               );
               $found = 1;
