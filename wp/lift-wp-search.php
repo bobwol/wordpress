@@ -291,6 +291,8 @@ class Lift_WP_Search {
 
 		if ( $lift_query->has_valid_result() )
     {
+      add_filter('get_edit_post_link', array(__CLASS__, '_get_edit_post_link'));
+      add_filter('comments_open', array('Lift_Search', '_return_zero'));
       add_filter('get_the_excerpt', array(__CLASS__, '_filter_content'), 50, 1);
       wp_enqueue_style('cloudsearchcss', plugins_url( 'css/cloudsearch.css', dirname(dirname(__FILE__)).'/lift-core.php' ) );
 			return $lift_query->get_posts();
@@ -299,6 +301,11 @@ class Lift_WP_Search {
 		return $posts;
 	}
 
+  public static function _get_edit_post_link($link)
+  {
+    return ;
+  }
+  
 	/**
 	 * Builds the query param for the post status filter
 	 * @param array $params
