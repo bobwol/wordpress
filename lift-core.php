@@ -18,7 +18,6 @@ require_once('wp/lift-update-queue.php');
 require_once('wp/update-watchers/post.php');
 require_once('lib/wp-asynch-events.php');
 
-
 class Lift_Search {
 
   private static function _($s) { return lift_cloud_localize($s); }
@@ -571,12 +570,6 @@ class Lift_Search {
 		}
 
 	}
-  
-  public static function highlight_content_matching($content, $needle)
-  {
-    return librelio_wrap_matching($content, $needle, 'term', 
-              '<span class="librelio-search-highlight">', '</span>');
-  }
 }
 
 function _lift_deactivate() {

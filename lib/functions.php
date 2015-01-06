@@ -83,32 +83,3 @@ function lift_cloud_localize($s)
 {
   return __($s, 'librelio');
 }
-
-
-function librelio_wrap_matching($content, $needle, $type, $wrap_before, $wrap_after)
-{
-  switch($type)
-  {
-  case 'term':
-    return librelio_wrap_matching_term($content, $needle, $wrap_before, $wrap_after);
-    break;
-  }
-  return $content;
-}
-
-function librelio_wrap_matching_term($content, $needle, $wrap_before, $wrap_after)
-{
-  $words = explode(' ', $needle);
-  foreach($words as $word)
-  {
-    $offset = 0;
-    while(($pos = stripos($content, $word, $offset)) !== false)
-    {
-      $rep = $wrap_before.substr($content, $pos, strlen($word)).$wrap_after;
-      $content = substr($content, 0, $pos).$rep.
-                 substr($content, $pos + strlen($word));
-      $offset = $pos + strlen($rep);
-    }
-  }
-  return $content;
-}

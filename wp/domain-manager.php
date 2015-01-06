@@ -18,8 +18,9 @@ class Lift_Cloud_Config_API extends Cloud_Config_API {
 		$this->clear_cache_methods = array(
 			'CreateDomain' => array( 'DescribeDomains', 'DescribeServiceAccessPolicies' ),
 			'UpdateServiceAccessPolicies' => array( 'DescribeServiceAccessPolicies' ),
-			'DefineIndexField' => array( 'DescribeIndexFields' )
+			'DefineIndexField' => array( 'DescribeDomains', 'DescribeIndexFields' )
 		);
+
 	}
 
 	public function _make_request( $method, $payload = array( ), $region = false ) {
@@ -71,6 +72,7 @@ class Lift_Domain_Manager {
 
 	public function __construct( $client ) {
 		$this->config_api = new Lift_Cloud_Config_API( $client );
+
 	}
 
 	public function get_last_error() {

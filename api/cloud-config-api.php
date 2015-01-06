@@ -200,7 +200,11 @@ class Cloud_Config_API {
 					'result' => array(
 						'name' => 'ResultEnabled',
 						'default' => false
-					)
+					),
+          'highlight' => array(
+            'name' => 'HighlightEnabled',
+            'default' => false
+          )
 				)
 			),
 			'literal' => array(

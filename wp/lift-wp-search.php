@@ -62,6 +62,7 @@ class Lift_WP_Query {
       foreach($posts_in as $post_in)
       {
         $fields = $post_in->fields;
+        $highlights = @$post_in->highlights;
         $timestamp = intval($this->get_field_value(@$fields->post_date_gmt));
         date_default_timezone_set("GMT");
         $date_gmt = date('Y-m-d H:i:s', $timestamp);
@@ -71,8 +72,8 @@ class Lift_WP_Query {
         
         $post_out = array(
           "ID"=> intval($this->get_field_value(@$fields->id)),
-          "post_title" => Lift_Search::highlight_content_matching($this->get_field_value(@$fields->post_title), $search_query),
-          "post_content" => Lift_Search::highlight_content_matching($this->get_field_value(@$fields->post_content), $search_query),
+          "post_title" => $this->get_field_value(@$highlights->post_title ?: @$fields->post_title),
+          "post_content" => $this->get_field_value(@$highlights->post_content ?: @$fields->post_content),
           "search_query" => $search_query,
           "post_date_gmt" => $date_gmt,
           "post_date" => $date,
@@ -152,6 +153,21 @@ class Lift_WP_Query {
 		$cs_query->add_return_field( 
                 array('id', 'post_title', 'post_name', 'post_date_gmt', 
                       'post_content', 'resourcename', 'post_type') );
+
+    $cs_query->highlights = array(
+      'post_title' => array(
+        'format' => 'html', 
+        'max_phrases' => 5,
+        'pre_tag' => '<span class="librelio-search-highlight">', 
+        'post_tag' => '</span>'
+      ),
+      'post_content' => array(
+        'format' => 'html', 
+        'max_phrases' => 5,
+        'pre_tag' => '<span class="librelio-search-highlight">', 
+        'post_tag' => '</span>'
+      ),
+    );
 
 		do_action_ref_array( 'get_cs_query', array( $cs_query, $this ) );
 
@@ -250,7 +266,7 @@ class Lift_WP_Search {
   public static function _filter_content($content)
   {
     global $post;
-    return Lift_Search::highlight_content_matching($content, $post->search_query);
+    return $post->post_content;
   }
 	/**
 	 * Filters the sql for a WP_Query before it's sent to the DB.

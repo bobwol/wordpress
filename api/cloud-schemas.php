@@ -41,6 +41,9 @@ class Cloud_Schemas {
 			array(
 				'field_name' => 'post_content',
 				'field_type' => 'text',
+        'options' => array(
+          'highlight' => true
+        )
 			),
 			array(
 				'field_name' => 'post_date_gmt',
@@ -62,6 +65,7 @@ class Cloud_Schemas {
 				'field_type' => 'text',
 				'options' => array(
 					'result' => true,
+          'highlight' => true
 				),
 			),
 			array(

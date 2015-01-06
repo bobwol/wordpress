@@ -26,6 +26,7 @@ class Cloud_Search_Query {
 	protected $start = 0;
 	protected $boolean_query = '';
 	protected $ranks = array( );
+  public $highlights = array();
 
 	public function __construct( $boolean_query = '' ) {
 		$this->boolean_query = $boolean_query;
@@ -122,8 +123,9 @@ class Cloud_Search_Query {
 			'return' => implode( ',', $this->return_fields ),
 			'size' => $this->size,
 			'start' => $this->start,
-			'sort' => implode( ',', $sort )
-			);
+			'sort' => implode( ',', $sort ),
+      'highlight' => json_encode($this->highlights)
+		);
     return $args;
   }
 }
