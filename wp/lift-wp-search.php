@@ -69,9 +69,9 @@ class Lift_WP_Query {
         date_default_timezone_set($tz);
         $date = date('Y-m-d H:i:s', $timestamp);
         $search_query = $this->wp_query->get('s');
-        
+        $resource = $this->get_field_value(@$fields->resourcename);
         $post_out = array(
-          "ID"=> intval($this->get_field_value(@$fields->id)),
+          "ID"=> $resource ? -1 : intval($this->get_field_value(@$fields->id)),
           "post_title" => $this->get_field_value(@$highlights->post_title ?: @$fields->post_title),
           "post_content" => $this->get_field_value(@$highlights->post_content ?: @$fields->post_content),
           "search_query" => $search_query,
@@ -79,7 +79,7 @@ class Lift_WP_Query {
           "post_date" => $date,
           "post_name" => $this->get_field_value(@$fields->post_name),
           "post_type" => $this->get_field_value(@$fields->post_type),
-          "resourcename" => $this->get_field_value(@$fields->resourcename)
+          "resourcename" => $resource
         );
         $posts[] = (object)$post_out;
       }
@@ -244,8 +244,6 @@ class Lift_WP_Search {
 		add_filter( 'posts_results', array( __CLASS__, '_filter_posts_results' ), 10, 2 );
 
 		add_filter( 'list_search_bq_parameters', array( __CLASS__, '_bq_filter_post_status' ), 10, 2 );
-
-    add_filter( 'post_link', array(__CLASS__, '_custom_post_link'), 1000,  3 );
     
 		do_action( 'lift_wp_search_init' );
 	}
@@ -256,9 +254,10 @@ class Lift_WP_Search {
    * @param object $post
    * @return string
    **/
-  public static function _custom_post_link($permalink, $post, $leavename)
+  public static function _custom_post_link($permalink)
   {
-    if($post->resourcename)
+    global $post;
+    if(@$post->resourcename)
       return site_url().'/cloudsearchdetail.php?waurl='.urlencode($post->resourcename);
     return $permalink;
   }
@@ -307,6 +306,8 @@ class Lift_WP_Search {
 
 		if ( $lift_query->has_valid_result() )
     {
+      add_filter( 'post_link', array(__CLASS__, '_custom_post_link'), 1000,  1 );
+      add_filter( 'attachment_link', array(__CLASS__, '_custom_post_link'), 1000,  1 );
       add_filter('get_edit_post_link', array(__CLASS__, '_get_edit_post_link'));
       add_filter('comments_open', array('Lift_Search', '_return_zero'));
       add_filter('get_the_excerpt', array(__CLASS__, '_filter_content'), 50, 1);
