@@ -188,8 +188,6 @@ class Lift_Search {
         }
         if($found)
         {
-          add_filter('get_previous_post_where', array(__CLASS__, '_return_zero'));
-          add_filter('get_next_post_where', array(__CLASS__, '_return_zero'));
           add_filter('comments_open', array(__CLASS__, '_return_zero'));
           
           return get_single_template();
