@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Librelio
-Version: 0.0.2
+Version: 0.0.3
 Plugin URI: http://www.librelio.com/
 Description: Improves WordPress search using Amazon CloudSearch
 Author: Librelio
