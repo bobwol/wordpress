@@ -18,6 +18,9 @@ require_once('wp/lift-update-queue.php');
 require_once('wp/update-watchers/post.php');
 require_once('lib/wp-asynch-events.php');
 
+use CFPropertyList\CFPropertyList, PHPHtmlParser\Dom;
+
+
 class Lift_Search {
 
   private static function _($s) { return lift_cloud_localize($s); }
@@ -122,10 +125,72 @@ class Lift_Search {
 			} );
 
       add_filter('template_include',array(__CLASS__, 'view_project_template'));
+
+      add_filter('librelio_external_content', array(__CLASS__, 'eval_shortcodes_for_librelio_external_content'), 1, 4);
 	}
+
+  public static function librelio_external_content_replacement_for_shortcode($sc_obj, $data, $waurl)
+  {
+    $rep = "";
+    if(($attr_id = @$sc_obj['attributes']['id']))
+    {
+      $ext = pathinfo($waurl, PATHINFO_EXTENSION);
+      switch($ext)
+      {
+      case 'plist':
+        try {
+          $pl = new CFPropertyList();
+          $pl->parse($data, CFPropertyList::FORMAT_XML);
+          $rep = @$pl->toArray()[$attr_id];
+        } catch(Exception $e) {
+        }
+        break;
+      case 'html':
+        $dom = new Dom();
+        $dom->load($data);
+        $el = $dom->getElementById($attr_id);
+        $rep = $el ? $el->innerHtml() : '';
+        break;
+      case 'xml':
+        $xml = simplexml_load_string($data);
+        $el = @$xml[$attr_id];
+        $rep = $el ? (string)$el : '';
+        break;
+      }
+    }
+    else
+      $rep = $data;
+    return $rep ? $rep : '';
+  }
+  
+  public static function eval_shortcodes_for_librelio_external_content($content, $type, $data, $waurl)
+  {
+    $i = 0;
+    while($i < strlen($content) && ($i = strpos($content, '[', $i)) !== false)
+    {
+      try {
+        $sc_obj = shortcode_parse($content, $i);
+        
+        if($sc_obj['name'] == 'librelio')
+        {
+          $rep = self::librelio_external_content_replacement_for_shortcode($sc_obj, $data, $waurl);
+          $content = substr($content, 0, $i).$rep.
+                     substr($content, $i + $sc_obj['strlen']);
+          $i += strlen($rep);
+        }
+        else
+          $i += $sc_obj['strlen'];
+      } catch(ShortcodeException $e) {
+        $i++;
+      }
+    }
+    
+    return $content;
+  }
 
   public static function view_project_template($template)
   {
+    global $wpdb;
     global $wp_query;
     $request_uri = $_SERVER['REQUEST_URI'];
     $site_url_obj = parse_url(site_url());
@@ -162,7 +227,29 @@ class Lift_Search {
                 'Bucket' => $s3Bucket,
                 'Key' => $s3Key
               ));
-              
+              $title = "";
+              $body = (string)$res['Body'];
+              $watemplate = @$request_page_query['watemplate'];
+              if($watemplate)
+              {
+                $tmpl_post = $wpdb->get_row(
+                      $wpdb->prepare("select * from $wpdb->posts ".
+                                 "where post_name=%s and ".
+                                 "post_type=\"ec_template\"",
+                                     $watemplate) );
+                if(!$tmpl_post)
+                  $body = "Template not found!";
+                else
+                {
+                  $edata = $body;
+                  $title = apply_filters('librelio_external_content', 
+                                         $tmpl_post->post_title, 
+                                         'post_title', $edata, $waurl);
+                  $body = apply_filters('librelio_external_content', 
+                                        $tmpl_post->post_content, 
+                                        'post_content', $edata, $waurl);
+                }
+              }
               $time = date('Y-m-d');
               $wp_query = new WP_Query();
         
@@ -172,8 +259,8 @@ class Lift_Search {
                   "ID" => 9999,
                   "post_type" => "custom",
                   "post_name" => "",
-                  "post_title" => "",
-                  "post_content" => (string)$res['Body'],
+                  "post_title" => $title,
+                  "post_content" => $body,
                   "post_author" => false,
                   "post_date" => $time,
                   "post_date_gmt" => $time
