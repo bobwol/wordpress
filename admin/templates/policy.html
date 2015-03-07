@@ -1,0 +1,19 @@
+<h2>Policy</h2>
+<a id="back" href="#">Back</a>
+<h3>Paid External Content</h3>
+<p>
+  Show paid external content only for selected roles bellow.
+</p>
+<div>
+  <select id="view_paid_external_content_for" name="view_paid_external_content_for" multiple style="width: 250px; height: 200px;">
+    <% _.each( roles, function(role_info, role) { %>
+    <option value="<%= role %>" <%- role_info.capabilities.librelio_view_paid_external_content ? 'selected' : '' %>><%- role_info.name %></option>
+    <% }); %>
+  </select>
+</div>
+<div>
+  <input type="button" id="policy_save" class="button-primary" value="<?php echo self::_('Save'); ?>"/>
+</div>
+<div id="error_log">
+
+</div> <!--end #error_log -->

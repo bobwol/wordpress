@@ -19,6 +19,8 @@ class Lift_Admin {
 			add_action( 'wp_ajax_lift_setting', array( $this, 'action__wp_ajax_lift_setting' ) );
 			add_action( 'wp_ajax_lift_update_queue', array( $this, 'action__wp_ajax_lift_update_queue' ) );
 			add_action( 'wp_ajax_lift_error_log', array( $this, 'action__wp_ajax_lift_error_log' ) );
+			add_action( 'wp_ajax_librelio_get_wp_roles', array( $this, 'get_wp_roles' ) );
+			add_action( 'wp_ajax_librelio_set_allowed_roles_for', array( $this, 'set_allowed_roles_for' ) );
 		}
 
 		if ( !Lift_Search::get_search_domain_name() ) {
@@ -419,4 +421,45 @@ class Lift_Admin {
 		<?php
 	}
 
+  public function get_wp_roles()
+  {
+	  $editable_roles = array_reverse( get_editable_roles() );
+    
+		header( 'Content-Type: application/json' );
+		die( json_encode( $editable_roles ) );
+  }
+  
+  public function set_allowed_roles_for()
+  {
+    global $wp_roles;
+    $allowed_caps = array( 'librelio_view_paid_external_content' );
+    $res = array( 'success' => 1 );
+    $req = json_decode(stripslashes(@$_GET['req']), true);
+    $capability = $req['capability'];
+    $roles = $req['roles'];
+    $proceed = false;
+    if($capability && is_array($roles))
+    {
+      if(!in_array($capability, $allowed_caps))
+        $res = array( 'error' => 1, 'error_message' => 'Capability is not allowed!');
+      else
+        $proceed = true;
+    }
+    else
+    {
+      $res = array( 'error' => 1, 'error_message' => 'Invalid request!' );
+    }
+    if($proceed)
+    {
+	    $editable_roles = get_editable_roles();
+      foreach($editable_roles as $role_name => $role_info)
+      {
+	      $wp_roles->remove_cap($role_name, $capability);
+        if(in_array($role_name, $roles))
+          $wp_roles->add_cap($role_name, $capability);
+      }
+    }
+		header( 'Content-Type: application/json' );
+		die( json_encode( $res ) );
+  }
 }

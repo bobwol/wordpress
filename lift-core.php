@@ -188,6 +188,13 @@ class Lift_Search {
     return $content;
   }
 
+  public static function allowed_to_view_waurl($waurl)
+  {
+    $pttrn = '/_\\.(xml|html|plist)$/';
+    $isPaidUrl = preg_match($pttrn, $waurl);
+    return !$isPaidUrl || current_user_can('librelio_view_paid_external_content');
+  }
+
   public static function view_project_template($template)
   {
     global $wpdb;
@@ -212,66 +219,88 @@ class Lift_Search {
         $waurl = @$request_page_query['waurl'];
         $waurl_obj = parse_url($waurl);
         $found = 0;
-        
-        switch(@$waurl_obj['scheme'])
+        if(self::allowed_to_view_waurl($waurl))
         {
-        case 's3':
-          $s3Bucket = @$waurl_obj['host'];
-          $s3Key = @$waurl_obj['path'];
-          
-          if($s3Bucket && $s3Key)
+          switch(@$waurl_obj['scheme'])
           {
-            $s3Client = self::$aws->get_client()->get('s3');
-            try {
-              $res = $s3Client->getObject(array(
-                'Bucket' => $s3Bucket,
-                'Key' => $s3Key
-              ));
-              $title = "";
-              $body = (string)$res['Body'];
-              $watemplate = @$request_page_query['watemplate'];
-              if($watemplate)
-              {
-                $tmpl_post = $wpdb->get_row(
-                      $wpdb->prepare("select * from $wpdb->posts ".
-                                 "where post_name=%s and ".
-                                 "post_type=\"ec_template\"",
-                                     $watemplate) );
-                if(!$tmpl_post)
-                  $body = "Template not found!";
-                else
+          case 's3':
+            $s3Bucket = @$waurl_obj['host'];
+            $s3Key = @$waurl_obj['path'];
+          
+            if($s3Bucket && $s3Key)
+            {
+              $s3Client = self::$aws->get_client()->get('s3');
+              try {
+                $res = $s3Client->getObject(array(
+                  'Bucket' => $s3Bucket,
+                  'Key' => $s3Key
+                ));
+                $title = "";
+                $body = (string)$res['Body'];
+                $watemplate = @$request_page_query['watemplate'];
+                if($watemplate)
                 {
-                  $edata = $body;
-                  $title = apply_filters('librelio_external_content', 
-                                         $tmpl_post->post_title, 
-                                         'post_title', $edata, $waurl);
-                  $body = apply_filters('librelio_external_content', 
-                                        $tmpl_post->post_content, 
-                                        'post_content', $edata, $waurl);
+                  $tmpl_post = $wpdb->get_row(
+                        $wpdb->prepare("select * from $wpdb->posts ".
+                                   "where post_name=%s and ".
+                                   "post_type=\"ec_template\"",
+                                       $watemplate) );
+                  if(!$tmpl_post)
+                    $body = "Template not found!";
+                  else
+                  {
+                    $edata = $body;
+                    $title = apply_filters('librelio_external_content', 
+                                           $tmpl_post->post_title, 
+                                           'post_title', $edata, $waurl);
+                    $body = apply_filters('librelio_external_content', 
+                                          $tmpl_post->post_content, 
+                                          'post_content', $edata, $waurl);
+                  }
                 }
+                $time = date('Y-m-d');
+                $wp_query = new WP_Query();
+
+                $wp_query->post_count = 1;
+                $wp_query->posts = array(
+                  (object)array(
+                    "ID" => 9999,
+                    "post_type" => "custom",
+                    "post_name" => "",
+                    "post_title" => $title,
+                    "post_content" => $body,
+                    "post_author" => false,
+                    "post_date" => $time,
+                    "post_date_gmt" => $time
+                  )
+                );
+                $found = 1;
+              } catch(Aws\Common\Exception\ServiceResponseException $exception) {
+
               }
-              $time = date('Y-m-d');
-              $wp_query = new WP_Query();
-        
-              $wp_query->post_count = 1;
-              $wp_query->posts = array(
-                (object)array(
-                  "ID" => 9999,
-                  "post_type" => "custom",
-                  "post_name" => "",
-                  "post_title" => $title,
-                  "post_content" => $body,
-                  "post_author" => false,
-                  "post_date" => $time,
-                  "post_date_gmt" => $time
-                )
-              );
-              $found = 1;
-            } catch(Aws\Common\Exception\ServiceResponseException $exception) {
-              
             }
+            break;
           }
-          break;
+        }
+        else
+        {
+          $time = date('Y-m-d');
+          $wp_query = new WP_Query();
+
+          $wp_query->post_count = 1;
+          $wp_query->posts = array(
+            (object)array(
+              "ID" => 9999,
+              "post_type" => "custom",
+              "post_name" => "",
+              "post_title" => "",
+              "post_content" => "Permission denied!",
+              "post_author" => false,
+              "post_date" => $time,
+              "post_date_gmt" => $time
+            )
+          );
+          $found = 1;
         }
         if($found)
         {

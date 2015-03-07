@@ -68,7 +68,8 @@
       state_views = {
         set_domainname: {view: liftAdmin.SetDomainView, args: {model: {settings: this.settings, domains: this.domains}}},
         processing_setup: {view: liftAdmin.SetupProcessingView, args: {model: {settings: this.settings, domains: this.domains}}},
-        dashboard: {view: liftAdmin.DashboardView, args: {model: {settings: this.settings, domains: this.domains}}}
+        dashboard: {view: liftAdmin.DashboardView, args: {model: {settings: this.settings, domains: this.domains}}},
+        policy: {view: liftAdmin.PolicyView, args: { }}
       };
 
       new_view = state_views[state];
@@ -385,6 +386,11 @@
       'click #batch_sync_now': 'setSyncNow',
       'click #lift_reset': 'resetLift',
       'click #override_search': 'setOverrideSearch',
+      'click #policy_page_btn': 'gotoPolicy'
+    },
+    gotoPolicy: function()
+    {
+      adminApp.renderState('policy');
     },
     render: function() {
       this.el.innerHTML = this.template({settings: this.model.settings.toJSONObject(), domain: this.model.domains.toJSON()});
@@ -775,6 +781,106 @@
 
   });
 
+  liftAdmin.PolicyView = Backbone.View.extend({
+    initialize: function() {
+      this.template = _.template(liftAdmin.templateLoader.getTemplate('policy'));
+      this.getRoles(function(err, roles)
+        {
+          if(err)
+            alert(err+'');
+          else
+            this.roles = roles;
+          this.renderWhenReady();
+        });
+    },
+    getRoles: function(cb)
+    {
+      this.ajaxJSONRequest('librelio_get_wp_roles', null, cb);
+    },
+    renderWhenReady: function()
+    {
+      if(this.roles)
+        this.render();
+    },
+    ajaxJSONRequest: function(action, req, cb)
+    {
+      var self = this;
+      return $.ajax({
+        url: window.ajaxurl + '?action=' + encodeURIComponent(action) +
+          (req ? '&req=' + encodeURIComponent(JSON.stringify(req)) : ''),
+        success: function(data)
+        {
+          var obj, err;
+          try {
+            if(typeof data != 'object')
+              obj = JSON.parse(data) || {};
+            else
+              obj = data;
+            if(obj.error)
+            {
+              err = obj.error_message;
+            }
+          } catch(err) {
+            err = "Couldn't parse response";
+          }
+          cb.call(self, err, obj);
+        },
+        error: function(xhr, textStatus, errorThrown)
+        {
+          cb.call(self, errorThrown);
+        }
+      });
+    },
+    backClicked: function()
+    {
+      adminApp.render();
+      return false;
+    },
+    savePolicy: function()
+    {
+      var selectedRoles = [];
+      $('#view_paid_external_content_for :selected', this.el).each(function()
+        {
+          selectedRoles.push(this.value);
+        });
+      this.beforeSave();
+      this.ajaxJSONRequest('librelio_set_allowed_roles_for', {
+        capability: 'librelio_view_paid_external_content',
+        roles: selectedRoles
+      }, function(err, res)
+         {
+           this.afterSave();
+           if(err)
+           {
+             alert(err+'');
+             return;
+           }
+         });
+      return false;
+    },
+    events: {
+      'click #policy_save': 'savePolicy',
+      'click #back': 'backClicked'
+    },
+    render: function() {
+      this.el.innerHTML = this.template({
+        roles: this.roles
+      });
+      //if(this.errorView) {
+      //  this.errorView.setElement($('#error_log')).render();
+      //}
+      return this;
+    },
+    beforeSave: function() {
+      $(this.el).find('input,select').attr('disabled', true);
+      return this;
+    },
+    afterSave: function() {
+      $(this.el).find('input,select').attr('disabled', false);
+      return this;
+    }
+  });
+
   var adminApp = new liftAdmin.App();
 
 })(jQuery, window);
@@ -846,4 +952,5 @@
       }
     });
   };
+
 })(jQuery);
