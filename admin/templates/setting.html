@@ -1,5 +1,12 @@
-<h2>Policy</h2>
+<h1>Librelio Setting</h1>
 <a id="back" href="#">Back</a>
+<h2>External Content</h2>
+<div>
+  <label>External Content Prefix</label>
+  <input type="text" value="<%- external_url_prefix %>" name="external_url_prefix" id="external_url_prefix" />
+</div>
+<br />
+<h2>Policy</h2>
 <h3>Paid External Content</h3>
 <p>
   Show paid external content only for selected roles bellow.
@@ -12,7 +19,7 @@
   </select>
 </div>
 <div>
-  <input type="button" id="policy_save" class="button-primary" value="<?php echo self::_('Save'); ?>"/>
+  <input type="button" id="setting_save" class="button-primary" value="<?php echo self::_('Save'); ?>"/>
 </div>
 <div id="error_log">
 

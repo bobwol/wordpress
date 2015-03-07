@@ -21,6 +21,8 @@ class Lift_Admin {
 			add_action( 'wp_ajax_lift_error_log', array( $this, 'action__wp_ajax_lift_error_log' ) );
 			add_action( 'wp_ajax_librelio_get_wp_roles', array( $this, 'get_wp_roles' ) );
 			add_action( 'wp_ajax_librelio_set_allowed_roles_for', array( $this, 'set_allowed_roles_for' ) );
+			add_action( 'wp_ajax_librelio_get_setting', array( $this, 'get_setting' ) );
+			add_action( 'wp_ajax_librelio_set_setting', array( $this, 'set_setting' ) );
 		}
 
 		if ( !Lift_Search::get_search_domain_name() ) {
@@ -461,5 +463,23 @@ class Lift_Admin {
     }
 		header( 'Content-Type: application/json' );
 		die( json_encode( $res ) );
+  }
+
+  public function get_setting()
+  {
+    $key = @$_GET['key'] ?: '';
+    $res = array( 'key' => $key, 
+                  'value' => Lift_Search::__get_setting($key) ?: '' );
+		header( 'Content-Type: application/json' );
+		die( json_encode( $res ) );
+  }
+  
+  public function set_setting()
+  {
+    $key = @$_GET['key'] ?: '';
+    $value = @$_GET['value'] ?: '';
+    Lift_Search::__set_setting($key, $value);
+		header( 'Content-Type: application/json' );
+		die( json_encode( array( 'success' => true ) ) );
   }
 }

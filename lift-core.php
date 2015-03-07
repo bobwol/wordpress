@@ -216,7 +216,8 @@ class Lift_Search {
 
       if($request_page == 'cloudsearchdetail')
       {
-        $waurl = @$request_page_query['waurl'];
+        $waurl = (self::__get_setting('external_url_prefix') ?: '').
+                 (@$request_page_query['waurl'] ?: '');
         $waurl_obj = parse_url($waurl);
         $found = 0;
         if(self::allowed_to_view_waurl($waurl))
@@ -333,7 +334,7 @@ class Lift_Search {
 	 * @param string $group
 	 * @return string | mixed
 	 */
-	private static function __get_setting( $setting ) {
+	public static function __get_setting( $setting ) {
 		// Note: batch-interval should be in seconds, regardless of what batch-interval-units is set to
 		$default_settings = array( 'batch-interval' => 300, 'batch-interval-units' => 'm', 'override-search' => true );
 
@@ -348,7 +349,7 @@ class Lift_Search {
 		return (isset( $settings[$setting] )) ? $settings[$setting] : false;
 	}
 
-	private static function __set_setting( $setting, $value ) {
+	public static function __set_setting( $setting, $value ) {
 		$settings = array( $setting => $value ) + get_option( self::SETTINGS_OPTION, array( ) );
 
 		update_option( self::SETTINGS_OPTION, $settings );

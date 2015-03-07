@@ -69,7 +69,7 @@
         set_domainname: {view: liftAdmin.SetDomainView, args: {model: {settings: this.settings, domains: this.domains}}},
         processing_setup: {view: liftAdmin.SetupProcessingView, args: {model: {settings: this.settings, domains: this.domains}}},
         dashboard: {view: liftAdmin.DashboardView, args: {model: {settings: this.settings, domains: this.domains}}},
-        policy: {view: liftAdmin.PolicyView, args: { }}
+        setting: {view: liftAdmin.SettingView, args: { }}
       };
 
       new_view = state_views[state];
@@ -386,11 +386,11 @@
       'click #batch_sync_now': 'setSyncNow',
       'click #lift_reset': 'resetLift',
       'click #override_search': 'setOverrideSearch',
-      'click #policy_page_btn': 'gotoPolicy'
+      'click #setting_page_btn': 'gotoSetting'
     },
-    gotoPolicy: function()
+    gotoSetting: function()
     {
-      adminApp.renderState('policy');
+      adminApp.renderState('setting');
     },
     render: function() {
       this.el.innerHTML = this.template({settings: this.model.settings.toJSONObject(), domain: this.model.domains.toJSON()});
@@ -781,26 +781,45 @@
 
   });
 
-  liftAdmin.PolicyView = Backbone.View.extend({
+  liftAdmin.SettingView = Backbone.View.extend({
     initialize: function() {
-      this.template = _.template(liftAdmin.templateLoader.getTemplate('policy'));
+      this.template = _.template(liftAdmin.templateLoader.getTemplate('setting'));
+      this.roles = {};
+      this.external_url_prefix = '';
       this.getRoles(function(err, roles)
         {
           if(err)
             alert(err+'');
           else
             this.roles = roles;
-          this.renderWhenReady();
+          this.render();
+        });
+      this.getSetting('external_url_prefix', function(err, value)
+        {
+          if(err)
+            alert(err+'');
+          this.external_url_prefix = value;
+          this.render();
         });
     },
     getRoles: function(cb)
     {
       this.ajaxJSONRequest('librelio_get_wp_roles', null, cb);
     },
-    renderWhenReady: function()
+    getSetting: function(key, cb)
     {
-      if(this.roles)
-        this.render();
+      this.ajaxRequest('librelio_get_setting', { key: key }, function(err, res)
+        {
+          if(err)
+            cb.call(this, err);
+          else
+            cb.call(this, undefined, res.value);
+        });
+    },
+    setSetting: function(key, value, callback)
+    {
+      function cb() { callback && callback.call(this); }
+      this.ajaxRequest('librelio_set_setting', { key: key, value: value }, cb);
     },
     ajaxJSONRequest: function(action, req, cb)
     {
@@ -831,41 +850,87 @@
         }
       });
     },
+    ajaxRequest: function(action, params, cb)
+    {
+      var self = this,
+      params_str,
+      params_arr = [];
+      params.action = action;
+      for(var key in params)
+        params_arr.push(encodeURIComponent(key) + '=' + 
+                        encodeURIComponent(params[key]));
+      params_str = params_arr.join('&');
+      return $.ajax({
+        url: window.ajaxurl + '?' + params_str,
+        success: function(data)
+        {
+          var obj, err;
+          try {
+            if(typeof data != 'object')
+              obj = JSON.parse(data) || {};
+            else
+              obj = data;
+            if(obj.error)
+            {
+              err = obj.error_message;
+            }
+          } catch(err) {
+            err = "Couldn't parse response";
+          }
+          cb.call(self, err, obj);
+        },
+        error: function(xhr, textStatus, errorThrown)
+        {
+          cb.call(self, errorThrown);
+        }
+      });
+    },
     backClicked: function()
     {
       adminApp.render();
       return false;
     },
-    savePolicy: function()
+    saveSetting: function()
     {
-      var selectedRoles = [];
+      function continue_job(err, res)
+      {
+        if(end_proc)
+          return;
+        if(err)
+        {
+          this.afterSave();
+          end_proc = true;
+          alert(err+'');
+          return;
+        }
+        if(++qdone == qlen)
+        {
+          
+           this.afterSave();
+        }
+      }
+      var selectedRoles = [],
+      qdone = 0, qlen = 2, end_proc;
       $('#view_paid_external_content_for :selected', this.el).each(function()
         {
           selectedRoles.push(this.value);
         });
       this.beforeSave();
+      
+      this.setSetting('external_url_prefix', $('#external_url_prefix').val(),
+                      continue_job);
       this.ajaxJSONRequest('librelio_set_allowed_roles_for', {
         capability: 'librelio_view_paid_external_content',
         roles: selectedRoles
-      }, function(err, res)
-         {
-           this.afterSave();
-           if(err)
-           {
-             alert(err+'');
-             return;
-           }
-         });
+      }, continue_job);
       return false;
     },
     events: {
-      'click #policy_save': 'savePolicy',
+      'click #setting_save': 'saveSetting',
       'click #back': 'backClicked'
     },
     render: function() {
-      this.el.innerHTML = this.template({
-        roles: this.roles
-      });
+      this.el.innerHTML = this.template(this);
       //if(this.errorView) {
       //  this.errorView.setElement($('#error_log')).render();
       //}
