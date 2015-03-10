@@ -51,6 +51,18 @@ class Lift_Search {
     remove_filter('aws_get_client_args', array(__CLASS__, 'add_aws_client_args'));
     if(($region = self::get_domain_region()))
       self::$cloud_search_client->setRegion($region);
+
+    register_post_type( 'ec_template',
+      array(
+        'labels' => array(
+          'name' => __( 'Librelio External Content Templates' ),
+          'singular_name' => __( 'Librelio External Content Template' )
+        ),
+        'public' => true,
+        'has_archive' => true
+      )
+    );
+
 		$autoload_path = implode(DIRECTORY_SEPARATOR, array(__DIR__, 'vendor', 'autoload.php'));
 		if ( file_exists( $autoload_path ) ) {
 			require_once $autoload_path;
