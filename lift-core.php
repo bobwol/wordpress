@@ -46,7 +46,9 @@ class Lift_Search {
 
 	public static function init($aws) {
     self::$aws = $aws;
+    add_filter('aws_get_client_args', array(__CLASS__, 'add_aws_cloudsearch_args'));
     self::$cloud_search_client = $aws->get_client()->get('cloudsearch');
+    remove_filter('aws_get_client_args', array(__CLASS__, 'add_aws_client_args'));
     if(($region = self::get_domain_region()))
       self::$cloud_search_client->setRegion($region);
 		$autoload_path = implode(DIRECTORY_SEPARATOR, array(__DIR__, 'vendor', 'autoload.php'));
@@ -128,6 +130,15 @@ class Lift_Search {
 
       add_filter('librelio_external_content', array(__CLASS__, 'eval_shortcodes_for_librelio_external_content'), 1, 4);
 	}
+  
+  public static function add_aws_cloudsearch_args($args)
+  {
+    if(($region = self::get_domain_region()))
+      $args['region'] = $region;
+    else
+      $args['region'] = 'eu-west-1';
+    return $args;
+  }
 
   public static function librelio_external_content_replacement_for_shortcode($sc_obj, $data, $waurl)
   {
