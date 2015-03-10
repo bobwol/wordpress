@@ -52,11 +52,11 @@ class Lift_Search {
     if(($region = self::get_domain_region()))
       self::$cloud_search_client->setRegion($region);
 
-    register_post_type( 'ec_template',
+    register_post_type( 'librelio_template',
       array(
         'labels' => array(
-          'name' => __( 'Librelio External Content Templates' ),
-          'singular_name' => __( 'Librelio External Content Template' )
+          'name' => self::_( 'Librelio Templates' ),
+          'singular_name' => self::_( 'Librelio Template' )
         ),
         'public' => true,
         'has_archive' => true
@@ -267,7 +267,7 @@ class Lift_Search {
                   $tmpl_post = $wpdb->get_row(
                         $wpdb->prepare("select * from $wpdb->posts ".
                                    "where post_name=%s and ".
-                                   "post_type=\"ec_template\"",
+                                   "post_type=\"librelio_template\"",
                                        $watemplate) );
                   if(!$tmpl_post)
                     $body = "Template not found!";

@@ -554,3 +554,42 @@ msgstr ""
 #: admin/templates/update-queue.html:28
 msgid "No documents are currently queued for updates."
 msgstr ""
+
+
+#: lift-core.php:58
+msgid "Librelio Templates"
+msgstr ""
+
+#: lift-core.php:59
+msgid "Librelio Template"
+msgstr ""
+
+#: 
+msgid "Librelio Settings"
+msgstr ""
+
+#: 
+msgid "Back"
+msgstr ""
+
+#: 
+msgid "External Content"
+msgstr ""
+
+#: 
+msgid "External Content Prefix"
+msgstr ""
+
+#: 
+msgid "Policy"
+msgstr ""
+
+#: 
+msgid "Paid External Content"
+msgstr ""
+
+#: 
+msgid "Show paid external content only for selected roles bellow."
+msgstr ""
+
+
