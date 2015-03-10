@@ -56,7 +56,7 @@ class Lift_Admin {
 	 * Sets up menu pages
 	 */
 	public function action__admin_menu() {
-		$hook = add_options_page( self::_('Librelio: Search for WordPress'), self::_('Librelio'), $this->get_manage_capability(), self::OPTIONS_SLUG, array( $this, 'callback__render_options_page' ) );
+		$hook = add_options_page( self::_('Librelio'), self::_('Librelio'), $this->get_manage_capability(), self::OPTIONS_SLUG, array( $this, 'callback__render_options_page' ) );
 		add_action( $hook, array( $this, 'action__options_page_enqueue' ) );
 	}
 
