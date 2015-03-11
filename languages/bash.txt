@@ -1,0 +1,4 @@
+mv librelio-fr_FR.po librelio-fr_FR.posvg
+msginit -i librelio.pot -o librelio-fr_FR.po -l fr_FR
+msgmerge librelio-fr_FR.posvg librelio-fr_FR.po
+msgfmt librelio-fr_FR.po -o librelio-fr_FR.mo

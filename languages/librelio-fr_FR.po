@@ -1,47 +1,38 @@
-# English translations for WPLibrelio package.
-# Copyright (C) 2014 THE WPLibrelio'S COPYRIGHT HOLDER
+# Language fr-FR translations for WPLibrelio package.
+# Copyright (C) 2015 THE WPLibrelio'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the WPLibrelio package.
-# Librelio <info@librelio.com>, 2014.
+# Emmanuel <support@librelio.com>, 2015.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: WPLibrelio\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-12-13 20:57+0330\n"
-"PO-Revision-Date: 2014-12-15 14:31+0100\n"
-"Last-Translator: Emmanuel <info@librelio.com>\n"
-"Language-Team: English\n"
-"Language: en_US\n"
+"PO-Revision-Date: 2015-03-10 09:54+0100\n"
+"Last-Translator: Emmanuel <support@librelio.com>\n"
+"Language-Team: Language fr-FR\n"
+"Language: fr-FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: admin/admin.php:62 lift-core.php:152
 msgid "Success"
-msgstr ""
+msgstr "Succès"
 
-#: admin/admin.php:79 admin/templates/dashboard.html:2
-#: admin/templates/set-domain.html:2 admin/templates/setup-processing.html:2
-msgid "Librelio"
-msgstr "Librelio: Recherche WordPress"
 
-#: admin/admin.php:79
-#, fuzzy
-msgid "Librelio"
-msgstr "Librelio"
 
 #: admin/admin.php:171
 msgid "There was an error while applying the schema to the domain."
-msgstr "Une erreur s'est produite lors de l'application du schema au domaine"
+msgstr "Une erreur s'est produite lors de l'application du schéma"
 
 #: admin/admin.php:174
 msgid "The given domain does not exist."
-msgstr "Le domaine n'existe pas"
+msgstr "Le domaine donné n'existe pas"
 
 #: admin/admin.php:191
 msgid "The name of the setting you are trying to set is invalid."
-msgstr "Le nom du paramétrage que vous essayez d'appliquer n'existe pas"
+msgstr "Le nom du setting que vous essayez d'appliquer n'existe pas"
 
 #: admin/admin.php:195 admin/admin.php:284
 msgid "The request was missing required authentication data."
@@ -49,7 +40,7 @@ msgstr "Les données d'authentification n'étaient pas présentes dans la requê
 
 #: admin/admin.php:340
 msgid "Post Deletion (%d)"
-msgstr "Effacement de pst (%d)"
+msgstr "Effaçage du post (%d)"
 
 #: admin/admin.php:399 lift-core.php:422
 msgid "Error Logging is Disabled"
@@ -57,14 +48,13 @@ msgstr "Le logging des erreurs est désactivé"
 
 #: admin/admin.php:416
 msgid "Settings"
-msgstr "Paramétrage"
+msgstr "Configuration"
 
 #: admin/admin.php:446
-#, fuzzy
 msgid ""
 "<strong>Welcome to Librelio</strong>: \tNow that you've activated the "
 "Librelio plugin it's time to set it up. Click below to get started."
-msgstr "Bienvenue"
+msgstr "<strong>Bienvenue sur Librelio</strong>: \tMaintenant que vous avez activé le plug-in, il est temps de le configurer. Cliquez ci-dessous pour démarrer."
 
 #: admin/admin.php:447
 msgid "Configure Librelio"
@@ -76,15 +66,15 @@ msgstr "La taille doit être un entier positif"
 
 #: api/cloud-search-query.php:67
 msgid "Start must be a positive integer"
-msgstr "Le démarrage doit être un entier"
+msgstr "Le début doit être un entier positif"
 
 #: lift-core.php:442
 msgid "Log ID"
-msgstr "ID Log"
+msgstr "Log ID"
 
 #: lift-core.php:443
 msgid "Log Title"
-msgstr "Titre Log"
+msgstr ""
 
 #: lift-core.php:444
 msgid "Time Logged"
@@ -92,17 +82,18 @@ msgstr "Heure enregistrée"
 
 #: lift-core.php:457
 msgid "No Recent Errors"
-msgstr "Pas d'erreur récente"
+msgstr "Pas d'erreurs récentes"
 
 #: lift-search.php:26
 msgid ""
 "Librelio Search requires PHP version 5.3 or higher. Installed version is: "
 "%s'), phpversion()).'</strong></p>"
-msgstr ""
+msgstr "Librelio nécessite PHP version 5.3 or plus. La version installée est: "
+"%s'), phpversion()).'</strong></p>"
 
 #: templates/lift-loop.php:41
 msgid "No Search Results"
-msgstr "Pas de résultats de recherche"
+msgstr ""
 
 #: templates/search.php:19
 msgid "Results"
@@ -110,17 +101,16 @@ msgstr "Résultats"
 
 #: vendor/voceconnect/voce-error-logging/voce-error-logging.php:40
 #: vendor/voceconnect/voce-error-logging/voce-error-logging.php:65
-#, fuzzy
 msgid "Logged Errors"
-msgstr " Erreurs enregistrées"
+msgstr "Erreurs loggées"
 
 #: vendor/voceconnect/voce-error-logging/voce-error-logging.php:41
 msgid "Logged Error"
-msgstr "Erreur enregistrée"
+msgstr "Erreur loggée"
 
 #: vendor/voceconnect/voce-error-logging/voce-error-logging.php:42
 msgid "View"
-msgstr "Voir"
+msgstr "VOir"
 
 #: vendor/voceconnect/voce-error-logging/voce-error-logging.php:43
 msgid "Search Errors"
@@ -128,11 +118,11 @@ msgstr "Erreurs de recherche"
 
 #: vendor/voceconnect/voce-error-logging/voce-error-logging.php:44
 msgid "No logged errors found."
-msgstr "Pas d'erreurs trouvées"
+msgstr "Pas d'erreur loggée trouvée"
 
 #: vendor/voceconnect/voce-error-logging/voce-error-logging.php:45
 msgid "No logged errors in trash."
-msgstr "Pas d'erreurs dans la corbeille"
+msgstr "Pas d'erreur loggée dans la corbeille"
 
 #: vendor/voceconnect/voce-error-logging/voce-error-logging.php:65
 msgid "Error Log"
@@ -140,23 +130,20 @@ msgstr "Log d'erreurs"
 
 #: vendor/voceconnect/voce-error-logging/voce-error-logging.php:135
 msgid "View all log types"
-msgstr "Voir tous les logs"
+msgstr "Voir tous les types de log"
 
 #: wp/domain-manager.php:95
 msgid "There was an error creating the domain. The domain already exists."
-msgstr ""
-"Une erreur s'est produite lors de la création du domaine. Le domaine existe "
-"déjà"
+msgstr "Une erreur s'est produite lors de la création du domaine. Le domaine exitse déjà"
 
 #: wp/domain-manager.php:123
 msgid "Received an invalid repsonse when trying to describe the current schema"
-msgstr ""
+msgstr "Réponse invalide reçue lors de la description du schéma courrant "
 
 #: wp/domain-manager.php:211
-#, fuzzy
 msgid ""
 "There was an error while applying the default access policy to the domain."
-msgstr "Une erreur s'est produite lors de l'application du schema au domaine"
+msgstr "Une erreur s'est produite lors de l'application de la politique d'accès par défaut sur le domaine"
 
 #: wp/field.php:309
 msgid "literal"
@@ -164,15 +151,15 @@ msgstr "littéral"
 
 #: wp/field.php:767
 msgid "Between %1$s and %2$s ago"
-msgstr "Il y a entre %1$s et %2$s"
+msgstr "Il y a depuis entre  %1$s and %2$s"
 
 #: wp/field.php:769
 msgid "Less than %s ago"
-msgstr "Il y a moins de %s "
+msgstr ""
 
 #: wp/field.php:771
 msgid "More than %s ago"
-msgstr "Il y a plus de %s "
+msgstr "Il y a depuis plus de %s "
 
 #: wp/field.php:773
 msgid "Any Time"
@@ -200,7 +187,7 @@ msgstr "N'importe quel"
 
 #: wp/form-controls.php:49
 msgid "More options &hellip;"
-msgstr "Plus d'options ..."
+msgstr "Plus d'options &hellip;"
 
 #: wp/form-controls.php:56
 msgid "Less options"
@@ -212,7 +199,7 @@ msgstr "Documents en attente"
 
 #: wp/lift-batch-handler.php:152 admin/templates/update-queue.html:3
 msgid "Documents to be Synced"
-msgstr "Document à syncroniser"
+msgstr "Documents à synchronizer"
 
 #: wp/lift-batch-handler.php:156
 msgid "Queue ID"
@@ -220,7 +207,7 @@ msgstr "ID de file d'attente"
 
 #: wp/lift-batch-handler.php:157
 msgid "Post"
-msgstr "Post"
+msgstr "Article"
 
 #: wp/lift-batch-handler.php:158
 msgid "Last Author"
@@ -228,19 +215,19 @@ msgstr "Dernier auteur"
 
 #: wp/lift-batch-handler.php:159
 msgid "Time Queued"
-msgstr "Heure de mise en file d'attente"
+msgstr "Heure de mise en attente"
 
 #: wp/lift-batch-handler.php:186
 msgid "Deleted Post"
-msgstr "Post effacé"
+msgstr "Article Effacé"
 
 #: wp/lift-batch-handler.php:205
 msgid "No Posts In Queue"
-msgstr "Pas de post en file d'attente"
+msgstr "Aucun article en attente"
 
 #: wp/lift-health.php:87
 msgid "%d or more errors in the last %s"
-msgstr "%d ou plus erreurs lors des dernières %s"
+msgstr "%d ou plus erreurs dans les dernières %s"
 
 #: wp/lift-health.php:135
 msgid "Domain has been deleted or the CloudSearch API request failed."
@@ -256,15 +243,15 @@ msgstr "active"
 
 #: wp/lift-health.php:161
 msgid "CloudSearch domain being deleted"
-msgstr "Le domaine CloudSearch a été effacé."
+msgstr "Domaine CloudSearch en cours d'effaçage"
 
 #: wp/lift-health.php:162
 msgid "being deleted"
-msgstr "effacement en cours"
+msgstr "en cours d'effaçage"
 
 #: wp/lift-health.php:166
 msgid "CloudSearch domain loading"
-msgstr "Chargement du domaine CloludSearch"
+msgstr "Domaine CloudSearch en cours de chargement"
 
 #: wp/lift-health.php:167
 msgid "loading"
@@ -272,15 +259,15 @@ msgstr "chargement"
 
 #: wp/lift-health.php:170
 msgid "CloudSearch domain needs indexing"
-msgstr "Le domaine CloudSearch doit être indexé"
+msgstr "Le domaine CloudSearch a besoin d'être indexé"
 
 #: wp/lift-health.php:171
 msgid "needs indexing"
-msgstr "doit être indexé"
+msgstr "besoin d'être indexé"
 
 #: wp/lift-health.php:174
 msgid "CloudSearch domain processing"
-msgstr "Traitement du domaine CloudSearch en cours"
+msgstr "Domaine CloudSearch en cours de traîtement"
 
 #: wp/lift-health.php:175
 msgid "processing"
@@ -288,38 +275,35 @@ msgstr "traitement en cours"
 
 #: wp/lift-health.php:179
 msgid "CloudSearch domain pending"
-msgstr "Domaine CloudSearch restant"
+msgstr "Domaine cloud search en attente"
 
 #: wp/lift-health.php:180
 msgid "pending"
-msgstr "restant"
+msgstr "en cours"
 
 #: wp/lift-search-form.php:119
 msgid "Search"
-msgstr "Rechercher"
+msgstr "Recherche"
 
 #: wp/lift-search-form.php:122
 msgid "Reset"
-msgstr "Recharger"
+msgstr "Réinitialisation"
 
 #: wp/lift-search-form.php:195
-#, fuzzy
 msgid "Librelio Search Form"
-msgstr "Librelio: Recherche WordPress"
+msgstr "Formulaire de recherche Librelio"
 
 #: wp/lift-search-form.php:195
-#, fuzzy
 msgid "Add a Librelio search form"
-msgstr "Librelio: Recherche WordPress"
+msgstr "Ajouter un formulaire de recherche Librelio"
 
 #: wp/lift-update-queue.php:82
 msgid "Librelio queue post"
-msgstr ""
+msgstr "article en attente"
 
 #: wp/lift-update-queue.php:147
-#, fuzzy
 msgid "Librelio Queue"
-msgstr "Librelio"
+msgstr "file d'attente Librelio"
 
 #: wp/lift-update-queue.php:148
 msgid "Queued Docs"
@@ -331,7 +315,7 @@ msgstr "normal"
 
 #: admin/templates/dashboard.html:10
 msgid "CloudSearch Document Sync"
-msgstr "Syncronisation CloudSearch"
+msgstr "Synchro de document CloudSearch"
 
 #: admin/templates/dashboard.html:12
 msgid "Last"
@@ -347,7 +331,7 @@ msgstr "Minutes"
 
 #: admin/templates/dashboard.html:22
 msgid "Hours"
-msgstr "Heures"
+msgstr "Haures"
 
 #: admin/templates/dashboard.html:23
 msgid "Days"
@@ -359,20 +343,19 @@ msgstr "Enregistrer"
 
 #: admin/templates/dashboard.html:26
 msgid "Sync Queue Now"
-msgstr "Syncroniser la file maintenant"
+msgstr "Synchroniser la queue maintenant"
 
 #: admin/templates/dashboard.html:34
 msgid "Override Search"
-msgstr "Overrrider la recherche"
+msgstr "Overrider la recherche"
 
 #: admin/templates/dashboard.html:41
 msgid "Change AWS Keys"
-msgstr "Changer les clés AWS"
+msgstr "Changer la clé AWS"
 
 #: admin/templates/dashboard.html:42
-#, fuzzy
 msgid "Reset Librelio"
-msgstr "Librelio"
+msgstr "Recharger Librelio"
 
 #: admin/templates/error-logs.html:4
 msgid "Recent Errors"
@@ -396,20 +379,21 @@ msgstr "Date/Heure"
 
 #: admin/templates/modal-confirm-domain.html:1
 msgid "Search Domain Already Exists"
-msgstr "Le Domaine de Recherche existe déjà"
+msgstr ""
 
 #: admin/templates/modal-confirm-domain.html:3
 msgid ""
 "The domain name you selected already exists on this AWS account.  If you "
 "continue, Librelio will apply its index schema on top of any existing "
 "schema. Are you sure this is the domain you want to use?"
-msgstr ""
+msgstr "Le domaine que vous avez sélectionné existe déjà sur ce compte AWS. Si vous "
+"continuez, Librelio appliquera son schéma d'indexation au dessus de ceux existants. "
+"Etes-vous sûr de vouloir utiliser ce domaine?"
 
 #: admin/templates/modal-confirm-domain.html:7
 #: admin/templates/set-domain.html:36
-#, fuzzy
 msgid "Cancel"
-msgstr " Annuler"
+msgstr "Annuler"
 
 #: admin/templates/modal-confirm-domain.html:8
 msgid "Use this Domain"
@@ -417,17 +401,18 @@ msgstr "Utiliser ce domaine"
 
 #: admin/templates/modal-error-missing-domain.html:1
 msgid "Error! The Domain No Longer Exists."
-msgstr "Erreur! Ce domaine n'existe plus."
+msgstr "Erreur! Ce domaine n'existe plus"
 
 #: admin/templates/modal-error-missing-domain.html:3
 msgid ""
 "The domain you previously set is no longer reachable on Amazon Cloud Search. "
 "It may have been deleted."
-msgstr ""
+msgstr "Le domaine que vous avez précédemment enregistré n'existe plus sur Amazon. "
+"Il a peut-être été désactivé."
 
 #: admin/templates/modal-error-missing-domain.html:6
 msgid "You can setup another domain."
-msgstr ""
+msgstr "Vous pouvez configurer un autre domaine"
 
 #: admin/templates/modal-error-missing-domain.html:11
 msgid "Update Domain"
@@ -435,124 +420,125 @@ msgstr "Mettre à jour le domaine"
 
 #: admin/templates/modal-error.html:1
 msgid "Error! There was an error contacting Amazon Web Services."
-msgstr "Une erreur de communication avec AWS s'est porduite"
+msgstr "Erreur! Une erreur s'est produite en contactant AWS"
 
 #: admin/templates/set-domain.html:8
-#, fuzzy
 msgid "Enter a Search Domain Name"
-msgstr "Rechercher le nom de domaine"
+msgstr "Entrer un domaine de recherche"
 
 #: admin/templates/set-domain.html:17
 msgid ""
 "This must be a unique string to your AWS account. If the domain already "
 "exists, Librelio will need to apply its default schema on top of the "
 "existing instance."
-msgstr ""
+msgstr "Ceci doit être un nom unique pour votre compte AWS. Si le domaine  "
+"existe déjà, Librelio appliquera son schéma d'indexation au dessus de celui "
+"existiant."
+
 
 #: admin/templates/set-domain.html:21
 msgid "Search Domain Name"
-msgstr "Rechercher le nom de domaine"
+msgstr "Rechercher le domaine"
 
 #: admin/templates/set-domain.html:25
 msgid "Endpoint Region"
-msgstr "Région d'endpoint"
+msgstr "Région AWS"
 
 #: admin/templates/set-domain.html:27
 msgid "US East (Northern Virginia) Region"
-msgstr "US East (Northern Virginia) "
+msgstr "US East (Northern Virginia) Region"
 
 #: admin/templates/set-domain.html:28
 msgid "US West (Northern California) Region"
-msgstr "US West (Northern California)"
+msgstr "US West (Northern California) Region"
 
 #: admin/templates/set-domain.html:29
 msgid "US West (Oregon) Region"
-msgstr "US West (Oregon)"
+msgstr "US West (Oregon) Region"
 
 #: admin/templates/set-domain.html:30
 msgid "EU (Ireland) Region"
-msgstr "EU (Ireland)"
+msgstr "EU (Ireland) Region"
 
 #: admin/templates/set-domain.html:31
 msgid "Asia Pacific (Singapore) Region"
-msgstr "Asia Pacific (Singapore)"
+msgstr "Asia Pacific (Singapore) Region"
 
 #: admin/templates/set-domain.html:37
 msgid "Save Domain Name"
-msgstr "Enregistrer le nom de domaine"
+msgstr "Enregistrer le domaine"
 
 #: admin/templates/set-domain.html:43
 msgid "About Search Domain Names"
-msgstr "A propos de la recherche de noms de domaine"
+msgstr "A propos de la recherche de domaines"
 
 #: admin/templates/set-domain.html:44
 msgid "The domain name string can only contain the following characters:"
-msgstr "Le nom de domaine peut seulement contenir les caracères suivants"
+msgstr "Le nom de domaine peut seulement contenir les caractères suivants"
 
 #: admin/templates/set-domain.html:46
 msgid "Lowercase a-z"
-msgstr "Minuscules de a à z"
+msgstr "a-z minuscules"
 
 #: admin/templates/set-domain.html:47
 msgid "Numerals 0-9"
-msgstr "Chiffres de 0 à 9"
+msgstr "chiffres 1-9"
 
 #: admin/templates/set-domain.html:48
 msgid "The hyphen character"
-msgstr "Caractère _"
+msgstr "Hyphen"
 
 #: admin/templates/set-domain.html:50
 msgid "The string has a maximum length of <strong>28 characters</strong>."
-msgstr "La chaîne de caractères doit avoir une longueur maximale de 28"
+msgstr "Le texte doit avoir une longueur maxi de <strong>28 caractères</strong>."
 
 #: admin/templates/setup-processing.html:6
 msgid "Your domain is being set up!"
-msgstr "Votre domaine est en cours de mis en place"
+msgstr "Votre domaine est en cours d'activation"
 
 #: admin/templates/setup-processing.html:14
 msgid ""
 "If this is a new search domain, it will take approximately 30-40 minutes for "
 "it to become active and ready to index your documents."
-msgstr ""
+msgstr "Si c'est un nouveau domaine, cela prendra environ 30-40 minutes  "
+"pour qu'il devienne actif et indexe vos documents."
+
 
 #: admin/templates/setup-processing.html:18
 msgid "Creating Document Domain"
-msgstr "Création du domaine de documents"
+msgstr "Création du domaine en cours"
 
 #: admin/templates/setup-processing.html:19
 msgid "Apply Schema And Default Access Policies"
-msgstr ""
+msgstr "Appliquer le schéma la politique d'accès par défaut"
 
 #: admin/templates/setup-processing.html:20
 #: admin/templates/setup-processing.html:25
-#, fuzzy
 msgid "Process Domain"
-msgstr " Traitement du domaine"
+msgstr "Traiter le domaine"
 
 #: admin/templates/setup-processing.html:21
 #: admin/templates/setup-processing.html:26
 #: admin/templates/setup-processing.html:31
 msgid "Done"
-msgstr ""
+msgstr "Fiat"
 
 #: admin/templates/setup-processing.html:23
 #: admin/templates/setup-processing.html:28
-#, fuzzy
 msgid "Document Domain Created"
-msgstr " Domaine de documents créé."
+msgstr "Domaine créé"
 
 #: admin/templates/setup-processing.html:24
 msgid "Applying Schema And Default Access Policies"
-msgstr ""
+msgstr "Application en cours du schéma et des politiques d'accès "
 
 #: admin/templates/setup-processing.html:29
 msgid "Applied Schema And Default Access Policies"
-msgstr ""
+msgstr "Application du schéma et des politiques d'accès terminée"
 
 #: admin/templates/setup-processing.html:30
-#, fuzzy
 msgid "Processing Domain"
-msgstr " Traitement du domaine"
+msgstr "Traitement du domaine en cours"
 
 #: admin/templates/update-queue.html:12
 msgid "Title"
@@ -568,4 +554,4 @@ msgstr "Date de mise en attente"
 
 #: admin/templates/update-queue.html:28
 msgid "No documents are currently queued for updates."
-msgstr ""
+msgstr "Aucun document n'est actuellement en attente."
