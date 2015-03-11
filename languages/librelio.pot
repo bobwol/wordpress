@@ -26,10 +26,6 @@ msgstr ""
 msgid "Librelio"
 msgstr ""
 
-#: admin/admin.php:79
-msgid "Librelio"
-msgstr ""
-
 #: admin/admin.php:171
 msgid "There was an error while applying the schema to the domain."
 msgstr ""
