@@ -47,8 +47,13 @@ class Lift_Search {
 	public static function init($aws) {
     self::$aws = $aws;
     add_filter('aws_get_client_args', array(__CLASS__, 'add_aws_cloudsearch_args'));
-    self::$cloud_search_client = $aws->get_client()->get('cloudsearch');
+    $aws_client = $aws->get_client();
     remove_filter('aws_get_client_args', array(__CLASS__, 'add_aws_client_args'));
+    if($aws_client instanceof WP_Error)
+    {
+      return;
+    }
+    self::$cloud_search_client = $aws_client->get('cloudsearch');
     if(($region = self::get_domain_region()))
       self::$cloud_search_client->setRegion($region);
 
