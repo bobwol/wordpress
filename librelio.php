@@ -10,6 +10,11 @@ Author URI: http://www.librelio.com/
 
 require_once('lib/functions.php');
 
+$autoload_path = implode(DIRECTORY_SEPARATOR, array(__DIR__, 'vendor', 'autoload.php'));
+if ( file_exists( $autoload_path ) ) {
+	require_once $autoload_path;
+}
+
 if ( !class_exists( 'Lift_Search' ) ) {
 
 	load_plugin_textdomain('librelio', false, basename( dirname( __FILE__ ) ) . '/languages' );

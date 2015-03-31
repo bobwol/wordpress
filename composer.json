@@ -66,6 +66,6 @@
         "rodneyrehm/plist": "*"
     },
     "autoload": {
-        "files": ["librelio.php"]
+        "files": []
     }
 }

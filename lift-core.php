@@ -68,11 +68,6 @@ class Lift_Search {
       )
     );
 
-		$autoload_path = implode(DIRECTORY_SEPARATOR, array(__DIR__, 'vendor', 'autoload.php'));
-		if ( file_exists( $autoload_path ) ) {
-			require_once $autoload_path;
-		}
-
 		if ( self::get_search_endpoint() && self::get_override_search() ) {
       Lift_WP_Search::init();
 		}
