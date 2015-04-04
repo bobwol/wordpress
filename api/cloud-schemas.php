@@ -54,6 +54,7 @@ class Cloud_Schemas {
 				'field_type' => 'literal',
 				'options' => array(
 					'facet' => true,
+          'search' => true
 				),
 			),
 			array(
