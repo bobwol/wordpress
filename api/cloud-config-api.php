@@ -227,7 +227,28 @@ class Cloud_Config_API {
 						'default' => false
 					)
 				)
-			)
+			),
+			'literal-array' => array(
+				'option_name' => 'LiteralArrayOptions',
+				'options' => array(
+					'default' => array(
+						'name' => 'DefaultValue',
+						'default' => null
+					),
+					'facet' => array(
+						'name' => 'FacetEnabled',
+						'default' => false
+					),
+					'result' => array(
+						'name' => 'ResultEnabled',
+						'default' => false
+					),
+					'search' => array(
+						'name' => 'SearchEnabled',
+						'default' => false
+					)
+				)
+			),
 		);
 
 		$index_option_name = $field_types[$field_type]['option_name'];

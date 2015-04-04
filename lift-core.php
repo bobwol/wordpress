@@ -20,6 +20,25 @@ require_once('lib/wp-asynch-events.php');
 
 use CFPropertyList\CFPropertyList, PHPHtmlParser\Dom;
 
+function Lift_Batch_Handler_send_next_batch()
+{
+  if(Lift_Search::$ready)
+    return Lift_Batch_Handler::send_next_batch();
+  add_action( 'librelio-init', array( 'Lift_Batch_Handler', 'send_next_batch' ) );
+  do_action('init'); // trigger init for aws-init action
+}
+
+function Lift_Batch_Handler_process_queue_all()
+{
+  if(Lift_Search::$ready)
+    return Lift_Batch_Handler::process_queue_all();
+  add_action( 'librelio-init', array( 'Lift_Batch_Handler', 'process_queue_all' ) );
+  do_action('init'); // trigger init for aws-init action
+}
+
+//need cron hooks to be set prior to init
+add_action( Lift_Batch_Handler::BATCH_CRON_HOOK, 'Lift_Batch_Handler_send_next_batch' );
+add_action( Lift_Batch_Handler::QUEUE_ALL_CRON_HOOK, 'Lift_Batch_Handler_process_queue_all' );
 
 class Lift_Search {
 
@@ -39,6 +58,7 @@ class Lift_Search {
 	const DOMAIN_EVENT_WATCH_INTERVAL = 60;
   public static $aws;
   public static $cloud_search_client;
+  public static $ready = false;
 
 	public static function error_logging_enabled() {
 		return (!( defined( 'DISABLE_LIFT_ERROR_LOGGING' ) && DISABLE_LIFT_ERROR_LOGGING )) && ( class_exists( 'Voce_Error_Logging' ) || file_exists( __DIR__ . '/lib/voce-error-logging/voce-error-logging.php' ) );
@@ -84,10 +104,6 @@ class Lift_Search {
 		}
 
     self::_upgrade_check();
-
-    //need cron hooks to be set prior to init
-    add_action( Lift_Batch_Handler::BATCH_CRON_HOOK, array( 'Lift_Batch_Handler', 'send_next_batch' ) );
-    add_action( Lift_Batch_Handler::QUEUE_ALL_CRON_HOOK, array( 'Lift_Batch_Handler', 'process_queue_all' ) );
 
 
 		// @TODO only enqueue on search template or if someone calls the form
@@ -141,6 +157,8 @@ class Lift_Search {
       add_filter('template_include',array(__CLASS__, 'view_project_template'));
 
       add_filter('librelio_external_content', array(__CLASS__, 'eval_shortcodes_for_librelio_external_content'), 1, 4);
+      do_action('librelio-init');
+      self::$ready = true;
 	}
   
   public static function add_aws_cloudsearch_args($args)
