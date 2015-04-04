@@ -20,7 +20,11 @@ msgstr ""
 msgid "Success"
 msgstr "Succès"
 
-
+#: admin/admin.php:79 admin/templates/dashboard.html:2
+#: admin/templates/set-domain.html:2 admin/templates/setup-processing.html:2
+#, fuzzy
+msgid "Librelio"
+msgstr "Librelio"
 
 #: admin/admin.php:171
 msgid "There was an error while applying the schema to the domain."
@@ -54,7 +58,9 @@ msgstr "Configuration"
 msgid ""
 "<strong>Welcome to Librelio</strong>: \tNow that you've activated the "
 "Librelio plugin it's time to set it up. Click below to get started."
-msgstr "<strong>Bienvenue sur Librelio</strong>: \tMaintenant que vous avez activé le plug-in, il est temps de le configurer. Cliquez ci-dessous pour démarrer."
+msgstr ""
+"<strong>Bienvenue sur Librelio</strong>: \tMaintenant que vous avez activé "
+"le plug-in, il est temps de le configurer. Cliquez ci-dessous pour démarrer."
 
 #: admin/admin.php:447
 msgid "Configure Librelio"
@@ -88,8 +94,9 @@ msgstr "Pas d'erreurs récentes"
 msgid ""
 "Librelio Search requires PHP version 5.3 or higher. Installed version is: "
 "%s'), phpversion()).'</strong></p>"
-msgstr "Librelio nécessite PHP version 5.3 or plus. La version installée est: "
-"%s'), phpversion()).'</strong></p>"
+msgstr ""
+"Librelio nécessite PHP version 5.3 or plus. La version installée est: %s'), "
+"phpversion()).'</strong></p>"
 
 #: templates/lift-loop.php:41
 msgid "No Search Results"
@@ -134,7 +141,9 @@ msgstr "Voir tous les types de log"
 
 #: wp/domain-manager.php:95
 msgid "There was an error creating the domain. The domain already exists."
-msgstr "Une erreur s'est produite lors de la création du domaine. Le domaine exitse déjà"
+msgstr ""
+"Une erreur s'est produite lors de la création du domaine. Le domaine exitse "
+"déjà"
 
 #: wp/domain-manager.php:123
 msgid "Received an invalid repsonse when trying to describe the current schema"
@@ -143,7 +152,9 @@ msgstr "Réponse invalide reçue lors de la description du schéma courrant "
 #: wp/domain-manager.php:211
 msgid ""
 "There was an error while applying the default access policy to the domain."
-msgstr "Une erreur s'est produite lors de l'application de la politique d'accès par défaut sur le domaine"
+msgstr ""
+"Une erreur s'est produite lors de l'application de la politique d'accès par "
+"défaut sur le domaine"
 
 #: wp/field.php:309
 msgid "literal"
@@ -386,9 +397,10 @@ msgid ""
 "The domain name you selected already exists on this AWS account.  If you "
 "continue, Librelio will apply its index schema on top of any existing "
 "schema. Are you sure this is the domain you want to use?"
-msgstr "Le domaine que vous avez sélectionné existe déjà sur ce compte AWS. Si vous "
-"continuez, Librelio appliquera son schéma d'indexation au dessus de ceux existants. "
-"Etes-vous sûr de vouloir utiliser ce domaine?"
+msgstr ""
+"Le domaine que vous avez sélectionné existe déjà sur ce compte AWS. Si vous "
+"continuez, Librelio appliquera son schéma d'indexation au dessus de ceux "
+"existants. Etes-vous sûr de vouloir utiliser ce domaine?"
 
 #: admin/templates/modal-confirm-domain.html:7
 #: admin/templates/set-domain.html:36
@@ -407,7 +419,8 @@ msgstr "Erreur! Ce domaine n'existe plus"
 msgid ""
 "The domain you previously set is no longer reachable on Amazon Cloud Search. "
 "It may have been deleted."
-msgstr "Le domaine que vous avez précédemment enregistré n'existe plus sur Amazon. "
+msgstr ""
+"Le domaine que vous avez précédemment enregistré n'existe plus sur Amazon. "
 "Il a peut-être été désactivé."
 
 #: admin/templates/modal-error-missing-domain.html:6
@@ -431,10 +444,10 @@ msgid ""
 "This must be a unique string to your AWS account. If the domain already "
 "exists, Librelio will need to apply its default schema on top of the "
 "existing instance."
-msgstr "Ceci doit être un nom unique pour votre compte AWS. Si le domaine  "
-"existe déjà, Librelio appliquera son schéma d'indexation au dessus de celui "
+msgstr ""
+"Ceci doit être un nom unique pour votre compte AWS. Si le domaine  existe "
+"déjà, Librelio appliquera son schéma d'indexation au dessus de celui "
 "existiant."
-
 
 #: admin/templates/set-domain.html:21
 msgid "Search Domain Name"
@@ -490,7 +503,8 @@ msgstr "Hyphen"
 
 #: admin/templates/set-domain.html:50
 msgid "The string has a maximum length of <strong>28 characters</strong>."
-msgstr "Le texte doit avoir une longueur maxi de <strong>28 caractères</strong>."
+msgstr ""
+"Le texte doit avoir une longueur maxi de <strong>28 caractères</strong>."
 
 #: admin/templates/setup-processing.html:6
 msgid "Your domain is being set up!"
@@ -500,9 +514,9 @@ msgstr "Votre domaine est en cours d'activation"
 msgid ""
 "If this is a new search domain, it will take approximately 30-40 minutes for "
 "it to become active and ready to index your documents."
-msgstr "Si c'est un nouveau domaine, cela prendra environ 30-40 minutes  "
-"pour qu'il devienne actif et indexe vos documents."
-
+msgstr ""
+"Si c'est un nouveau domaine, cela prendra environ 30-40 minutes  pour qu'il "
+"devienne actif et indexe vos documents."
 
 #: admin/templates/setup-processing.html:18
 msgid "Creating Document Domain"
@@ -553,5 +567,37 @@ msgid "Date Queued"
 msgstr "Date de mise en attente"
 
 #: admin/templates/update-queue.html:28
-msgid "No documents are currently queued for updates."
-msgstr "Aucun document n'est actuellement en attente."
+msgid "No documents are currently queued for updates"
+msgstr "Aucun document n'est actuellement en attente"
+
+#: lift-core.php:58
+#, fuzzy
+msgid "Librelio Templates"
+msgstr "Templates Librelio"
+
+#: lift-core.php:59
+#, fuzzy
+msgid "Librelio Template"
+msgstr "Template Librelio"
+
+#, fuzzy
+msgid "Librelio Settings"
+msgstr "Config Librelio"
+
+msgid "Back"
+msgstr "Retour"
+
+msgid "External Content"
+msgstr "Contenu externe"
+
+msgid "External Content Prefix"
+msgstr "Préfixe contenu externe"
+
+msgid "Policy"
+msgstr "Politique"
+
+msgid "Paid External Content"
+msgstr "Contenu externe payant"
+
+msgid "Show paid external content only for selected roles bellow."
+msgstr "Montrer les contenus externes payants seulement aux rôles ci-dessous"
