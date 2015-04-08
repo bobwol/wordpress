@@ -42,6 +42,22 @@ function Lift_Batch_Handler_process_queue_all()
 add_action( Lift_Batch_Handler::BATCH_CRON_HOOK, 'Lift_Batch_Handler_send_next_batch' );
 add_action( Lift_Batch_Handler::QUEUE_ALL_CRON_HOOK, 'Lift_Batch_Handler_process_queue_all' );
 
+
+add_filter( 'cron_schedules', function( $schedules ) {
+  if ( Lift_Search::get_batch_interval() > 0 ) {
+    $interval = Lift_Search::get_batch_interval();
+  } else {
+    $interval = DAY_IN_SECONDS;
+  }
+
+  $schedules[Lift_Batch_Handler::CRON_INTERVAL] = array(
+    'interval' => $interval,
+    'display' => '',
+  );
+var_dump($interval);
+  return $schedules;
+} );
+
 class Lift_Search {
 
   private static function _($s) { return lift_cloud_localize($s); }
@@ -140,21 +156,6 @@ class Lift_Search {
 
 				return $fields;
 			}, 10, 2 );
-
-		add_filter( 'cron_schedules', function( $schedules ) {
-				if ( Lift_Search::get_batch_interval() > 0 ) {
-					$interval = Lift_Search::get_batch_interval();
-				} else {
-					$interval = DAY_IN_SECONDS;
-				}
-
-				$schedules[Lift_Batch_Handler::CRON_INTERVAL] = array(
-					'interval' => $interval,
-					'display' => '',
-				);
-
-				return $schedules;
-			} );
 
       add_filter('template_include',array(__CLASS__, 'view_project_template'));
 
