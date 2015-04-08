@@ -144,9 +144,8 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
       }
     }
     $fret = array_values($ret);
-    if($limit > 0){var_export(array_slice($fret, 0, $limit));
-      return array_slice($fret, 0, $limit); }
-    var_export($fret);
+    if($limit > 0)
+      return array_slice($fret, 0, $limit);
     return $fret;
   }
 
