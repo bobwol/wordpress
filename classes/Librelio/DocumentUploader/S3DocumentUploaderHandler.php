@@ -28,10 +28,10 @@ abstract class S3DocumentUploaderHandler {
                                       $uploadFile->srcPath);
       }
     }
-    if(!$this->searchApi->sendBatch($batch->getDocumentsBatch));
+    /*if(!$this->searchApi->sendBatch($batch->getDocumentsBatch));
     {
       throw new Exception("Could not upload documents");
-    }
+    }*/
     return true;
   }
 

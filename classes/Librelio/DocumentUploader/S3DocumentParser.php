@@ -81,7 +81,7 @@ class S3DocumentParser {
     if($parserRef->destroyed)
       return;
     $parserRef->destroyed = true;
-    //$this->deleteDir($parserRef->localDir);
+    $this->deleteDir($parserRef->localDir);
   }
 
   protected function mkTmpDir()

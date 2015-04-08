@@ -41,12 +41,13 @@ function librelio_external_uploader_upload($limit = 1)
   try {
     $uploader->upload();
   } catch(Exception $exp) {
-    //echo trace_tostr($exp->getTrace());
     if(!$handler->catchException($exp))
     {
-      throw $exp;
+      echo "Exception: ".$exp->getMessage()."<br />";
+      echo trace_tostr($exp->getTrace());
     }
   }
+  echo "Done!";
 }
 
 // debug helper
@@ -149,6 +150,11 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
     return $fret;
   }
 
+  protected function mkTmpFile()
+  {
+    return tempnam(sys_get_temp_dir(), "LIOS3");
+  }
+
   public function fetchDocument($documentInfo)
   {
     $files = array();
@@ -156,7 +162,8 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
     {
       $files[] = $this->s3Client->getObject(array(
         "Bucket" => $this->Bucket,
-        "Key" => $file['Key']
+        "Key" => $file['Key'],
+        "SaveAs" => $this->mkTmpFile()
       ));
     }
     
@@ -256,22 +263,29 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
       throw new Exception("Could not open zip file: ".$zipFile);
     }
   }
+
+  public function freeBatch($batch)
+  {
+    foreach($batch->getDocuments() as $document)
+    {
+      $this->freeDocument($document->getDocumentRef());
+    }
+  }
   
   public function freeDocument($documentRef)
   {
-
     // move files
     if($this->s3MoveProcessedDocumentsTo)
     {
-      foreach($documentRef->files as $file)
+      foreach($documentRef->documentInfo['filesInfo'] as $file)
       {
         $key = $file['Key'];
-        $relKey = substr($key, strlen($this->s3DownloadPrefix) + 1, 0);
+        $relKey = substr($key, strlen($this->s3DownloadPrefix) + 1);
         if($relKey)
         {
           $this->s3Client->copyObject(array(
             "Bucket" => $this->Bucket,
-            "CopySource" => $key,
+            "CopySource" => $this->Bucket.'/'.$key,
             "Key" => $this->s3MoveProcessedDocumentsTo.'/'.$relKey
           ));
           $this->s3Client->deleteObject(array(
