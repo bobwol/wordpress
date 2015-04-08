@@ -239,8 +239,8 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
     // rename as specified in #23
     $pathp = pathinfo($docFile);
     $udfile->destKey = $prefix.
-            ($pathp['dirname'] != '.' ? $pathp['dirname'].'/' : '').
-            basename($docFile, '.'.$pathp['extension']).'_toc_.xml';
+            substr($docFile, 0, 
+                   strlen($docFile) - strlen($this->docFileSuffix)).'_toc_.xml';
     $document->uploadFiles[] = $udfile;
   }
 
