@@ -20,7 +20,8 @@ function librelio_external_uploader_upload($limit = 1)
           "s3DownloadPrefix" => ($s3Key ? $s3Key.'/' : '').'AUT_',
           "destDocPrefix" => $s3Key,
           "docFileSuffix" => $docFileSuffix,
-          "s3MoveProcessedDocumentsTo" => ($s3Key ? $s3Key.'/' : '').'/AUT_END_',
+          // ignoring move parameter cause proccessed files to get deleted
+          // "s3MoveProcessedDocumentsTo" => ($s3Key ? $s3Key.'/' : '').'/AUT_END_',
           "limit" => $limit,
           "aws" => Lift_Search::$aws
         );
@@ -274,29 +275,32 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
   
   public function freeDocument($documentRef)
   {
-    // move files
-    if($this->s3MoveProcessedDocumentsTo)
+    // move or delete files
+    foreach($documentRef->documentInfo['filesInfo'] as $file)
     {
-      foreach($documentRef->documentInfo['filesInfo'] as $file)
+      $key = $file['Key'];
+      $relKey = substr($key, strlen($this->s3DownloadPrefix) + 1);
+      if($relKey)
       {
-        $key = $file['Key'];
-        $relKey = substr($key, strlen($this->s3DownloadPrefix) + 1);
-        if($relKey)
-        {
-          $this->s3Client->copyObject(array(
-            "Bucket" => $this->Bucket,
-            "CopySource" => $this->Bucket.'/'.$key,
-            "Key" => $this->s3MoveProcessedDocumentsTo.'/'.$relKey
-          ));
+        try {
+          if($this->s3MoveProcessedDocumentsTo)
+          {
+            $this->s3Client->copyObject(array(
+              "Bucket" => $this->Bucket,
+              "CopySource" => $this->Bucket.'/'.$key,
+              "Key" => $this->s3MoveProcessedDocumentsTo.'/'.$relKey
+            ));
+          }
           $this->s3Client->deleteObject(array(
-            "Bucket" => $this->Bucket,
-            "Key" => $key
-          ));
+              "Bucket" => $this->Bucket,
+              "Key" => $key
+         ));
+        } catch(Aws\S3\Exception\NoSuchKeyException $exp) {
         }
-        else
-        {
-          throw new Exception("Unexpected file: ".$file['Key']);
-        }
+      }
+      else
+      {
+        throw new Exception("Unexpected file: ".$file['Key']);
       }
     }
   }
