@@ -21,8 +21,8 @@ class Lift_Admin {
 			add_action( 'wp_ajax_lift_error_log', array( $this, 'action__wp_ajax_lift_error_log' ) );
 			add_action( 'wp_ajax_librelio_get_wp_roles', array( $this, 'get_wp_roles' ) );
 			add_action( 'wp_ajax_librelio_set_allowed_roles_for', array( $this, 'set_allowed_roles_for' ) );
-			add_action( 'wp_ajax_librelio_get_setting', array( $this, 'get_setting' ) );
-			add_action( 'wp_ajax_librelio_set_setting', array( $this, 'set_setting' ) );
+			add_action( 'wp_ajax_librelio_get_settings', array( $this, 'get_settings' ) );
+			add_action( 'wp_ajax_librelio_set_settings', array( $this, 'set_settings' ) );
 		}
 
 		if ( !Lift_Search::get_search_domain_name() ) {
@@ -465,20 +465,19 @@ class Lift_Admin {
 		die( json_encode( $res ) );
   }
 
-  public function get_setting()
+  public function get_settings()
   {
-    $key = @$_GET['key'] ?: '';
-    $res = array( 'key' => $key, 
-                  'value' => Lift_Search::__get_setting($key) ?: '' );
+    $res = array( 'value' => Lift_Search::get_settings() ?: array() );
 		header( 'Content-Type: application/json' );
 		die( json_encode( $res ) );
   }
   
-  public function set_setting()
+  public function set_settings()
   {
-    $key = @$_GET['key'] ?: '';
-    $value = @$_GET['value'] ?: '';
-    Lift_Search::__set_setting($key, $value);
+    $settings = json_decode(stripSlashes(@$_GET['settings']), true);
+    if(is_array($settings))
+      foreach($settings as $key=>$value)
+        Lift_Search::__set_setting($key, $value);
 		header( 'Content-Type: application/json' );
 		die( json_encode( array( 'success' => true ) ) );
   }

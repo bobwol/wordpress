@@ -18,6 +18,8 @@ require_once('wp/lift-update-queue.php');
 require_once('wp/update-watchers/post.php');
 require_once('lib/wp-asynch-events.php');
 
+require_once('wp/librelio-external-uploader.php');
+
 use CFPropertyList\CFPropertyList, PHPHtmlParser\Dom;
 
 function Lift_Batch_Handler_send_next_batch()
@@ -254,8 +256,13 @@ class Lift_Search {
 
       // remove page extension if is .php
       $request_page = strpos($request_page, '.php') == strlen($request_page) - 4 ? substr($request_page, 0, strlen($request_page) - 4) : $request_page;
-
-      if($request_page == 'cloudsearchdetail')
+      if($request_page == 'process_s3upload')
+      {
+        // upload script
+        librelio_external_uploader_upload();
+        die();
+      }
+      else if($request_page == 'cloudsearchdetail')
       {
         $waurl = (self::__get_setting('external_url_prefix') ?: '').
                  (@$request_page_query['waurl'] ?: '');
@@ -395,6 +402,19 @@ class Lift_Search {
 
 		update_option( self::SETTINGS_OPTION, $settings );
 	}
+
+  public static function get_settings()
+  {
+		$default_settings = array( 'batch-interval' => 300, 'batch-interval-units' => 'm', 'override-search' => true );
+
+		$settings = get_option( self::SETTINGS_OPTION, array( ) );
+		if ( !is_array( $settings ) ) {
+			$settings = $default_settings;
+		} else {
+			$settings = wp_parse_args( $settings, $default_settings );
+		}
+    return $settings;
+  }
 
 	/**
 	 * Get search domain

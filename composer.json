@@ -66,6 +66,7 @@
         "rodneyrehm/plist": "*"
     },
     "autoload": {
-        "files": []
+        "files": [],
+        "psr-4": {"Librelio\\": "classes/Librelio"}
     }
 }

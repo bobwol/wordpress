@@ -785,7 +785,10 @@
     initialize: function() {
       this.template = _.template(liftAdmin.templateLoader.getTemplate('setting'));
       this.roles = {};
-      this.external_url_prefix = '';
+      this.settings = {
+        external_url_prefix: '',
+        external_s3_doc_suffix: ''
+      };
       this.getRoles(function(err, roles)
         {
           if(err)
@@ -794,11 +797,11 @@
             this.roles = roles;
           this.render();
         });
-      this.getSetting('external_url_prefix', function(err, value)
+      this.getSettings(function(err, settings)
         {
           if(err)
             alert(err+'');
-          this.external_url_prefix = value;
+          this.settings = settings;
           this.render();
         });
     },
@@ -806,9 +809,9 @@
     {
       this.ajaxJSONRequest('librelio_get_wp_roles', null, cb);
     },
-    getSetting: function(key, cb)
+    getSettings: function(cb)
     {
-      this.ajaxRequest('librelio_get_setting', { key: key }, function(err, res)
+      this.ajaxRequest('librelio_get_settings', { }, function(err, res)
         {
           if(err)
             cb.call(this, err);
@@ -816,10 +819,10 @@
             cb.call(this, undefined, res.value);
         });
     },
-    setSetting: function(key, value, callback)
+    setSettings: function(settings, callback)
     {
       function cb() { callback && callback.call(this); }
-      this.ajaxRequest('librelio_set_setting', { key: key, value: value }, cb);
+      this.ajaxRequest('librelio_set_settings', {settings: JSON.stringify(settings)}, cb);
     },
     ajaxJSONRequest: function(action, req, cb)
     {
@@ -916,9 +919,15 @@
           selectedRoles.push(this.value);
         });
       this.beforeSave();
+      var settings = this.settings;
+      $('input').each(function()
+        {
+          var $this = $(this);
+          if($this.data('type') == 'setting')
+            settings[this.name] = this.value;
+        });
       
-      this.setSetting('external_url_prefix', $('#external_url_prefix').val(),
-                      continue_job);
+      this.setSettings(settings, continue_job);
       this.ajaxJSONRequest('librelio_set_allowed_roles_for', {
         capability: 'librelio_view_paid_external_content',
         roles: selectedRoles
