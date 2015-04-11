@@ -54,7 +54,6 @@ add_filter( 'cron_schedules', function( $schedules ) {
     'interval' => $interval,
     'display' => '',
   );
-var_dump($interval);
   return $schedules;
 } );
 

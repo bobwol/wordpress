@@ -794,6 +794,7 @@ add_action( 'init', function() {
 					$post_type_expression = '';
 					if ( 'any' == $post_type ) {
 						$in_search_post_types = get_post_types( array( 'exclude_from_search' => false ) );
+            $in_search_post_types[] = "external"; // add external post type
 						if ( !empty( $in_search_post_types ) ) {
 							$post_type_expression = new Lift_Expression_Set();
 							foreach ( $in_search_post_types as $_post_type ) {

@@ -1,6 +1,7 @@
 <?php
 
 use Librelio\DocumentUploader as DU;
+use PHPHtmlParser\Dom;
 
 function librelio_external_uploader_upload($limit = 1)
 {
@@ -32,7 +33,7 @@ function librelio_external_uploader_upload($limit = 1)
      return;
 
   $handler = new LibrelioS3DocumentUploaderHandler($config);
-  $parser = new DU\S3DocumentParser(array( "handler" => $handler ));
+  $parser = new LibrelioS3DocumentParser(array( "handler" => $handler ));
 
   $uploader = new DU\DocumentUploader(array(
     "parser" => $parser,
@@ -44,7 +45,7 @@ function librelio_external_uploader_upload($limit = 1)
   } catch(Exception $exp) {
     if(!$handler->catchException($exp))
     {
-      echo "Exception: ".$exp->getMessage()."<br />";
+      echo get_class($exp).": ".$exp->getMessage()."<br />";
       echo trace_tostr($exp->getTrace());
     }
   }
@@ -57,9 +58,93 @@ function trace_tostr($trace)
   $str = "";
   foreach($trace as $i=>$v)
   {
-    $str .= '#'.$i.' '.$v['function'].'() '.$v['file'].':'.$v['line'].'<br />';
+    $str .= '#'.$i.' '.$v['function'].'() '.@$v['file'].':'.@$v['line'].'<br />';
   }
   return $str;
+}
+
+class LibrelioS3DocumentParser extends DU\S3DocumentParser {
+  public function parseDocument($parserRef)
+  {
+    $xml = new XMLReader();
+    if(!$xml->open($parserRef->localDir.'/'.$parserRef->docFile, null, 
+                   LIBXML_NOWARNING))
+      throw new Exception("Couldn't open docFile: ".$parserRef->docFile);
+    while(@$xml->read())
+    {
+      if($xml->nodeType == XMLReader::ELEMENT &&
+         $xml->name == "toc")
+      {
+        $ret = $this->xmlReadToc($xml);
+        $xml->close();
+        return $ret;
+      }
+    }
+    $xml->close();
+    throw new Exception("Unknown xml file: ".$parserRef->docFile);
+  }
+
+  protected function xmlReadToc($reader)
+  {
+    $ret = array();
+    $entries = array();
+    $depth = $reader->depth + 1;
+    while(@$reader->read())
+    {
+      if($reader->depth == $depth)
+      {
+        if($reader->nodeType == XMLReader::ELEMENT &&
+           $reader->name == "tocentry")
+        {
+          $entry = array(
+            "target-doc" => $reader->getAttribute("target-doc")
+          );
+          $entry = array_merge($entry, 
+                               $this->xmlReadElementsAsTextPairs($reader));
+          $entries[] = $entry;
+        }
+      }
+    }
+    $ret['tocentry'] = $entries;
+    return $ret;
+  }
+
+  protected function xmlReadElementsAsTextPairs($reader)
+  {
+    $ret = array();
+    $name = null;
+    $value = "";
+    $depth = $reader->depth + 1;
+    while(@$reader->read())
+    {
+      if($reader->depth <= $depth && $name)
+        $ret[$name] = $value;
+      if($reader->depth == $depth)
+      {
+        if($reader->nodeType == XMLReader::ELEMENT)
+        {
+          $name = $reader->name;
+        }
+        else if($reader->nodeType == XMLReader::END_ELEMENT)
+        {
+          $name = null;
+        }
+        $value = "";
+      }
+      else if($reader->depth > $depth)
+      {
+        if($reader->nodeType == XMLReader::TEXT ||
+           $reader->nodeType == XMLReader::CDATA)
+          $value .= $reader->value;
+        else if($reader->nodeType == XMLReader::WHITESPACE ||
+                $reader->nodeType == XMLReader::SIGNIFICANT_WHITESPACE)
+          $value .= " ";
+      }
+      else
+        break;
+    }
+    return $ret;
+  }
 }
 
 class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
@@ -110,7 +195,9 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
   
   public function log($a, $b, $c)
   {
-    var_dump("log: ", $a, $b, $c);
+    echo "log: ";
+    var_dump($a, $b, $c);
+    echo "<br />";
     // Lift_Search::event_log(a, b, c);
         //Lift_Search::event_log( 'DocumentUploader error', $err->getMessage(), array( 'error' ) );
   }
@@ -204,23 +291,88 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
     return $offset_b == -1 && $offset_a >= 0;
   }
 
+  protected function findDocumentHTMLFile($prefix, &$files)
+  {
+    foreach($files as $file)
+    {
+      if(strpos($file, $prefix) === 0 && 
+        strpos($file, '.html') == strlen($file) - strlen('.html'))
+        return $file;
+    }
+    return null;
+  }
+
   public function defineDocument($document, $parser, $parserRef, $documentRef)
   {
     $localDir = $parser->getLocalDir($parserRef);
     $documentInfo = $documentRef->documentInfo;
     $document->uniqueId = $documentInfo["id"];
-    $object = $parser->parseDocument($parserRef);
 
-    $document->fields = array();
-    
     // add upload files
     $docFile = $parser->getDocumentFile($parserRef);
     $docBasename = basename($docFile);
     $name = substr($docBasename, 0, 
                    strlen($docBasename) - strlen($this->docFileSuffix));
     $prefix = ($this->destDocPrefix ? $this->destDocPrefix.'/' : '').$name.'/';
+    $files = $parser->getFiles($parserRef);
 
-    foreach($parser->getFiles($parserRef) as $file)
+
+    // parse sub-documents
+    $object = $parser->parseDocument($parserRef);
+    $subdocs_p = $object['tocentry'];
+    foreach($subdocs_p as $subdoc_p)
+    {
+      $subdoc = new LibrelioS3UploadSubdocument();
+      $target_doc = @$subdoc_p['target-doc'];
+      // fetch content and date
+      $subDocFile = $this->findDocumentHTMLFile($target_doc, $files);
+      if(!$subDocFile)
+      {
+        $this->log("Subdocument file not found!", "target-doc=".$target_doc, 
+                   array());
+        continue;
+      }
+      $content = file_get_contents($localDir.'/'.$subDocFile);
+      $dom = new Dom();
+      $dom->load($content);
+      $els = $dom->getElementsByTag('body');
+      // content is $body variable 
+      $body = sizeof($els) > 0 ? $els[0]->innerHTML() : '';
+      // fetch date
+      $ude_subDocFile = explode('_', $subDocFile);
+      if(sizeof($ude_subDocFile) > 1)
+        $date = DateTime::createFromFormat("Ymd", $ude_subDocFile[1]);
+      if(!@$date)
+        $date = new DateTime();
+      
+      $subdoc->uniqueId = 's3://'.$this->Bucket.'/'.$prefix.$target_doc;
+      $pathInfo = pathinfo($subDocFile);
+      $ext = $pathInfo['extension'];
+      $subdoc->fields = array(
+        "blog_id" => 1,
+        "id" => -1,
+        /* not needed
+        "post_author" => "",
+        "post_author_name" => "",
+        */
+        "post_content" => $body,
+        "post_date_gmt" => $date->getTimestamp(),
+        "post_name" => $subDocFile,
+        "post_status" => "publish",
+        "post_title" => @$subdoc_p['te-title'],
+        "post_type" => "external",
+        "resourcename" => "/".$name.'/'.basename($subDocFile, '.'.$ext).'_.'.$ext,
+        "site_id" => 1,
+        /* not needed
+        "taxonomy_category_id" => array(),
+        "taxonomy_category_label" => "",
+        "taxonomy_post_tag_id" => array(),
+        "taxonomy_post_tag_label" => ""
+        */
+      );
+      $document->subdocuments[] = $subdoc;
+    }
+    foreach($files as $file)
     {
       $udfile = new DU\S3UploadDocumentFile();
       $udfile->srcPath = $localDir.'/'.$file;
@@ -310,19 +462,25 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
 class LibrelioS3UploadDocument extends DU\UploadDocument {
 
   public $uniqueId;
-  public $fields;
+  public $subdocuments;
   public $uploadFiles;
 
   function __construct($documentRef, $parserRef)
   {
     parent::__construct($documentRef, $parserRef);
     $this->uploadFiles = array();
+    $this->subdocuments = array();
   }
 
   public function getUploadFiles()
   {
     return $this->uploadFiles;
   }
+}
+
+class LibrelioS3UploadSubdocument {
+  public $fields;
+  public $uniqueId;
 }
 
 class LibrelioS3UploadDocumentsBatch implements DU\UploadDocumentsBatch {
@@ -346,14 +504,21 @@ class LibrelioS3UploadDocumentsBatch implements DU\UploadDocumentsBatch {
 
   public function add($document)
   {
-    $json = json_encode(array(
-      "type" => "add",
-      "id" => $this->getDocumentIdHash($document),
-      "fields" => $document->fields,
-    ));
+    $json_arr = array();
+    foreach($document->subdocuments as $doc)
+    {
+      $data = json_encode(array(
+        "type" => "add",
+        "id" => $this->getDocumentIdHash($doc),
+        "fields" => $doc->fields,
+      ));
+      if(strlen($data) + 1 > self::DOCUMENT_MAX_SIZE)
+        return false;
+      $json_arr[] = $data;
+    }
+    $json = implode(",", $json_arr);
     $jsonSize = strlen($json);
-    if($jsonSize + 1 > self::DOCUMENT_MAX_SIZE || 
-       $this->docsJSONSize + $jsonSize + 
+    if($this->docsJSONSize + $jsonSize + 
                $this->docsSize + 3 > self::BATCH_MAX_SIZE)
       return false;
 

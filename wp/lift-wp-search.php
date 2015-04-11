@@ -156,13 +156,13 @@ class Lift_WP_Query {
 
     $cs_query->highlights = array(
       'post_title' => array(
-        'format' => 'html', 
+        'format' => 'text', 
         'max_phrases' => 5,
         'pre_tag' => '<span class="librelio-search-highlight">', 
         'post_tag' => '</span>'
       ),
       'post_content' => array(
-        'format' => 'html', 
+        'format' => 'text', 
         'max_phrases' => 5,
         'pre_tag' => '<span class="librelio-search-highlight">', 
         'post_tag' => '</span>'
@@ -302,6 +302,7 @@ class Lift_WP_Search {
 	 * @return array $posts
 	 */
 	public static function _filter_posts_results( $posts, $wp_query ) {
+    global $wp_query;
 		$lift_query = Lift_WP_Query::GetInstance( $wp_query );
 
 		if ( $lift_query->has_valid_result() )
@@ -312,6 +313,7 @@ class Lift_WP_Search {
       add_filter('comments_open', array('Lift_Search', '_return_zero'));
       add_filter('get_the_excerpt', array(__CLASS__, '_filter_content'), 50, 1);
       wp_enqueue_style('cloudsearchcss', plugins_url( 'css/cloudsearch.css', dirname(dirname(__FILE__)).'/lift-core.php' ) );
+      $wp_query = $lift_query->wp_query;
 			return $lift_query->get_posts();
     }
 

@@ -28,10 +28,12 @@ abstract class S3DocumentUploaderHandler {
                                       $uploadFile->srcPath);
       }
     }
-    /*if(!$this->searchApi->sendBatch($batch->getDocumentsBatch));
+    $res = $this->searchApi->sendBatch($batch->getDocumentsBatch());
+    if(!$res)
     {
-      throw new Exception("Could not upload documents");
-    }*/
+      throw new \Exception("Could not upload documents: ".
+                           $this->searchApi->getErrorMessages());
+    }
     return true;
   }
 
@@ -43,10 +45,5 @@ abstract class S3DocumentUploaderHandler {
       'SourceFile' => $uploadFile->srcPath
     ));
     return $result ? !!@$result['ObjectURL'] : false;
-  }
-  
-  public function freeBatch()
-  {
-    // can not use use documentRef and parserRef in this function    
   }
 }

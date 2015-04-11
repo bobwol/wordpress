@@ -8,7 +8,7 @@ class CloudSearch_API {
   /**
    *  get protected property (Hack function)
    */
-  public function &getProtectedProperty($obj, $prop) {
+  public function getProtectedProperty($obj, $prop) {
     $reflection = new ReflectionClass($obj);
     $property = $reflection->getProperty($prop);
     $property->setAccessible(true);
@@ -38,7 +38,7 @@ class CloudSearch_API {
     // Hack for changing search httpMethod to 'GET'
     // Search does not work right now with 'POST'
     $serviceDescription = $this->getProtectedProperty($this->client, 'serviceDescription');
-    $operations =& $this->getProtectedProperty($serviceDescription, 'operations');
+    $operations = $this->getProtectedProperty($serviceDescription, 'operations');
     $operations['Search']['httpMethod'] = 'GET';
     $this->setProtectedProperty($serviceDescription, 'operations', $operations);
 	}
@@ -68,7 +68,7 @@ class CloudSearch_API {
                               'contentType' => 'application/json'
                           ));
         return lift_cloud_array_to_object_if_assoc($res->getAll(), true);
-    } catch(Exception $e) {
+    } catch(Aws\Common\Exception\ServiceResponseException $e) {
       $this->error_messages = $e->getMessage();
       return false;
     }

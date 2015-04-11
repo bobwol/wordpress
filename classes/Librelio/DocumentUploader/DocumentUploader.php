@@ -29,13 +29,12 @@ class DocumentUploader {
       try {
         $documentRef = $this->handler->fetchDocument($documentInfo); 
         $parserRef = $this->parser->initialize($documentRef);
+        $document = $this->handler->createDocument($documentRef, $parserRef);
+        $this->defineDocument($document, $parserRef, $documentRef);
       } catch(FileNotFound $exp) {
         $this->log($exp->getMessage(), $documentInfo);
         continue;
       }
-      $document = $this->handler->createDocument($documentRef, $parserRef);
-      
-      $this->defineDocument($document, $parserRef, $documentRef);
       
       while(!$uploadBatch->add($document))
       {

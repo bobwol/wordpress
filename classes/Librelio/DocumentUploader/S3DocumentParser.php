@@ -103,9 +103,9 @@ class S3DocumentParser {
       if($file == '.' || $file == '..')
         continue;
       if (is_dir($file))
-        $this->deleteDir($file);
+        $this->deleteDir($dirPath.'/'.$file);
       else
-        unlink($file);
+        unlink($dirPath.'/'.$file);
     }
     rmdir($dirPath);
   }
