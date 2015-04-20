@@ -258,6 +258,8 @@ class Lift_Search {
       $request_page = strpos($request_page, '.php') == strlen($request_page) - 4 ? substr($request_page, 0, strlen($request_page) - 4) : $request_page;
       if($request_page == 'process_s3upload')
       {
+        if(!self::get_search_domain_name())
+          die("Domain not registered yet!");
         // upload script
         librelio_external_uploader_upload();
         die();

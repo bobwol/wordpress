@@ -2,6 +2,7 @@
 
 use Librelio\DocumentUploader as DU;
 use PHPHtmlParser\Dom;
+use CFPropertyList as PList;
 
 function librelio_external_uploader_upload($limit = 1)
 {
@@ -42,6 +43,7 @@ function librelio_external_uploader_upload($limit = 1)
   set_time_limit(5000);
   try {
     $uploader->upload();
+    echo "Done!";
   } catch(Exception $exp) {
     if(!$handler->catchException($exp))
     {
@@ -49,7 +51,6 @@ function librelio_external_uploader_upload($limit = 1)
       echo trace_tostr($exp->getTrace());
     }
   }
-  echo "Done!";
 }
 
 // debug helper
@@ -276,7 +277,11 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
     $unzipDir = $parser->getLocalDir($parserRef);
     foreach($documentRef->files as $zipFile)
     {
-      $this->uncompressFile($zipFile['Body']->getUri(), $unzipDir);
+      try {
+        $this->uncompressFile($zipFile['Body']->getUri(), $unzipDir);
+      } catch(Exception $exp) {
+        echo get_class($exp).": ".$exp->getMessage()."<br />";
+      }
     }
   }
 
@@ -302,6 +307,120 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
     return null;
   }
 
+  protected function traverseArray($arr, $callable)
+  {
+    foreach($arr as $key=>&$value)
+    {
+      if(call_user_func($callable, $key, $value) === false)
+        break;
+    }
+  }
+
+  protected function removePunctuationAndDecimal($s)
+  {
+    $pttrn = "/[,\\-`!@#$%\\^&*()_\\[\\]\'\"\\\\\\/0-9]/";
+    return preg_replace($pttrn, "", $s);
+  }
+
+  protected function getModifiedFiles($document, $parser, $parserRef, $documentRef)
+  {
+    $localDir = $parser->getLocalDir($parserRef);
+
+    $docFile = $parser->getDocumentFile($parserRef);
+    $docBasename = basename($docFile);
+    $name = substr($docBasename, 0, 
+                   strlen($docBasename) - strlen($this->docFileSuffix));
+    $prefix = ($this->destDocPrefix ? $this->destDocPrefix.'/' : '').$name.'/';
+    $privFiles = $parser->getFiles($parserRef);
+    $pubFiles = array();
+    $pdfFile = null;
+
+    
+    // issue #27 (github.com/libreliodev/wordpress) | Move pdf file to root
+    $this->traverseArray($privFiles, function($i, $file) use (&$privFiles, $name, $localDir, &$pdfFile)
+      {
+        $s = $name.'.pdf';
+        if(strpos($file, $s) === strlen($file) - strlen($s))
+        {
+          // $file ends with $s
+          $pdfFile = $s;
+          if(strlen($file) > strlen($s) &&
+             $file[strlen($file) - strlen($s) - 1] == '/')
+          {
+            $nfile = $s;
+            rename($localDir.'/'.$file, $localDir.'/'.$nfile);
+            $privFiles[$i] = $nfile;
+          }
+          return false;
+        }
+      });
+    
+    // issue #28 (github.com/libreliodev/wordpress) | Cover maker
+    $this->traverseArray($privFiles, function($i, $file) use (&$privFiles, $name, $localDir)
+      {
+        $s = $name.'-cover.jpg';
+        if(strpos($file, $s) === strlen($file) - strlen($s))
+        {
+          $image = imagecreatefromjpeg($localDir.'/'.$file);
+          if(!$image)
+            return;
+          list($width, $height) = getimagesize($localDir.'/'.$file);
+          $nimgs_fn = array($name.'.png', $name.'_newsstand.png');
+          $imgs_height = array(300, 1024);
+          
+          foreach($nimgs_fn as $i=>$img_fn)
+          {
+            $nh = $imgs_height[$i];
+            $nw = $width / $height * $nh;
+            $nimage = imagecreatetruecolor($nw, $nh);
+            imagecopyresampled($nimage, $image, 0, 0, 0, 0,
+                               $nw, $nh, $width, $height);
+            imagepng($nimage, $localDir.'/'.$img_fn);
+          }
+
+          unlink($localDir.'/'.$file);
+          array_splice($privFiles, $i, 1, $nimgs_fn);
+          return false;
+        }
+      });
+
+
+    // issue #29 (github.com/libreliodev/wordpress) | Add entry to magazine
+    $magazine_name = $this->removePunctuationAndDecimal($name).'.plist';
+    if($pdfFile)
+    {
+      try {
+        $plist = new PList\CFPropertyList($localDir.'/'.$magazine_name);
+        $tv = $plist->getValue(true);
+        if($tv instanceof PList\CFArray)
+          $parr = $tv;
+      } catch(Exception $e) {
+        $plist = new PList\CFPropertyList();
+        $plist->add($parr = new PList\CFArray());
+      }
+      if($parr)
+      {
+        $parr->add($idict = new PList\CFDictionary());
+        $idict->add("FileName", new PList\CFString($pdfFile));
+        $idict->add("Title", new PList\CFString($name));
+        $idict->add("Subtitle", new PList\CFString(""));
+        $plist->saveXML($localDir.'/'.$magazine_name);
+        $pubFiles[] = $magazine_name;
+      }
+    }
+    // Remove magazine to public file
+    $this->traverseArray($privFiles, function($i, $file) use (&$privFiles, $magazine_name)
+      {
+        if($file == $magazine_name)
+        {
+          array_splice($privFiles, $i, 1);
+          return false;
+        }
+      });
+
+    return array($pubFiles, $privFiles);
+  }
+
   public function defineDocument($document, $parser, $parserRef, $documentRef)
   {
     $localDir = $parser->getLocalDir($parserRef);
@@ -314,12 +433,16 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
     $name = substr($docBasename, 0, 
                    strlen($docBasename) - strlen($this->docFileSuffix));
     $prefix = ($this->destDocPrefix ? $this->destDocPrefix.'/' : '').$name.'/';
-    $files = $parser->getFiles($parserRef);
 
+    // get and modify files
+    list($pubFiles, $privFiles) = 
+         $this->getModifiedFiles($document, $parser, $parserRef, $documentRef);
+    $files = array_merge($pubFiles, $privFiles);
 
     // parse sub-documents
     $object = $parser->parseDocument($parserRef);
     $subdocs_p = $object['tocentry'];
+    $tocPlist = new PList\CFPropertyList();
     foreach($subdocs_p as $subdoc_p)
     {
       $subdoc = new LibrelioS3UploadSubdocument();
@@ -371,19 +494,31 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
         */
       );
       $document->subdocuments[] = $subdoc;
+
+      // add to toc plist
+      $tocPlist->add($idict = new PList\CFDictionary());
+      $idict->add("Title", new PList\CFString(@$subdoc_p['te-title']));
+      $subtitle_key = '<Subtitle>';
+      if(@$subdoc_p[$subtitle_key])
+      {
+        $text = $subdoc_p[$subtitle_key];
+        $charlen_limit = 200;
+        $idict->add("Subtitle", new PList\CFString(
+                                  strlen($text) > $charlen_limit ? 
+                                  substr($text, 0, $charlen_limit) : $text));
+      }
     }
-    foreach($files as $file)
-    {
-      $udfile = new DU\S3UploadDocumentFile();
-      $udfile->srcPath = $localDir.'/'.$file;
-      $udfile->destBucket = $this->Bucket;
-      // rename as specified in #23
-      $pathp = pathinfo($file);
-      $udfile->destKey = $prefix.
-           ($pathp['dirname'] != '.' ? $pathp['dirname'].'/' : '').
-           basename($file, '.'.$pathp['extension']).'_.'.$pathp['extension'];
-      $document->uploadFiles[] = $udfile;
-    }
+    $tocPlistFn = 'toc.plist';
+    $tocPlist->saveXML($localDir.'/'.$tocPlistFn);
+    $pubFiles[] = $tocPlistFn;
+
+    $this->addUploadFiles($pubFiles, array(
+      "prefix" => $prefix, "localDir" => $localDir,
+    ));
+    $this->addUploadFiles($privFiles, array(
+      "prefix" => $prefix, "localDir" => $localDir,
+      "isPrivate" => true
+    ));
 
     // upload document file
     $udfile = new DU\S3UploadDocumentFile();
@@ -397,16 +532,35 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
     $document->uploadFiles[] = $udfile;
   }
 
+  protected function addUploadFiles($files, $opts = array())
+  {
+    $prefix = $opts['prefix'];
+    $localDir = $opts['localDir'];
+    $isPrivate = @$opts['isPrivate'];
+    foreach($files as $file)
+    {
+      $udfile = new DU\S3UploadDocumentFile();
+      $udfile->srcPath = $localDir.'/'.$file;
+      $udfile->destBucket = $this->Bucket;
+      // rename as specified in #23
+      $pathp = pathinfo($file);
+      $udfile->destKey = $prefix.
+           ($pathp['dirname'] != '.' ? $pathp['dirname'].'/' : '').
+           basename($file, '.'.$pathp['extension']).
+           ($isPrivate ? '_' : '').'.'.$pathp['extension'];
+      $document->uploadFiles[] = $udfile;
+    }
+  }
+
   protected function uncompressFile($zipFile, $destDir)
   {
     $zip = new ZipArchive;
     if(!is_file($zipFile))
       throw new Exception("Could not find zip file at: ".$zipFile);
-    if($zip->open($zipFile))
+    if(@$zip->open($zipFile))
     {
-      if(!$zip->extractTo($destDir))
+      if(!@$zip->extractTo($destDir))
       {
-        $zip->close();
         throw new Exception("Could not parse file: ".$zipFile);
       }
       $zip->close();
