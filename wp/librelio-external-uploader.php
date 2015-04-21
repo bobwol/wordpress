@@ -526,9 +526,11 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
     $udfile->destBucket = $this->Bucket;
     // rename as specified in #23
     $pathp = pathinfo($docFile);
-    $udfile->destKey = $prefix.
+    $prefix2 = ($this->destDocPrefix ? $this->destDocPrefix.'/' : '').
+          $this->removePunctuationAndDecimal($name).'/';
+    $udfile->destKey = $prefix2.
             substr($docFile, 0, 
-                   strlen($docFile) - strlen($this->docFileSuffix)).'_toc_.xml';
+                   strlen($docFile) - strlen($this->docFileSuffix));
     $document->uploadFiles[] = $udfile;
   }
 
@@ -647,6 +649,7 @@ class LibrelioS3UploadDocumentsBatch implements DU\UploadDocumentsBatch {
   
   private $docsJSON;
   private $docsJSONSize;
+  private $batchOpLen;
 
   function __construct()
   {
@@ -654,11 +657,13 @@ class LibrelioS3UploadDocumentsBatch implements DU\UploadDocumentsBatch {
     $this->docsSize = 0;
     $this->docsJSON = array();
     $this->docsJSONSize = 0;
+    $this->batchOpLen = 0;
   }
 
   public function add($document)
   {
     $json_arr = array();
+    $optsLen = 0;
     foreach($document->subdocuments as $doc)
     {
       $data = json_encode(array(
@@ -669,6 +674,7 @@ class LibrelioS3UploadDocumentsBatch implements DU\UploadDocumentsBatch {
       if(strlen($data) + 1 > self::DOCUMENT_MAX_SIZE)
         return false;
       $json_arr[] = $data;
+      $optsLen++;
     }
     $json = implode(",", $json_arr);
     $jsonSize = strlen($json);
@@ -680,6 +686,7 @@ class LibrelioS3UploadDocumentsBatch implements DU\UploadDocumentsBatch {
     $this->docsJSONSize += $jsonSize;
     $this->docs[] = $document;
     $this->docsSize++;
+    $this->batchOpLen += $optsLen;
     return true;
   }
   
@@ -695,6 +702,8 @@ class LibrelioS3UploadDocumentsBatch implements DU\UploadDocumentsBatch {
 
   public function getDocumentsBatch()
   {
+    if($this->batchOpLen == 0)
+      return false;
     return $this;
   }
 

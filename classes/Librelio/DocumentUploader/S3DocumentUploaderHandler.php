@@ -14,7 +14,7 @@ abstract class S3DocumentUploaderHandler {
   {
     $this->aws = $config['aws'];
     $this->s3Client = $this->aws->get_client()->get('s3');
-    $this->searchApi = Lift_Search::get_search_api();
+    //$this->searchApi = Lift_Search::get_search_api();
   }
 
   public function uploadBatch($batch)
@@ -28,11 +28,15 @@ abstract class S3DocumentUploaderHandler {
                                       $uploadFile->srcPath);
       }
     }
-    $res = $this->searchApi->sendBatch($batch->getDocumentsBatch());
-    if(!$res)
+    $dbatch = $batch->getDocumentsBatch();
+    if($dbatch)
     {
-      throw new \Exception("Could not upload documents: ".
-                           $this->searchApi->getErrorMessages());
+      $res = $this->searchApi->sendBatch($dbatch);
+      if(!$res)
+      {
+        throw new \Exception("Could not upload documents: ".
+                             $this->searchApi->getErrorMessages());
+      }
     }
     return true;
   }
