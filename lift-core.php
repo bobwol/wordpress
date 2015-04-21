@@ -20,7 +20,7 @@ require_once('lib/wp-asynch-events.php');
 
 require_once('wp/librelio-external-uploader.php');
 
-use CFPropertyList\CFPropertyList, PHPHtmlParser\Dom;
+use Librelio as L;
 
 function Lift_Batch_Handler_send_next_batch()
 {
@@ -158,7 +158,6 @@ class Lift_Search {
 
       add_filter('template_include',array(__CLASS__, 'view_project_template'));
 
-      add_filter('librelio_external_content', array(__CLASS__, 'eval_shortcodes_for_librelio_external_content'), 1, 4);
       do_action('librelio-init');
       self::$ready = true;
 	}
@@ -170,65 +169,6 @@ class Lift_Search {
     else
       $args['region'] = 'eu-west-1';
     return $args;
-  }
-
-  public static function librelio_external_content_replacement_for_shortcode($sc_obj, $data, $waurl)
-  {
-    $rep = "";
-    if(($attr_id = @$sc_obj['attributes']['id']))
-    {
-      $ext = pathinfo($waurl, PATHINFO_EXTENSION);
-      switch($ext)
-      {
-      case 'plist':
-        try {
-          $pl = new CFPropertyList();
-          $pl->parse($data, CFPropertyList::FORMAT_XML);
-          $rep = @$pl->toArray()[$attr_id];
-        } catch(Exception $e) {
-        }
-        break;
-      case 'html':
-        $dom = new Dom();
-        $dom->load($data);
-        $el = $dom->getElementById($attr_id);
-        $rep = $el ? $el->innerHtml() : '';
-        break;
-      case 'xml':
-        $xml = simplexml_load_string($data);
-        $el = @$xml[$attr_id];
-        $rep = $el ? (string)$el : '';
-        break;
-      }
-    }
-    else
-      $rep = $data;
-    return $rep ? $rep : '';
-  }
-  
-  public static function eval_shortcodes_for_librelio_external_content($content, $type, $data, $waurl)
-  {
-    $i = 0;
-    while($i < strlen($content) && ($i = strpos($content, '[', $i)) !== false)
-    {
-      try {
-        $sc_obj = shortcode_parse($content, $i);
-        
-        if($sc_obj['name'] == 'librelio')
-        {
-          $rep = self::librelio_external_content_replacement_for_shortcode($sc_obj, $data, $waurl);
-          $content = substr($content, 0, $i).$rep.
-                     substr($content, $i + $sc_obj['strlen']);
-          $i += strlen($rep);
-        }
-        else
-          $i += $sc_obj['strlen'];
-      } catch(ShortcodeException $e) {
-        $i++;
-      }
-    }
-    
-    return $content;
   }
 
   public static function allowed_to_view_waurl($waurl)
@@ -301,12 +241,19 @@ class Lift_Search {
                   else
                   {
                     $edata = $body;
-                    $title = apply_filters('librelio_external_content', 
-                                           $tmpl_post->post_title, 
-                                           'post_title', $edata, $waurl);
-                    $body = apply_filters('librelio_external_content', 
-                                          $tmpl_post->post_content, 
-                                          'post_content', $edata, $waurl);
+                    $evaluator = 
+                      new L\ExternalContent\ShortcodeEvaluator($edata, $waurl);
+                    
+                    try {
+                      $title = $evaluator->evalFromString($tmpl_post->post_title);
+                    } catch(Exception $exp) {
+                      $title = $exp->getMessage();
+                    }
+                    try{
+                      $body = $evaluator->evalFromString($tmpl_post->post_content);
+                    } catch(Exception $exp) {
+                      $body = $exp->getMessage();
+                    }
                   }
                 }
                 $time = date('Y-m-d');
