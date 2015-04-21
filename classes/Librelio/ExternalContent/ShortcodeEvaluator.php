@@ -9,6 +9,7 @@ class ShortcodeEvaluator {
 
   private $data;
   private $waurl;
+  private $filename;
   private $type;
   private $dataPtr;
   private $global_vars = array();
@@ -30,7 +31,12 @@ class ShortcodeEvaluator {
     $this->data = $data;
     $this->waurl = $waurl;
 
-    $ext = pathinfo($waurl, PATHINFO_EXTENSION);
+    $waurl_obj = parse_url($waurl);
+    $path = @$waurl_obj['path'];
+
+    $this->filename = basename($path);
+
+    $ext = pathinfo($path, PATHINFO_EXTENSION);
     $this->type = $ext;
     switch($ext)
     {
@@ -151,6 +157,10 @@ class ShortcodeEvaluator {
         if(is_array($v))
           $v = implode(",", $v);
         return (string)$v;
+      }
+      if(isset($attrs['filename']))
+      {
+        return (string)$this->filename;
       }
       if(sizeof(array_keys($attrs)) > 0)
         throw new ShortcodeSemanticError("Unkown librelio shortcode!");
