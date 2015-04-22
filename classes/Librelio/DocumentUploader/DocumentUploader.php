@@ -19,7 +19,7 @@ class DocumentUploader {
 
   function upload($limit = 0)
   {
-    $limit = $limit ?: 0;
+    $limit = $limit ?: (isset($config['limit']) ? $config['limit'] : 0);
     $count = 0;
     $documentsInfo = $this->handler->fetchDocumentsId($limit);
     $uploadBatch = $this->handler->createDocumentsBatch();
@@ -35,7 +35,7 @@ class DocumentUploader {
         $this->log($exp->getMessage(), $documentInfo);
         continue;
       }
-      
+
       while(!$uploadBatch->add($document))
       {
         if($uploadBatch->getLength() == 0)

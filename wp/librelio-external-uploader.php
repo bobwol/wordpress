@@ -4,7 +4,7 @@ use Librelio\DocumentUploader as DU;
 use PHPHtmlParser\Dom;
 use CFPropertyList as PList;
 
-function librelio_external_uploader_upload($limit = 1)
+function librelio_external_uploader_upload($limit = 10)
 {
     $waurl = Lift_Search::__get_setting('external_url_prefix') ?: '';
     $docFileSuffix = Lift_Search::__get_setting('external_s3_doc_suffix') ?: '';
@@ -17,14 +17,17 @@ function librelio_external_uploader_upload($limit = 1)
         $s3Bucket = @$waurl_obj['host'];
         $s3Key = trim(@$waurl_obj['path'], '/');
 
+        $flip = 0;
+        $downloadPrefix = 'AUT_'.($flip ? 'DONE' : '');
+        $donePrefix = 'AUT_'.(!$flip ? 'DONE' : '');
+
         $config = array(
           "Bucket" => $s3Bucket,
-          "s3DownloadPrefix" => ($s3Key ? $s3Key.'/' : '').'AUT_',
+          "s3DownloadPrefix" => ($s3Key ? $s3Key.'/' : '').$downloadPrefix.'/',
           "destDocPrefix" => $s3Key,
           "docFileSuffix" => $docFileSuffix,
           // ignoring move parameter cause proccessed files to get deleted
-          // "s3MoveProcessedDocumentsTo" => ($s3Key ? $s3Key.'/' : '').'/AUT_END_',
-          "limit" => $limit,
+          //"s3MoveProcessedDocumentsTo" => ($s3Key ? $s3Key.'/' : '').$donePrefix.'/',
           "aws" => Lift_Search::$aws
         );
 
@@ -41,8 +44,10 @@ function librelio_external_uploader_upload($limit = 1)
     "handler" => $handler
   ));
   set_time_limit(5000);
+error_reporting(E_ALL ^ E_NOTICE);
+ini_set('display_errors', 'On');
   try {
-    $uploader->upload();
+    $uploader->upload($limit);
     echo "Done!";
   } catch(Exception $exp) {
     if(!$handler->catchException($exp))
@@ -65,11 +70,17 @@ function trace_tostr($trace)
 }
 
 class LibrelioS3DocumentParser extends DU\S3DocumentParser {
+  protected function fixXMLUnsupportedEntities($xml)
+  {
+    return str_replace("&", "&amp;", $xml);
+  }
+  
   public function parseDocument($parserRef)
   {
     $xml = new XMLReader();
-    if(!$xml->open($parserRef->localDir.'/'.$parserRef->docFile, null, 
-                   LIBXML_NOWARNING))
+    $data = file_get_contents($parserRef->localDir.'/'.$parserRef->docFile);
+    $data = $this->fixXMLUnsupportedEntities($data);
+    if(!$xml->xml($data, null, LIBXML_NOWARNING))
       throw new Exception("Couldn't open docFile: ".$parserRef->docFile);
     while(@$xml->read())
     {
@@ -197,7 +208,16 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
   public function log($a, $b, $c)
   {
     echo "log: ";
-    var_dump($a, $b, $c);
+    echo $a.' ';
+    if(is_array($b) && @$b['id'])
+      echo ': '.$b['id'];
+    else if(is_array($b))
+      var_dump($b, $c);
+    else
+    {
+      echo ' '.$b.' ';
+      var_dump($c);
+    }
     echo "<br />";
     // Lift_Search::event_log(a, b, c);
         //Lift_Search::event_log( 'DocumentUploader error', $err->getMessage(), array( 'error' ) );
@@ -275,10 +295,12 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
   public function importFiles($parser, $parserRef, $documentRef)
   {
     $unzipDir = $parser->getLocalDir($parserRef);
-    foreach($documentRef->files as $zipFile)
+    $filesInfo = $documentRef->documentInfo['filesInfo'];
+    foreach($documentRef->files as $i=>$zipFile)
     {
       try {
-        $this->uncompressFile($zipFile['Body']->getUri(), $unzipDir);
+        $finfo = $filesInfo[$i];
+        $this->uncompressFile($zipFile['Body']->getUri(), $unzipDir, $finfo['Key']);
       } catch(Exception $exp) {
         echo get_class($exp).": ".$exp->getMessage()."<br />";
       }
@@ -455,9 +477,8 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
                    array());
         continue;
       }
-      $content = file_get_contents($localDir.'/'.$subDocFile);
       $dom = new Dom();
-      $dom->load($content);
+      $dom->loadFromFile($localDir.'/'.$subDocFile);
       $els = $dom->getElementsByTag('body');
       // content is $body variable 
       $body = sizeof($els) > 0 ? $els[0]->innerHTML() : '';
@@ -554,22 +575,22 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
     }
   }
 
-  protected function uncompressFile($zipFile, $destDir)
+  protected function uncompressFile($zipFile, $destDir, $fn)
   {
     $zip = new ZipArchive;
     if(!is_file($zipFile))
-      throw new Exception("Could not find zip file at: ".$zipFile);
+      throw new Exception("Could not find zip file at: ".$fn);
     if(@$zip->open($zipFile))
     {
       if(!@$zip->extractTo($destDir))
       {
-        throw new Exception("Could not parse file: ".$zipFile);
+        throw new Exception("Could not parse file: ".$fn);
       }
       $zip->close();
     }
     else
     {
-      throw new Exception("Could not open zip file: ".$zipFile);
+      throw new Exception("Could not open zip file: ".$fn);
     }
   }
 
@@ -587,7 +608,7 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
     foreach($documentRef->documentInfo['filesInfo'] as $file)
     {
       $key = $file['Key'];
-      $relKey = substr($key, strlen($this->s3DownloadPrefix) + 1);
+      $relKey = substr($key, strlen($this->s3DownloadPrefix));
       if($relKey)
       {
         try {
@@ -596,7 +617,7 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
             $this->s3Client->copyObject(array(
               "Bucket" => $this->Bucket,
               "CopySource" => $this->Bucket.'/'.$key,
-              "Key" => $this->s3MoveProcessedDocumentsTo.'/'.$relKey
+              "Key" => $this->s3MoveProcessedDocumentsTo.$relKey
             ));
           }
           $this->s3Client->deleteObject(array(
