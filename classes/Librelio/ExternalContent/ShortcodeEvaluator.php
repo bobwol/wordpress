@@ -9,19 +9,23 @@ class ShortcodeEvaluator {
 
   private $data;
   private $waurl;
-  private $filename;
   private $type;
   private $dataPtr;
   private $global_vars = array();
 
-  private $cur_vars;
+  private $filename;
+  private $foldername;
+  private $folderdate;
 
   protected static $shortcode_handlers = array(
     'librelio' => array(
       'default' => 'eval_sc_librelio_inst',
       'attrs' => array(
         'foreach' => 'eval_librelio_foreach_inst',
-        'endforeach' => 'eval_librelio_endforeach_inst'
+        'endforeach' => 'eval_librelio_endforeach_inst',
+        'filename' => 'eval_librelio_filename_inst',
+        'foldername' => 'eval_librelio_foldername_inst',
+        'folderdate' => 'eval_librelio_folderdate_inst',
       )
     )
   );
@@ -31,9 +35,13 @@ class ShortcodeEvaluator {
     $this->data = $data;
     $this->waurl = $waurl;
 
+
     $waurl_obj = parse_url($waurl);
     $path = @$waurl_obj['path'];
 
+    $this->foldername = basename(dirname($path));
+    $farr = explode("_", $this->foldername);
+    $this->folderdate = @\DateTime::createFromFormat("Ymd", array_pop($farr));
     $this->filename = basename($path);
 
     $ext = pathinfo($path, PATHINFO_EXTENSION);
@@ -158,10 +166,7 @@ class ShortcodeEvaluator {
           $v = implode(",", $v);
         return (string)$v;
       }
-      if(isset($attrs['filename']))
-      {
-        return (string)$this->filename;
-      }
+      
       if(sizeof(array_keys($attrs)) > 0)
         throw new ShortcodeSemanticError("Unkown librelio shortcode!");
       $v = $program->vars['content'];
@@ -205,4 +210,20 @@ class ShortcodeEvaluator {
     return false;
   }
 
+
+  // custom librelio key attrs
+  protected function eval_librelio_filename_inst($parser, $v, $ptr)
+  {
+    return function($p) { return $this->filename; };
+  }
+  
+  protected function eval_librelio_foldername_inst($parser, $v, $ptr)
+  {
+    return function($p) { return $this->foldername; };
+  }
+  
+  protected function eval_librelio_folderdate_inst($parser, $v, $ptr)
+  {
+    return function($p) use($v) { return @$this->folderdate->format($v); };
+  }
 }

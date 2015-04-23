@@ -4,7 +4,7 @@ use Librelio\DocumentUploader as DU;
 use PHPHtmlParser\Dom;
 use CFPropertyList as PList;
 
-function librelio_external_uploader_upload($limit = 10)
+function librelio_external_uploader_upload($limit = 1)
 {
     $waurl = Lift_Search::__get_setting('external_url_prefix') ?: '';
     $docFileSuffix = Lift_Search::__get_setting('external_s3_doc_suffix') ?: '';
@@ -27,7 +27,8 @@ function librelio_external_uploader_upload($limit = 10)
           "destDocPrefix" => $s3Key,
           "docFileSuffix" => $docFileSuffix,
           // ignoring move parameter cause proccessed files to get deleted
-          //"s3MoveProcessedDocumentsTo" => ($s3Key ? $s3Key.'/' : '').$donePrefix.'/',
+          "s3MoveProcessedDocumentsTo" => ($s3Key ? $s3Key.'/' : '').$donePrefix.'/',
+          //"s3MoveProcessedDocumentsTo" => false, // don't delete processed files
           "aws" => Lift_Search::$aws
         );
 
@@ -320,11 +321,11 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
 
   protected function findDocumentHTMLFile($prefix, &$files)
   {
-    foreach($files as $file)
+    foreach($files as $key=>$file)
     {
-      if(strpos($file, $prefix) === 0 && 
-        strpos($file, '.html') == strlen($file) - strlen('.html'))
-        return $file;
+      if(is_string($file) && strpos($file, $prefix) === 0 && 
+         strpos($file, '.html') == strlen($file) - strlen('.html'))
+        return array($key, $file);
     }
     return null;
   }
@@ -344,16 +345,9 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
     return preg_replace($pttrn, "", $s);
   }
 
-  protected function getModifiedFiles($document, $parser, $parserRef, $documentRef)
+  protected function getModifiedFiles($localDir, $docFile, $files, $name, $date)
   {
-    $localDir = $parser->getLocalDir($parserRef);
-
-    $docFile = $parser->getDocumentFile($parserRef);
-    $docBasename = basename($docFile);
-    $name = substr($docBasename, 0, 
-                   strlen($docBasename) - strlen($this->docFileSuffix));
-    $prefix = ($this->destDocPrefix ? $this->destDocPrefix.'/' : '').$name.'/';
-    $privFiles = $parser->getFiles($parserRef);
+    $privFiles = $files;
     $pubFiles = array();
     $pdfFile = null;
 
@@ -362,7 +356,7 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
     $this->traverseArray($privFiles, function($i, $file) use (&$privFiles, $name, $localDir, &$pdfFile)
       {
         $s = $name.'.pdf';
-        if(strpos($file, $s) === strlen($file) - strlen($s))
+        if(is_string($file) && strpos($file, $s) === strlen($file) - strlen($s))
         {
           // $file ends with $s
           $pdfFile = $s;
@@ -378,10 +372,10 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
       });
     
     // issue #28 (github.com/libreliodev/wordpress) | Cover maker
-    $this->traverseArray($privFiles, function($i, $file) use (&$privFiles, $name, $localDir)
+    $this->traverseArray($privFiles, function($idx, $file) use (&$privFiles, $name, $localDir)
       {
         $s = $name.'-cover.jpg';
-        if(strpos($file, $s) === strlen($file) - strlen($s))
+        if(is_string($file) && strpos($file, $s) === strlen($file) - strlen($s))
         {
           $image = imagecreatefromjpeg($localDir.'/'.$file);
           if(!$image)
@@ -401,7 +395,7 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
           }
 
           unlink($localDir.'/'.$file);
-          array_splice($privFiles, $i, 1, $nimgs_fn);
+          array_splice($privFiles, $idx, 1, $nimgs_fn);
           return false;
         }
       });
@@ -433,7 +427,7 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
     // Remove magazine to public file
     $this->traverseArray($privFiles, function($i, $file) use (&$privFiles, $magazine_name)
       {
-        if($file == $magazine_name)
+        if(is_string($file) && $file == $magazine_name)
         {
           array_splice($privFiles, $i, 1);
           return false;
@@ -454,12 +448,9 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
     $docBasename = basename($docFile);
     $name = substr($docBasename, 0, 
                    strlen($docBasename) - strlen($this->docFileSuffix));
-    $prefix = ($this->destDocPrefix ? $this->destDocPrefix.'/' : '').$name.'/';
-
-    // get and modify files
-    list($pubFiles, $privFiles) = 
-         $this->getModifiedFiles($document, $parser, $parserRef, $documentRef);
-    $files = array_merge($pubFiles, $privFiles);
+    $prefix = ($this->destDocPrefix ? $this->destDocPrefix.'/' : '');
+    $docDate = null;
+    $files = $parser->getFiles($parserRef);
 
     // parse sub-documents
     $object = $parser->parseDocument($parserRef);
@@ -470,7 +461,8 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
       $subdoc = new LibrelioS3UploadSubdocument();
       $target_doc = @$subdoc_p['target-doc'];
       // fetch content and date
-      $subDocFile = $this->findDocumentHTMLFile($target_doc, $files);
+      list($subDocFileIndex, $subDocFile) = 
+            $this->findDocumentHTMLFile($target_doc, $files);
       if(!$subDocFile)
       {
         $this->log("Subdocument file not found!", "target-doc=".$target_doc, 
@@ -488,8 +480,19 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
         $date = DateTime::createFromFormat("Ymd", $ude_subDocFile[1]);
       if(!@$date)
         $date = new DateTime();
-      
-      $subdoc->uniqueId = 's3://'.$this->Bucket.'/'.$prefix.$target_doc;
+      if($docDate == null)
+      {
+        $docDate = $date;
+        $docDatePStr = $docDate->format('Ymd'); // librelio path date format
+        $prefix .= $name.'_'.$docDatePStr.'/';
+      }
+      // rename doc file (specified in issue #38)
+      $subDocFileDestP = ($pathp['dirname'] != '.' ? 
+                          $pathp['dirname'].'/' : '').$target_doc.'_'.
+                          $date->format('Ymd').'_.html';
+      $files[$subDocFileIndex] = array( 'src' => $subDocFile,
+                                        'dest' => $subDocFileDestP );
+      $subdoc->uniqueId = 's3://'.$this->Bucket.'/'.$prefix.'/'.$target_doc;
       $pathInfo = pathinfo($subDocFile);
       $ext = $pathInfo['extension'];
       $subdoc->fields = array(
@@ -505,7 +508,8 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
         "post_status" => "publish",
         "post_title" => @$subdoc_p['te-title'],
         "post_type" => "external",
-        "resourcename" => "/".$name.'/'.basename($subDocFile, '.'.$ext).'_.'.$ext,
+        "resourcename" => "/".$name.'_'.$docDatePStr.'/'.$subDocFileDestP,
+                              //basename($subDocFile, '.'.$ext).'_.'.$ext,
         "site_id" => 1,
         /* not needed
         "taxonomy_category_id" => array(),
@@ -529,16 +533,28 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
                                   substr($text, 0, $charlen_limit) : $text));
       }
     }
+    if($docDate == null)
+    {
+      $docDate = new DateTime();
+      $docDatePStr = $docDate->format('Ymd'); // librelio path date format
+      $prefix .= $name.'_'.$docDatePStr.'/';
+    }
+    // get and modify files
+    list($pubFiles, $privFiles) = 
+         $this->getModifiedFiles($localDir, $docFile, $files, $name, $docDatePstr);
+
     $tocPlistFn = 'toc.plist';
     $tocPlist->saveXML($localDir.'/'.$tocPlistFn);
     $pubFiles[] = $tocPlistFn;
 
-    $this->addUploadFiles($pubFiles, array(
+    $this->addUploadFiles($document, $pubFiles, array(
       "prefix" => $prefix, "localDir" => $localDir,
+      "defaultAppendBeforeExt" => '_'.$docDatePStr
     ));
-    $this->addUploadFiles($privFiles, array(
+    $this->addUploadFiles($document, $privFiles, array(
       "prefix" => $prefix, "localDir" => $localDir,
-      "isPrivate" => true
+      "isPrivate" => true,
+      "defaultAppendBeforeExt" => '_'.$docDatePStr
     ));
 
     // upload document file
@@ -551,26 +567,38 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
           $this->removePunctuationAndDecimal($name).'/';
     $udfile->destKey = $prefix2.
             substr($docFile, 0, 
-                   strlen($docFile) - strlen($this->docFileSuffix));
+                   strlen($docFile) - strlen($this->docFileSuffix)).
+                   '_'.$docDatePStr;
     $document->uploadFiles[] = $udfile;
   }
 
-  protected function addUploadFiles($files, $opts = array())
+  protected function addUploadFiles($document, $files, $opts = array())
   {
     $prefix = $opts['prefix'];
     $localDir = $opts['localDir'];
     $isPrivate = @$opts['isPrivate'];
+    $defaultAppendBeforeExt = @$opts['defaultAppendBeforeExt'];
     foreach($files as $file)
     {
       $udfile = new DU\S3UploadDocumentFile();
-      $udfile->srcPath = $localDir.'/'.$file;
       $udfile->destBucket = $this->Bucket;
-      // rename as specified in #23
-      $pathp = pathinfo($file);
-      $udfile->destKey = $prefix.
+      if(is_array($file))
+      {
+        // key is specified relative to document directory
+        $udfile->srcPath = $localDir.'/'.$file['src'];
+        $udfile->destKey = $prefix.$file['dest'];
+      }
+      else
+      {
+        $udfile->srcPath = $localDir.'/'.$file;
+        // rename as specified in #23
+        $pathp = pathinfo($file);
+        $udfile->destKey = $prefix.
            ($pathp['dirname'] != '.' ? $pathp['dirname'].'/' : '').
            basename($file, '.'.$pathp['extension']).
+           ($defaultAppendBeforeExt ?: '').
            ($isPrivate ? '_' : '').'.'.$pathp['extension'];
+      }
       $document->uploadFiles[] = $udfile;
     }
   }
@@ -605,6 +633,8 @@ class LibrelioS3DocumentUploaderHandler extends DU\S3DocumentUploaderHandler {
   public function freeDocument($documentRef)
   {
     // move or delete files
+    if($this->s3MoveProcessedDocumentsTo === false)
+      return;
     foreach($documentRef->documentInfo['filesInfo'] as $file)
     {
       $key = $file['Key'];

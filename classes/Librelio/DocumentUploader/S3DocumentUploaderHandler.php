@@ -48,6 +48,6 @@ abstract class S3DocumentUploaderHandler {
       'Key' => $uploadFile->destKey,
       'SourceFile' => $uploadFile->srcPath
     ));
-    return $result ? !!@$result['ObjectURL'] : false;
+    return $result ? !!@$result->get('ObjectURL') : false;
   }
 }
