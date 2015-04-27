@@ -4,6 +4,9 @@ namespace Librelio\ExternalContent;
 
 use Librelio\Language\Shortcode\ShortcodeParser;
 use CFPropertyList\CFPropertyList, PHPHtmlParser\Dom;
+use Librelio\Language\SScript\SScriptEvaluator;
+use Librelio\Language\SScript\SScriptParser;
+use Librelio\Language\SScript\SScriptContext;
 
 class ShortcodeEvaluator {
 
@@ -88,6 +91,7 @@ class ShortcodeEvaluator {
     $parser = new ShortcodeParser($content);
     $program = $this->eval_parser($parser);
     $program->vars = $this->global_vars;
+    ShortcodeDefineFunctions::define($program->vars);
     return $program->run();
   }
 
@@ -153,15 +157,24 @@ class ShortcodeEvaluator {
 
   protected function eval_sc_librelio_inst($parser, $shortcode, $ptr)
   {
+    $stmt = null;
     if(($id = @$shortcode['attributes']['id']) && !@$this->global_vars[$id])
+    {
       $this->requiredId($id);
-    return function($program) use ($shortcode)
+      $parser = new SScriptParser($id);
+      $stmt = SScriptEvaluator::parseStatement($parser);
+    }
+    return function($program) use ($shortcode, $stmt)
     {
       $attrs = $shortcode['attributes'];
       if(@$attrs['id'])
       {
-        $path = explode('.', $attrs['id']);
-        $v = $this->locateVariable($program->vars, $path);
+        // old locator
+        //$path = explode('.', $attrs['id']);
+        //$v = $this->locateVariable($program->vars, $path);
+        $evaluator = new SScriptEvaluator();
+        $evaluator->setContext(new SScriptContext($program->vars));
+        $v = $evaluator->evaluateStatement($stmt);
         if(is_array($v))
           $v = implode(",", $v);
         return (string)$v;
@@ -224,6 +237,7 @@ class ShortcodeEvaluator {
   
   protected function eval_librelio_folderdate_inst($parser, $v, $ptr)
   {
-    return function($p) use($v) { return @$this->folderdate->format($v); };
+    return function($p) use($v) { return $this->folderdate ? 
+                                         @$this->folderdate->format($v) : ""; };
   }
 }
