@@ -169,9 +169,6 @@ class ShortcodeEvaluator {
       $attrs = $shortcode['attributes'];
       if(@$attrs['id'])
       {
-        // old locator
-        //$path = explode('.', $attrs['id']);
-        //$v = $this->locateVariable($program->vars, $path);
         $evaluator = new SScriptEvaluator();
         $evaluator->setContext(new SScriptContext($program->vars));
         $v = $evaluator->evaluateStatement($stmt);
@@ -196,12 +193,17 @@ class ShortcodeEvaluator {
       throw new ShortcodeSyntaxError("Unexpected foreach value: ".$value);
     $var_name = trim($vs[0]);
     $each_var_name = trim($vs[1]);
-    
+
+    $var_parser = new SScriptParser($var_name);
+    $stmt = SScriptEvaluator::parseStatement($var_parser);
+
     $program = $this->eval_parser($parser, array( "inForeach" => true));
     
-    return function($p_program) use($var_name, $each_var_name, $program)
+    return function($p_program) use($var_name, $each_var_name, $program, $stmt)
     {
-      $var = $this->locateVariable($p_program->vars, explode('.', $var_name));
+      $evaluator = new SScriptEvaluator();
+      $evaluator->setContext(new SScriptContext($p_program->vars));
+      $var = $evaluator->evaluateStatement($stmt);
       if(!is_array($var))
         throw new ShortcodeSemanticError("Variable `$var_name` is not array!");
       $r = '';
