@@ -18,8 +18,6 @@ require_once('wp/lift-update-queue.php');
 require_once('wp/update-watchers/post.php');
 require_once('lib/wp-asynch-events.php');
 
-require_once('wp/librelio-external-uploader.php');
-
 use Librelio as L;
 
 function Lift_Batch_Handler_send_next_batch()
@@ -196,15 +194,7 @@ class Lift_Search {
 
       // remove page extension if is .php
       $request_page = strpos($request_page, '.php') == strlen($request_page) - 4 ? substr($request_page, 0, strlen($request_page) - 4) : $request_page;
-      if($request_page == 'process_s3upload')
-      {
-        if(!self::get_search_domain_name())
-          die("Domain not registered yet!");
-        // upload script
-        librelio_external_uploader_upload();
-        die();
-      }
-      else if($request_page == 'cloudsearchdetail')
+      if($request_page == 'cloudsearchdetail')
       {
         $waurl = (self::__get_setting('external_url_prefix') ?: '').
                  (@$request_page_query['waurl'] ?: '');
@@ -243,7 +233,6 @@ class Lift_Search {
                     $edata = $body;
                     $evaluator = 
                       new L\ExternalContent\ShortcodeEvaluator($edata, $waurl);
-                    
                     try {
                       $title = $evaluator->evalFromString($tmpl_post->post_title);
                     } catch(Exception $exp) {
