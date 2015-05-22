@@ -2,7 +2,9 @@
 
 class Lift_Admin {
 
-	const OPTIONS_SLUG = 'lift-search';
+  const MENU_PAGE_SLUG = "librelio";
+  const SUBMENU_TEMPLATES_SLUG = "librelio_templates";
+  const SUBMENU_CLOUDSEARCH_SLUG = "librelio_cloudsearch";
 
   private static function _($s) { return lift_cloud_localize($s); }
 
@@ -34,6 +36,12 @@ class Lift_Admin {
 				}
 			}
 		}
+
+    // redirect for librelio templates
+    if ( isset( $_GET['page'] ) && (self::SUBMENU_TEMPLATES_SLUG == $_GET['page']) ) {
+      wp_redirect( admin_url( 'edit.php?post_type=' . Lift_Search::TEMPLATE_TYPE ) );
+      die();
+    }
 	}
 
 	/**
@@ -56,9 +64,31 @@ class Lift_Admin {
 	 * Sets up menu pages
 	 */
 	public function action__admin_menu() {
-		$hook = add_options_page( self::_('Librelio'), self::_('Librelio'), $this->get_manage_capability(), self::OPTIONS_SLUG, array( $this, 'callback__render_options_page' ) );
-		add_action( $hook, array( $this, 'action__options_page_enqueue' ) );
+    add_menu_page(self::_('Librelio'), self::_('Librelio'),
+                  $this->get_manage_capability(), self::MENU_PAGE_SLUG, 
+                  array($this, 'menu_librelio_page'),
+                  null, 100);
+    add_submenu_page(self::MENU_PAGE_SLUG, self::_('Librelio Templates'), 
+                     self::_('Templates'), $this->get_manage_capability(),
+                     self::SUBMENU_TEMPLATES_SLUG, 
+                     array($this, 'submenu_librelio_templates_page'));
+
+    $hook = add_submenu_page(self::MENU_PAGE_SLUG, self::_('Librelio CloudSearch'),
+                     self::_('CloudSearch'), $this->get_manage_capability(),
+                     self::SUBMENU_CLOUDSEARCH_SLUG,
+                     array($this, 'callback__render_options_page'));
+    add_action( $hook, array( $this, 'action__options_page_enqueue' ) );
 	}
+
+  public function menu_librelio_page()
+  {
+
+  }
+
+  public function submenu_librelio_templates_page()
+  {
+    
+  }
 
 	public function action__options_page_enqueue() {
 		if(defined('SCRIPT_DEBUG') && SCRIPT_DEBUG)

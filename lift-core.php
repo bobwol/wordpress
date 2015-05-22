@@ -57,6 +57,8 @@ add_filter( 'cron_schedules', function( $schedules ) {
 
 class Lift_Search {
 
+  const TEMPLATE_TYPE = 'librelio_template';
+
   private static function _($s) { return lift_cloud_localize($s); }
 
 	/**
@@ -92,14 +94,15 @@ class Lift_Search {
     if(($region = self::get_domain_region()))
       self::$cloud_search_client->setRegion($region);
 
-    register_post_type( 'librelio_template',
+    register_post_type( self::TEMPLATE_TYPE,
       array(
         'labels' => array(
           'name' => self::_( 'Librelio Templates' ),
           'singular_name' => self::_( 'Librelio Template' )
         ),
-        'public' => true,
-        'has_archive' => true
+        'public' => false,
+        'show_ui' => true,
+        'show_in_menu' => false
       )
     );
 
