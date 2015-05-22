@@ -194,7 +194,7 @@ class Lift_Search {
 
       // remove page extension if is .php
       $request_page = strpos($request_page, '.php') == strlen($request_page) - 4 ? substr($request_page, 0, strlen($request_page) - 4) : $request_page;
-      if($request_page == 'cloudsearchdetail')
+      if($request_page == 'librelio')
       {
         $waurl = (self::__get_setting('external_url_prefix') ?: '').
                  (@$request_page_query['waurl'] ?: '');
