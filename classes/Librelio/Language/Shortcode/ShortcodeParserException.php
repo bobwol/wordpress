@@ -3,4 +3,4 @@
 namespace Librelio\Language\Shortcode;
 
 
-class ShortcodeParserException extends Exception { }
+class ShortcodeParserException extends \Exception { }

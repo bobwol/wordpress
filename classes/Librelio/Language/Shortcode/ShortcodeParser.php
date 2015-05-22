@@ -106,7 +106,7 @@ class ShortcodeParser {
 
     $name_pttrn = '/^[a-z_\-]+/i';
     if(!preg_match($name_pttrn, $s, $name_match))
-      throw new ShortcodeException('Expected a name as attribute');
+      throw new ShortcodeParserException('Expected a name as attribute');
     $name = $name_match[0];
     $s = substr($s, strlen($name));
     $len += strlen($name);
@@ -122,7 +122,7 @@ class ShortcodeParser {
     if(strlen($s) > 0 && $s[0] != ']')
     {
       if($s[0] != '=')
-        throw new ShortcodeException('Expected `=` after attribute name');
+        throw new ShortcodeParserException('Expected `=` after attribute name');
       $s = substr($s, 1);
       $len++;
       // remove whitespace
@@ -140,7 +140,7 @@ class ShortcodeParser {
       else
       {
         if(!preg_match($name_pttrn, $s, $value_match))
-          throw new ShortcodeException('Expected a value in attribute `'.$name.'`');
+          throw new ShortcodeParserException('Expected a value in attribute `'.$name.'`');
         $value = $value_match[0];
       }
     }
@@ -200,6 +200,6 @@ class ShortcodeParser {
       }
       $v .= $c;
     }
-    throw new ShortcodeException('Quote `'.$q.'` is not closed');
+    throw new ShortcodeParserException('Quote `'.$q.'` is not closed');
   }
 }

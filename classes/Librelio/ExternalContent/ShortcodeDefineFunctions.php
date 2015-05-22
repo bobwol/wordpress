@@ -6,7 +6,7 @@ class ShortcodeDefineFunctions {
 
 
   private static $funcs = array(
-    "foldername"
+    "foldername", "date"
   );
 
   public static function define(&$vars)
@@ -20,6 +20,15 @@ class ShortcodeDefineFunctions {
   public static function foldername($s)
   {
     return basename(dirname($s));
+  }
+
+  public static function date($f, $t = null)
+  {
+    if($t === null)
+      $t = time();
+    if($t instanceof \DateTime)
+      return $t->format($f);
+    return date($f, $t);
   }
 
 }

@@ -40,6 +40,9 @@ class SScriptEvaluator {
       case SScriptParser::CALL_END :
         $stmt->push(new SScriptOperatorPerformCall());
         break;
+      case SScriptParser::CONSTANT_STRING :
+        $stmt->push(new SScriptOperatorPush($parser->value));
+        break;
       }
     }
     if($stmt->getLength() <= 0)

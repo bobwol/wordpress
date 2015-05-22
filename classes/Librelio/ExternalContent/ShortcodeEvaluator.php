@@ -3,7 +3,8 @@
 namespace Librelio\ExternalContent;
 
 use Librelio\Language\Shortcode\ShortcodeParser;
-use CFPropertyList\CFPropertyList, PHPHtmlParser\Dom;
+use CFPropertyList\CFPropertyList, 
+    CFPropertyList\CFType, CFPropertyList\CFDictionary, PHPHtmlParser\Dom;
 use Librelio\Language\SScript\SScriptEvaluator;
 use Librelio\Language\SScript\SScriptParser;
 use Librelio\Language\SScript\SScriptContext;
@@ -55,8 +56,17 @@ class ShortcodeEvaluator {
       try {
         $pl = new CFPropertyList();
         $pl->parse($data, CFPropertyList::FORMAT_XML);
-        $this->global_vars['document'] = $pl->toArray();
+        $value = $pl->getValue();
         $this->global_vars['content'] = $data;
+        if($value instanceof CFDictionary)
+        {
+          $this->global_vars['Header'] = $value->get("Header")->toArray();
+          $this->global_vars['document'] = $value->get("Items")->toArray();
+        }
+        else
+        {
+          $this->global_vars['document'] = $pl->toArray();
+        }
       } catch(Exception $e) {
       }
       break;

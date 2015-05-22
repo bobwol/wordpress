@@ -10,6 +10,7 @@ class SScriptParser {
   const CALL_END = 4;
   const NEXT_ARG = 5;
   const WHITE_SPACE = 6;
+  const CONSTANT_STRING = 7;
 
   const UNEXPECTED_CHAR = 7;
 
@@ -44,9 +45,33 @@ class SScriptParser {
     $tmp0 = "";
     $tmp0_prop = false;
     $tmp1 = ""; // whitespace
+    $quote = "";
+    $qescaped = false;
     while($this->crs < $slen)
     {
       $c = $s[$this->crs];
+
+      // quoted
+      if(!$quote && ($c == "\"" || $c == "'"))
+      {
+        $quote = $c;
+        $this->crs++;
+        continue;
+      }
+      else if($quote)
+      {
+        if($qescaped || $quote != $c)
+          $tmp1 .= $c;
+        else
+        {
+          $this->crs++;
+          $this->value = $tmp1;
+          $this->nodeType = self::CONSTANT_STRING;
+          return 1;
+        }
+        $this->crs++;
+        continue;
+      }
 
       // white space
       if(!$tmp0 && $this->isWhitespace($c))
