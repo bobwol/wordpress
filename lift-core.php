@@ -58,6 +58,7 @@ add_filter( 'cron_schedules', function( $schedules ) {
 class Lift_Search {
 
   const TEMPLATE_TYPE = 'librelio_template';
+  const LIBRELIO_PAGE = 'librelio';
 
   private static function _($s) { return lift_cloud_localize($s); }
 
@@ -197,7 +198,7 @@ class Lift_Search {
 
       // remove page extension if is .php
       $request_page = strpos($request_page, '.php') == strlen($request_page) - 4 ? substr($request_page, 0, strlen($request_page) - 4) : $request_page;
-      if($request_page == 'librelio')
+      if($request_page == self::LIBRELIO_PAGE)
       {
         $waurl = (self::__get_setting('external_url_prefix') ?: '').
                  (@$request_page_query['waurl'] ?: '');

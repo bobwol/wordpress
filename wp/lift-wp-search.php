@@ -258,7 +258,7 @@ class Lift_WP_Search {
   {
     global $post;
     if(@$post->resourcename)
-      return site_url().'/cloudsearchdetail.php?waurl='.urlencode($post->resourcename);
+      return site_url().'/'.Lift_Search::LIBRELIO_PAGE.'.php?waurl='.urlencode($post->resourcename);
     return $permalink;
   }
 
