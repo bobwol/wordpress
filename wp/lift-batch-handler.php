@@ -303,6 +303,9 @@ if ( !class_exists( 'Lift_Batch_Handler' ) ) {
 		 * @return boolean
 		 */
 		public static function ready_for_batch( $domain_name ) {
+      if(!Lift_Search::__get_setting('publisher') ||
+         !Lift_Search::__get_setting('app'))
+         return false;
 			$domain_manager = Lift_Search::get_domain_manager();
 			return $domain_manager->can_accept_uploads( $domain_name );
 		}

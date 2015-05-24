@@ -786,8 +786,8 @@
       this.template = _.template(liftAdmin.templateLoader.getTemplate('setting'));
       this.roles = {};
       this.settings = {
-        external_url_prefix: '',
-        external_s3_doc_suffix: ''
+        publisher: '',
+        app: ''
       };
       this.getRoles(function(err, roles)
         {

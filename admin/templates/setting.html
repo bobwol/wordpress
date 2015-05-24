@@ -2,8 +2,13 @@
 <a id="back" href="#"><?php echo self::_('Back'); ?></a>
 <h2><?php echo self::_('External Content'); ?></h2>
 <div>
-  <label><?php echo self::_('External Content Prefix'); ?></label>
-  <input type="text" value="<%- settings.external_url_prefix %>" name="external_url_prefix" id="external_url_prefix" data-type="setting" />
+  <label><?php echo self::_('Publisher'); ?></label>
+  <input type="text" value="<%- settings.publisher %>" name="publisher" id="publisher" data-type="setting" />
+</div>
+<br />
+<div>
+  <label><?php echo self::_('Application'); ?></label>
+  <input type="text" value="<%- settings.app %>" name="app" id="app" data-type="setting" />
 </div>
 <br />
 <h2><?php echo self::_('Policy'); ?></h2>

@@ -155,8 +155,22 @@ class Lift_Search {
 					}
 				}
 
+        // add publisher and app
+        $setting_keys = array('publisher', 'app');
+        foreach($setting_keys as $key)
+          $fields[$key] = Lift_Search::__get_setting($key);
+
 				return $fields;
 			}, 10, 2 );
+      add_action( 'lift_document_id_prefix', function($prefix)
+        {
+          $setting_keys = array('publisher', 'app');
+          $values = array();
+          foreach($setting_keys as $key)
+            $values[] = Lift_Search::__get_setting($key);
+          return $prefix.'_'.implode('_', $v).'_';
+			  }, 10, 1 );
+		
 
       add_filter('template_include',array(__CLASS__, 'view_project_template'));
 
@@ -200,8 +214,9 @@ class Lift_Search {
       $request_page = strpos($request_page, '.php') == strlen($request_page) - 4 ? substr($request_page, 0, strlen($request_page) - 4) : $request_page;
       if($request_page == self::LIBRELIO_PAGE)
       {
-        $waurl = (self::__get_setting('external_url_prefix') ?: '').
-                 (@$request_page_query['waurl'] ?: '');
+        $waurl = 's3://'.Lift_Search::__get_setting('publisher').'/'.
+                         Lift_Search::__get_setting('app').
+                       (@$request_page_query['waurl'] ?: '');
         $waurl_obj = parse_url($waurl);
         $found = 0;
         if(self::allowed_to_view_waurl($waurl))

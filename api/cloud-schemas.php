@@ -92,6 +92,22 @@ class Cloud_Schemas {
 				'field_name' => 'resourcename',
 				'field_type' => 'text',
 			),
+			array(
+				'field_name' => 'publisher',
+				'field_type' => 'literal',
+				'options' => array(
+					'facet' => true,
+					'search' => true,
+				),
+			),
+			array(
+				'field_name' => 'app',
+				'field_type' => 'literal',
+				'options' => array(
+					'facet' => true,
+					'search' => true,
+				),
+			),
 		);
 	}
 

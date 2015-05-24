@@ -109,6 +109,11 @@ class Lift_WP_Query {
 
 		$parameters = apply_filters( 'list_search_bq_parameters', array( sprintf( "(term '%s')", $this->wp_query->get( 's' ) ) ), $this );
 
+    $parameters[] = new Lift_Expression_Set( 'and', array(
+      new Lift_Expression_Field('publisher', Lift_Search::__get_setting('publisher'), true ),
+      new Lift_Expression_Field('app', Lift_Search::__get_setting('app'), true )
+    ));
+
 		//filter to the current blog/site
 		$parameters[] = new Lift_Expression_Set( 'and', array(
 			new Lift_Expression_Field( 'site_id', lift_get_current_site_id(), false ),
@@ -267,6 +272,15 @@ class Lift_WP_Search {
     global $post;
     return $post->post_content;
   }
+
+  public static function can_search()
+  {
+    if(!Lift_Search::__get_setting('publisher') ||
+       !Lift_Search::__get_setting('app'))
+         return false;
+    return true;
+  }
+
 	/**
 	 * Filters the sql for a WP_Query before it's sent to the DB.
 	 * @param string $request
