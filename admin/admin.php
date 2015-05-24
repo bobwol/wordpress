@@ -5,6 +5,7 @@ class Lift_Admin {
   const MENU_PAGE_SLUG = "librelio";
   const SUBMENU_TEMPLATES_SLUG = "librelio_templates";
   const SUBMENU_CLOUDSEARCH_SLUG = "librelio_cloudsearch";
+  const SUBMENU_PUBLICATIONS_SLUG = "librelio_publications";
 
   private static function _($s) { return lift_cloud_localize($s); }
 
@@ -78,6 +79,13 @@ class Lift_Admin {
                      self::SUBMENU_CLOUDSEARCH_SLUG,
                      array($this, 'callback__render_options_page'));
     add_action( $hook, array( $this, 'action__options_page_enqueue' ) );
+    $hook = add_submenu_page(self::MENU_PAGE_SLUG, self::_('Librelio Publications'),
+                     self::_('Publications'), $this->get_manage_capability(),
+                     self::SUBMENU_PUBLICATIONS_SLUG,
+                     array($this, 'submenu_librelio_publications_page'));
+    add_action('admin_print_styles-'.$hook, 
+               array($this, '__admin_enqueue_style'));
+
 	}
 
   public function menu_librelio_page()
@@ -88,6 +96,31 @@ class Lift_Admin {
   public function submenu_librelio_templates_page()
   {
     
+  }
+
+  public function submenu_librelio_publications_page()
+  {
+    $this->frame_librelio_console('frames/publications.html');
+  }
+
+  public function frame_librelio_console($page)
+  {
+    $aws = Lift_Search::$aws;
+    $query = array(
+      "autologin"=> "1",
+      "accessKeyId"=> $aws->get_access_key_id(),
+      "secretAccessKey"=> $aws->get_secret_access_key(),
+      "rootDirectory"=> Lift_Search::__get_setting('publisher'),
+      "selectedApp"=> Lift_Search::__get_setting('app'),
+      "redirect"=> $page
+    );
+    $url = "http://localhost/libreliodev/dist/admin/login.html?".
+                        http_build_query($query);
+?>
+<div class="librelio-console-frame-wrp">
+  <iframe class="librelio-console-frame" src="<?php echo $url; ?>" />
+</div>
+<?php
   }
 
 	public function action__options_page_enqueue() {
