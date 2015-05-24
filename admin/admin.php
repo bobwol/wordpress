@@ -114,7 +114,7 @@ class Lift_Admin {
       "selectedApp"=> Lift_Search::__get_setting('app'),
       "redirect"=> $page
     );
-    $url = "http://localhost/libreliodev/dist/admin/login.html?".
+    $url = "https://admin.librelio.com/login.html?".
                         http_build_query($query);
 ?>
 <div class="librelio-console-frame-wrp">
