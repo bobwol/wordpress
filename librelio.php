@@ -7,10 +7,10 @@ Description: Librelio Wordpress plug-in
 Author: Librelio
 Author URI: http://www.librelio.com/
  */
-
 require_once('lib/functions.php');
 
 $autoload_path = implode(DIRECTORY_SEPARATOR, array(__DIR__, 'vendor', 'autoload.php'));
+
 if ( file_exists( $autoload_path ) ) {
 	require_once $autoload_path;
 }
@@ -46,6 +46,6 @@ if ( !class_exists( 'Lift_Search' ) ) {
       }
   }
 
-  add_action('aws_init', 'lift_wp_search_init');
+  add_action('init', 'lift_wp_search_init');
 
 }

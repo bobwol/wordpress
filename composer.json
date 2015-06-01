@@ -63,7 +63,8 @@
     "require": {
         "voceconnect/voce-error-logging": "~0.3",
         "paquettg/php-html-parser": "*",
-        "rodneyrehm/plist": "*"
+        "rodneyrehm/plist": "*",
+        "aws/aws-sdk-php": "^3.0"
     },
     "autoload": {
         "files": [],

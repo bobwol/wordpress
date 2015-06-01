@@ -2,6 +2,8 @@
 
 require_once('cloud-schemas.php');
 
+use Aws\CloudSearch\CloudSearchClient;
+
 class Cloud_Config_API {
   protected $client;
 	protected $last_error;
@@ -63,18 +65,24 @@ class Cloud_Config_API {
 	protected function _make_request( $method, $options = array( ), $region = false ) {
 
     try {
-      if($region)
-        $this->client->setRegion($region);
+      if($region && $region != $this->client->getRegion())
+      {
+        $this->client = CloudSearchClient::factory(array(
+          "credentials"=> $this->client->getCredentials(),
+          "region"=> $region,
+          "version"=> "2013-01-01"
+        ));
+      }
       try {
         $ret =  $this->client->{$method}($options);
         if($ret)
         {
-          $ret = lift_cloud_array_to_object_if_assoc($ret->getAll(), true);
+          $ret = lift_cloud_array_to_object_if_assoc($ret->toArray(), true);
         }
         return $ret;
       } catch(Aws\CloudSearch\Exception\CloudSearchException $e) {
 		    $this->set_last_error(array(
-           'code' => $e->getExceptionCode(), 
+           'code' => $e->getCode(),
            'message' => $e->getMessage() ));
         return false;
       }

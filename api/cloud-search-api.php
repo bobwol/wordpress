@@ -1,5 +1,8 @@
 <?php
 
+use Aws\CloudSearch\CloudSearchClient;
+use Aws\CloudSearchDomain\CloudSearchDomainClient;
+
 class CloudSearch_API {
 
 	private $error_messages;
@@ -30,11 +33,13 @@ class CloudSearch_API {
 	 * @param string $domain_name
 	 */
 	public function __construct($domain_name) {
-
+    if(!Lift_Search::$cloud_search_client)
+      throw new Exception("Cloud Search Client is not initialized!");
     $this->client = Lift_Search::$cloud_search_client
                                 ->getDomainClient($domain_name, array(
         'credentials' => Lift_Search::$cloud_search_client->getCredentials(),
     ));
+    
     // Hack for changing search httpMethod to 'GET'
     // Search does not work right now with 'POST'
     $serviceDescription = $this->getProtectedProperty($this->client, 'serviceDescription');

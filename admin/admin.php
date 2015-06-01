@@ -29,7 +29,7 @@ class Lift_Admin {
 		}
 
 		if ( !Lift_Search::get_search_domain_name() ) {
-			if ( !isset( $_GET['page'] ) || (isset( $_GET['page'] ) && $_GET['page'] !== self::OPTIONS_SLUG ) ) {
+			if ( !isset( $_GET['page'] ) || (isset( $_GET['page'] ) && $_GET['page'] !== self::SUBMENU_CLOUDSEARCH_SLUG ) ) {
 				if ( current_user_can('manage_options') ) {
 					add_action( 'admin_enqueue_scripts', array( $this, '__admin_enqueue_style' ) );
 					add_action( 'user_admin_notices', array( $this, '_print_configuration_nag' ) );
@@ -105,17 +105,25 @@ class Lift_Admin {
 
   public function frame_librelio_console($page)
   {
-    $aws = Lift_Search::$aws;
+    $cred = Lift_Search::getAwsCredentials();
+    $region = Lift_Search::get_domain_region();
+    if(!$cred && $region)
+      return;
+    $sts = Aws\Sts\StsClient::factory(array(
+      'credentials'=> $cred,
+      'region' => $region,
+      'endpoint' => 'https://sts.'.$region.'.amazonaws.com',
+      'version' => '2011-06-15'
+    ));
     $query = array(
       "autologin"=> "1",
-      "accessKeyId"=> $aws->get_access_key_id(),
-      "secretAccessKey"=> $aws->get_secret_access_key(),
+      "credentials"=> json_encode($sts->getSessionToken()['Credentials']),
       "rootDirectory"=> Lift_Search::__get_setting('publisher'),
       "selectedApp"=> Lift_Search::__get_setting('app'),
       "redirect"=> $page
     );
-    $url = "https://admin.librelio.com/login.html?".
-                        http_build_query($query);
+    $url = plugins_url("admin/librelio-admin/login.html?".
+                        http_build_query($query), __DIR__);
 ?>
 <div class="librelio-console-frame-wrp">
   <iframe class="librelio-console-frame" src="<?php echo $url; ?>" />
@@ -443,8 +451,8 @@ class Lift_Admin {
 	 * @return array
 	 */
 	public function filter__plugin_row_meta( $links, $page ) {
-		if ( $page == self::OPTIONS_SLUG ) {
-			$links[] = '<a href="' . admin_url( 'options-general.php?page=' . self::OPTIONS_SLUG ) . '">'.self::_('Settings').'</a>';
+		if ( $page == self::SUBMENU_CLOUDSEARCH_SLUG ) {
+			$links[] = '<a href="' . admin_url( 'options-general.php?page=' . self::SUBMENU_CLOUDSEARCH_SLUG ) . '">'.self::_('Settings').'</a>';
 		}
 		return $links;
 	}
@@ -472,7 +480,7 @@ class Lift_Admin {
 		?>
 		<div id="banneralert" class="lift-colorized">
 			<div class="lift-message"><p><?php echo self::_('<strong>Welcome to Librelio</strong>: 	Now that you\'ve activated the Librelio plugin it\'s time to set it up. Click below to get started.'); ?></p></div>
-			<div><a class="lift-btn" href="<?php echo admin_url( 'options-general.php?page=' . self::OPTIONS_SLUG ) ?>"><?php echo self::_('Configure Librelio'); ?></a></div>
+			<div><a class="lift-btn" href="<?php echo admin_url( 'options-general.php?page=' . self::SUBMENU_CLOUDSEARCH_SLUG ) ?>"><?php echo self::_('Configure Librelio'); ?></a></div>
 			<div class="clr"></div>
 		</div>
 		<script>

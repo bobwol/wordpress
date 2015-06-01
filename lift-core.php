@@ -18,6 +18,9 @@ require_once('wp/lift-update-queue.php');
 require_once('wp/update-watchers/post.php');
 require_once('lib/wp-asynch-events.php');
 
+use Aws\S3\S3Client;
+use Aws\CloudSearch\CloudSearchClient;
+
 use Librelio as L;
 
 function Lift_Batch_Handler_send_next_batch()
@@ -53,7 +56,8 @@ add_filter( 'cron_schedules', function( $schedules ) {
     'display' => '',
   );
   return $schedules;
-} );
+
+  } );
 
 class Lift_Search {
 
@@ -74,7 +78,6 @@ class Lift_Search {
 	 */
 	const SETTINGS_OPTION = 'lift-settings';
 	const DOMAIN_EVENT_WATCH_INTERVAL = 60;
-  public static $aws;
   public static $cloud_search_client;
   public static $ready = false;
 
@@ -82,18 +85,18 @@ class Lift_Search {
 		return (!( defined( 'DISABLE_LIFT_ERROR_LOGGING' ) && DISABLE_LIFT_ERROR_LOGGING )) && ( class_exists( 'Voce_Error_Logging' ) || file_exists( __DIR__ . '/lib/voce-error-logging/voce-error-logging.php' ) );
 	}
 
-	public static function init($aws) {
-    self::$aws = $aws;
-    add_filter('aws_get_client_args', array(__CLASS__, 'add_aws_cloudsearch_args'));
-    $aws_client = $aws->get_client();
-    remove_filter('aws_get_client_args', array(__CLASS__, 'add_aws_client_args'));
-    if($aws_client instanceof WP_Error)
-    {
+	public static function init() {
+    $cred = self::getAwsCredentials();
+
+    if(!$cred)
       return;
-    }
-    self::$cloud_search_client = $aws_client->get('cloudsearch');
-    if(($region = self::get_domain_region()))
-      self::$cloud_search_client->setRegion($region);
+    
+    $region = self::get_domain_region() ?: 'eu-west-1';
+    self::$cloud_search_client = CloudSearchClient::factory(array(
+      "credentials"=> $cred,
+      "region"=> $region,
+      "version"=> "2013-01-01"
+    ));
 
     register_post_type( self::TEMPLATE_TYPE,
       array(
@@ -177,15 +180,6 @@ class Lift_Search {
       do_action('librelio-init');
       self::$ready = true;
 	}
-  
-  public static function add_aws_cloudsearch_args($args)
-  {
-    if(($region = self::get_domain_region()))
-      $args['region'] = $region;
-    else
-      $args['region'] = 'eu-west-1';
-    return $args;
-  }
 
   public static function allowed_to_view_waurl($waurl)
   {
@@ -200,7 +194,7 @@ class Lift_Search {
     global $wp_query;
     $request_uri = $_SERVER['REQUEST_URI'];
     $site_url_obj = parse_url(site_url());
-    $site_url_path = $site_url_obj['path'];
+    $site_url_path = @$site_url_obj['path'];
     if(strpos($request_uri, $site_url_path.'/') === 0)
     {
       $request_page = substr($request_uri, strlen($site_url_path) + 1);
@@ -229,7 +223,12 @@ class Lift_Search {
           
             if($s3Bucket && $s3Key)
             {
-              $s3Client = self::$aws->get_client()->get('s3');
+              $s3Client = S3Client::factory(array(
+                "credentials"=> $cred,
+                "version"=> "2006-03-01"
+              ));
+              if(($region = self::get_domain_region()))
+                $s3Client->setRegion($region);
               try {
                 $res = $s3Client->getObject(array(
                   'Bucket' => $s3Bucket,
@@ -703,6 +702,16 @@ class Lift_Search {
 		}
 
 	}
+  
+  public static function getAwsCredentials()
+  {
+    if(!defined("AWS_ACCESS_KEY_ID") || !defined("AWS_SECRET_ACCESS_KEY"))
+      return null;
+    return array(
+      'key' => AWS_ACCESS_KEY_ID,
+      'secret' => AWS_SECRET_ACCESS_KEY
+    );
+  }
 }
 
 function _lift_deactivate() {
