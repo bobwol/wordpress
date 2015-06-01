@@ -786,6 +786,7 @@
       this.template = _.template(liftAdmin.templateLoader.getTemplate('setting'));
       this.roles = {};
       this.settings = {
+        s3bucket: '',
         publisher: '',
         app: ''
       };

@@ -214,7 +214,8 @@ class Lift_Search {
       $request_page = strpos($request_page, '.php') == strlen($request_page) - 4 ? substr($request_page, 0, strlen($request_page) - 4) : $request_page;
       if($request_page == self::LIBRELIO_PAGE)
       {
-        $waurl = 's3://'.Lift_Search::__get_setting('publisher').'/'.
+        $waurl = 's3://'.Lift_Search::__get_setting('s3bucket').'/'.
+                         Lift_Search::__get_setting('publisher').'/'.
                          Lift_Search::__get_setting('app').
                        (@$request_page_query['waurl'] ?: '');
         $waurl_obj = parse_url($waurl);

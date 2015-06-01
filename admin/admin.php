@@ -29,7 +29,7 @@ class Lift_Admin {
 		}
 
 		if ( !Lift_Search::get_search_domain_name() ) {
-			if ( !isset( $_GET['page'] ) || (isset( $_GET['page'] ) && $_GET['page'] !== self::OPTIONS_SLUG ) ) {
+			if ( !isset( $_GET['page'] ) || (isset( $_GET['page'] ) && $_GET['page'] !== self::SUBMENU_CLOUDSEARCH_SLUG ) ) {
 				if ( current_user_can('manage_options') ) {
 					add_action( 'admin_enqueue_scripts', array( $this, '__admin_enqueue_style' ) );
 					add_action( 'user_admin_notices', array( $this, '_print_configuration_nag' ) );
@@ -443,8 +443,8 @@ class Lift_Admin {
 	 * @return array
 	 */
 	public function filter__plugin_row_meta( $links, $page ) {
-		if ( $page == self::OPTIONS_SLUG ) {
-			$links[] = '<a href="' . admin_url( 'options-general.php?page=' . self::OPTIONS_SLUG ) . '">'.self::_('Settings').'</a>';
+		if ( $page == self::SUBMENU_CLOUDSEARCH_SLUG ) {
+			$links[] = '<a href="' . admin_url( 'options-general.php?page=' . self::SUBMENU_CLOUDSEARCH_SLUG ) . '">'.self::_('Settings').'</a>';
 		}
 		return $links;
 	}
@@ -472,7 +472,7 @@ class Lift_Admin {
 		?>
 		<div id="banneralert" class="lift-colorized">
 			<div class="lift-message"><p><?php echo self::_('<strong>Welcome to Librelio</strong>: 	Now that you\'ve activated the Librelio plugin it\'s time to set it up. Click below to get started.'); ?></p></div>
-			<div><a class="lift-btn" href="<?php echo admin_url( 'options-general.php?page=' . self::OPTIONS_SLUG ) ?>"><?php echo self::_('Configure Librelio'); ?></a></div>
+			<div><a class="lift-btn" href="<?php echo admin_url( 'options-general.php?page=' . self::SUBMENU_CLOUDSEARCH_SLUG ) ?>"><?php echo self::_('Configure Librelio'); ?></a></div>
 			<div class="clr"></div>
 		</div>
 		<script>

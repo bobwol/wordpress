@@ -2,6 +2,11 @@
 <a id="back" href="#"><?php echo self::_('Back'); ?></a>
 <h2><?php echo self::_('External Content'); ?></h2>
 <div>
+  <label><?php echo self::_('S3 Bucket'); ?></label>
+  <input type="text" value="<%- settings.s3bucket %>" name="s3bucket" id="s3bucket" data-type="setting" />
+</div>
+<br />
+<div>
   <label><?php echo self::_('Publisher'); ?></label>
   <input type="text" value="<%- settings.publisher %>" name="publisher" id="publisher" data-type="setting" />
 </div>
