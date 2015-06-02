@@ -105,17 +105,25 @@ class Lift_Admin {
 
   public function frame_librelio_console($page)
   {
-    $aws = Lift_Search::$aws;
+    $cred = Lift_Search::getAwsCredentials();
+    $region = Lift_Search::get_domain_region();
+    if(!$cred && $region)
+      return;
+    $sts = Aws\Sts\StsClient::factory(array(
+      'credentials'=> $cred,
+      'region' => $region,
+      'endpoint' => 'https://sts.'.$region.'.amazonaws.com',
+      'version' => '2011-06-15'
+    ));
     $query = array(
       "autologin"=> "1",
-      "accessKeyId"=> $aws->get_access_key_id(),
-      "secretAccessKey"=> $aws->get_secret_access_key(),
+      "credentials"=> json_encode($sts->getSessionToken()['Credentials']),
       "rootDirectory"=> Lift_Search::__get_setting('publisher'),
       "selectedApp"=> Lift_Search::__get_setting('app'),
       "redirect"=> $page
     );
-    $url = "https://admin.librelio.com/login.html?".
-                        http_build_query($query);
+    $url = plugins_url("admin/librelio-admin/login.html?".
+                        http_build_query($query), __DIR__);
 ?>
 <div class="librelio-console-frame-wrp">
   <iframe class="librelio-console-frame" src="<?php echo $url; ?>" />
