@@ -1,8 +1,8 @@
 === Lift: Search for WordPress ===
-Contributors: voceplatforms
-Tags: search, cloudsearch, amazon, aws
+Contributors: voceplatforms, serverfire, libreliodev
+Tags: librelio, search, cloudsearch, amazon, aws
 Requires at least: 3.4.2
-Tested up to: 3.6.1
+Tested up to: 4.2.2
 Stable tag: 1.9.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -13,18 +13,14 @@ Improves WordPress search using Amazon CloudSearch.
 
 Lift leverages the search index power of Amazon CloudSearch to improve your
  WordPress-powered site’s search experience. Learn more at:
-[getliftsearch.com](http://getliftsearch.com/)
 
 Minimum requirements:
 
 * WordPress Version 3.4.2
-* PHP Version 5.3
+* PHP Version 5.5
 * Amazon Web Services account with CloudSearch enabled
 
 == Installation ==
-
-For full documentation see
-[getliftsearch.com/documentation/](http://getliftsearch.com/documentation/)
 
 Minimum requirements:
 
