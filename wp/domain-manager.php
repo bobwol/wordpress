@@ -144,11 +144,19 @@ class Lift_Domain_Manager {
 				}
 			}
 		}
-
+/* Async Disabled because of error ('Serialization of 'Closure' is not allowed')
 	  TAE_Async_Event::WatchWhen( array( $this, 'needs_indexing' ), array( $domain_name, $region ), 660, 'lift_needs_indexing_'. $domain_name )
 				->then( array( $this, 'index_documents' ), array( $domain_name, $region ), true )
 				->then( array( 'Lift_Batch_Handler', 'queue_all' ) )
 				->commit();
+*/
+    if($this->needs_indexing($domain_name, $region))
+    {
+      if($this->index_documents($domain_name, $region))
+      {
+        Lift_Batch_Handler::queue_all();
+      }
+    }
 
 		return true;
 	}
