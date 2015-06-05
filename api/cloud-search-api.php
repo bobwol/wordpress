@@ -6,46 +6,34 @@ use Aws\CloudSearchDomain\CloudSearchDomainClient;
 class CloudSearch_API {
 
 	private $error_messages;
-  private $client;
-
-  /**
-   *  get protected property (Hack function)
-   */
-  public function getProtectedProperty($obj, $prop) {
-    $reflection = new ReflectionClass($obj);
-    $property = $reflection->getProperty($prop);
-    $property->setAccessible(true);
-    return $property->getValue($obj);
-  }
-
-  /**
-   *  set protected property (Hack function)
-   */
-  public function setProtectedProperty($obj, $prop, $value) {
-    $reflection = new ReflectionClass($obj);
-    $property = $reflection->getProperty($prop);
-    $property->setAccessible(true);
-    $property->setValue($obj, $value);
-  }
+  private $docClient;
+  private $searchClient;
 
 	/**
 	 *
 	 * @param string $domain_name
 	 */
 	public function __construct($domain_name) {
-    if(!Lift_Search::$cloud_search_client)
+    /*if(!Lift_Search::$cloud_search_client)
       throw new Exception("Cloud Search Client is not initialized!");
     $this->client = Lift_Search::$cloud_search_client
                                 ->getDomainClient($domain_name, array(
         'credentials' => Lift_Search::$cloud_search_client->getCredentials(),
+    ));*/
+    $region = Lift_Search::get_domain_region() ?: 'eu-west-1';
+    $domainInfo = Lift_Search::get_domain_manager()->get_domain($domain_name);
+    if(!$domainInfo)
+      return;
+    $this->searchClient = CloudSearchDomainClient::factory(array(
+      'endpoint'=> 'https://'.$domainInfo->SearchService->Endpoint,
+      'credentials'=> false,
+      'version'=> '2013-01-01'
     ));
-    
-    // Hack for changing search httpMethod to 'GET'
-    // Search does not work right now with 'POST'
-    $serviceDescription = $this->getProtectedProperty($this->client, 'serviceDescription');
-    $operations = $this->getProtectedProperty($serviceDescription, 'operations');
-    $operations['Search']['httpMethod'] = 'GET';
-    $this->setProtectedProperty($serviceDescription, 'operations', $operations);
+    $this->docClient = CloudSearchDomainClient::factory(array(
+      'endpoint'=> 'https://'.$domainInfo->DocService->Endpoint,
+      'credentials'=> Lift_Search::getAwsCredentials(),
+      'version'=> '2013-01-01'
+    ));
 	}
 
 	/**
@@ -54,8 +42,8 @@ class CloudSearch_API {
 	 */
 	public function sendSearch( $query ) {
     try {
-        $res = $this->client->search($query->as_aws_2013_args());
-        return lift_cloud_array_to_object_if_assoc($res->getAll(), true);
+        $res = $this->searchClient->search($query->as_aws_2013_args());
+        return lift_cloud_array_to_object_if_assoc($res->toArray(), true);
     } catch(Exception $e) {
       $this->error_messages = $e->getMessage() ?: "(sendSearch)Unkown error!";
       return false;
@@ -68,11 +56,11 @@ class CloudSearch_API {
 	 */
 	public function sendBatch( $batch ) {
     try {
-        $res = $this->client->uploadDocuments(array(
+        $res = $this->docClient->uploadDocuments(array(
                               'documents' => $batch->convert_to_JSON(),
                               'contentType' => 'application/json'
                           ));
-        return lift_cloud_array_to_object_if_assoc($res->getAll(), true);
+        return lift_cloud_array_to_object_if_assoc($res->toArray(), true);
     } catch(Aws\Common\Exception\ServiceResponseException $e) {
       $this->error_messages = $e->getMessage();
       return false;

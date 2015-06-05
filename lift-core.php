@@ -224,12 +224,12 @@ class Lift_Search {
           
             if($s3Bucket && $s3Key)
             {
+              $region = self::get_domain_region() ?: "eu-west-1";
               $s3Client = S3Client::factory(array(
                 "credentials"=> $cred,
-                "version"=> "2006-03-01"
+                "version"=> "2006-03-01",
+                "region"=> $region
               ));
-              if(($region = self::get_domain_region()))
-                $s3Client->setRegion($region);
               try {
                 $res = $s3Client->getObject(array(
                   'Bucket' => $s3Bucket,
