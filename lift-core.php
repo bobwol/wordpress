@@ -221,8 +221,9 @@ class Lift_Search {
           case 's3':
             $s3Bucket = @$waurl_obj['host'];
             $s3Key = @$waurl_obj['path'];
+            $cred = self::getAwsCredentials();
           
-            if($s3Bucket && $s3Key)
+            if($s3Bucket && $s3Key && $cred)
             {
               $region = self::get_domain_region() ?: "eu-west-1";
               $s3Client = S3Client::factory(array(
@@ -233,7 +234,7 @@ class Lift_Search {
               try {
                 $res = $s3Client->getObject(array(
                   'Bucket' => $s3Bucket,
-                  'Key' => $s3Key
+                  'Key' => trim($s3Key, '/')
                 ));
                 $title = "";
                 $body = (string)$res['Body'];
