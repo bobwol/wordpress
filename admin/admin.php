@@ -43,7 +43,21 @@ class Lift_Admin {
       wp_redirect( admin_url( 'edit.php?post_type=' . Lift_Search::TEMPLATE_TYPE ) );
       die();
     }
+    
+    add_action('edit_form_before_permalink', 
+               array($this, 'edit_form_before_permalink'), 10, 1);
 	}
+
+  function edit_form_before_permalink($post)
+  {
+    if($post->post_type == Lift_Search::TEMPLATE_TYPE)
+    {
+?>
+<div><span><?php echo self::_('Name'); ?>:</span> <span><?php 
+echo $post->post_name; ?></span></div>
+<?php
+    }
+  }
 
 	/**
 	 * Returns the capability for managing the admin
