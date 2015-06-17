@@ -92,7 +92,7 @@ class ShortcodeEvaluator {
     {
       $dom = $this->dataPtr;
       $el = $dom->getElementById($id);
-      $global_vars[$id] = $el ? $el->innerHtml() : '';
+      $this->global_vars[$id] = $el ? $el->innerHtml() : '';
     }
   }
 
@@ -168,9 +168,10 @@ class ShortcodeEvaluator {
   protected function eval_sc_librelio_inst($parser, $shortcode, $ptr)
   {
     $stmt = null;
-    if(($id = @$shortcode['attributes']['id']) && !@$this->global_vars[$id])
+    if(($id = @$shortcode['attributes']['id']))
     {
-      $this->requiredId($id);
+      if(!@$this->global_vars[$id])
+        $this->requiredId($id);
       $parser = new SScriptParser($id);
       $stmt = SScriptEvaluator::parseStatement($parser);
     }
