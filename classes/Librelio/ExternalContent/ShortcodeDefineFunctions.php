@@ -6,7 +6,7 @@ class ShortcodeDefineFunctions {
 
 
   private static $funcs = array(
-    "foldername", "date"
+    "foldername", "date", "changeext"
   );
 
   public static function define(&$vars)
@@ -29,6 +29,14 @@ class ShortcodeDefineFunctions {
     if($t instanceof \DateTime)
       return $t->format($f);
     return date($f, $t);
+  }
+
+  public static function changeext($p, $new_ext)
+  {
+    $info = pathinfo($p);
+    return ($info['dirname'] != '.' && $info['dirname'] ? 
+            $info['dirname'].($info['dirname'] != '/' ? '/' : '') : '').
+           basename($p, '.'.$info['extension']).$new_ext;
   }
 
 }

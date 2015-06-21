@@ -47,30 +47,35 @@ class SScriptParser {
     $tmp1 = ""; // whitespace
     $quote = "";
     $qescaped = false;
+    $start_type = false;
     while($this->crs < $slen)
     {
       $c = $s[$this->crs];
 
-      // quoted
-      if(!$quote && ($c == "\"" || $c == "'"))
+      if($start_type === false || $start_type == self::CONSTANT_STRING)
       {
-        $quote = $c;
-        $this->crs++;
-        continue;
-      }
-      else if($quote)
-      {
-        if($qescaped || $quote != $c)
-          $tmp1 .= $c;
-        else
+        // quoted
+        if(!$quote && ($c == "\"" || $c == "'"))
         {
+          $quote = $c;
           $this->crs++;
-          $this->value = $tmp1;
-          $this->nodeType = self::CONSTANT_STRING;
-          return 1;
+          $start_type = self::CONSTANT_STRING;
+          continue;
         }
-        $this->crs++;
-        continue;
+        else if($quote)
+        {
+          if($qescaped || $quote != $c)
+            $tmp1 .= $c;
+          else
+          {
+            $this->crs++;
+            $this->value = $tmp1;
+            $this->nodeType = self::CONSTANT_STRING;
+            return 1;
+          }
+          $this->crs++;
+          continue;
+        }
       }
 
       // white space
@@ -78,6 +83,7 @@ class SScriptParser {
       {
         $tmp1 .= $c;
         $this->crs++;
+        $start_type = self::WHITE_SPACE;
         continue;
       }
       else if($tmp1)
