@@ -48,6 +48,10 @@ class ShortcodeEvaluator {
     $this->folderdate = @\DateTime::createFromFormat("Ymd", array_pop($farr));
     $this->filename = basename($path);
 
+    $thisVars = array('filename', 'folderdate');
+    foreach($thisVars as $var)
+      $this->global_vars[$var] = $this->{$var};
+
     $ext = pathinfo($path, PATHINFO_EXTENSION);
     $this->type = $ext;
     switch($ext)
